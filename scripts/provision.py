@@ -39,6 +39,16 @@ FAULT_DOMAINS = [f.name for f in idc.list_fault_domains(T, AD).data]
 TAGS = {"purpose": "always-free"}
 
 
+def read_file(path, mode="r", encoding=None):
+    with open(path, mode, encoding=encoding) as f:
+        return f.read()
+
+
+def write_file(path, data):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(data)
+
+
 def log(*a):
     print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), *a, flush=True)
 
@@ -110,8 +120,8 @@ def ubuntu_image(shape):
 def cloud_init():
     """cloud-init.yaml with harden.sh embedded, so the VM is hardened (and reachable on SSH_PORT) from first boot.
     No secrets go in here: user_data is readable from inside the VM via the metadata service."""
-    text = open(CLOUD_INIT, encoding="utf-8").read()
-    harden = base64.b64encode(open(os.path.join(HERE, "harden.sh"), "rb").read()).decode()
+    text = read_file(CLOUD_INIT, encoding="utf-8")
+    harden = base64.b64encode(read_file(os.path.join(HERE, "harden.sh"), "rb")).decode()
     entry = ("  - path: /usr/local/sbin/harden\n    permissions: '0755'\n    encoding: b64\n"
              f"    content: {harden}\n")
     return text.replace("write_files:\n", "write_files:\n" + entry, 1).encode()
@@ -121,7 +131,7 @@ def launch_details(name, shape, sub, img, boot_gb, size=None, fd=None, user_data
     if user_data is None:
         user_data = cloud_init()
     if ssh_keys is None:
-        ssh_keys = open(SSH_PUB, encoding="utf-8").read().strip()
+        ssh_keys = read_file(SSH_PUB, encoding="utf-8").strip()
     return oci.core.models.LaunchInstanceDetails(
         compartment_id=T, availability_domain=AD, fault_domain=fd, display_name=name, shape=shape,
         shape_config=size and oci.core.models.LaunchInstanceShapeConfigDetails(ocpus=size[0], memory_in_gbs=size[1]),
