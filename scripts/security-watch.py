@@ -51,6 +51,16 @@ WATCHED_FILES = ["/etc/passwd", "/etc/shadow", "/etc/group", "/etc/sudoers", "/e
 UBUNTU_KEYS = "/home/ubuntu/.ssh/authorized_keys"
 
 
+def read_file(path, mode="r", encoding=None):
+    with open(path, mode, encoding=encoding) as f:
+        return f.read()
+
+
+def write_file(path, data):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(data)
+
+
 # ------------------------------------------------------------------ helpers
 def sh(cmd):
     return subprocess.run(cmd, shell=True, capture_output=True, text=True).stdout.strip()
@@ -63,7 +73,7 @@ def notify(subject, body, key=None, cooldown=0):
 
 def load():
     try:
-        return json.load(open(STATE))
+        return json.loads(read_file(STATE))
     except Exception:
         return {}
 
@@ -71,7 +81,7 @@ def load():
 def save(s):
     os.makedirs(STATE_DIR, exist_ok=True)
     tmp = STATE + ".tmp"
-    json.dump(s, open(tmp, "w"), indent=1)
+    write_file(tmp, json.dumps(s, indent=1))
     os.replace(tmp, STATE)
 
 
@@ -229,7 +239,7 @@ def feeds():
 # ------------------------------------------------------------------ host checks (every 5 min)
 def sha(path):
     try:
-        return hashlib.sha256(open(path, "rb").read()).hexdigest()
+        return hashlib.sha256(read_file(path, "rb")).hexdigest()
     except Exception:
         return None
 
@@ -248,12 +258,12 @@ def host():
         sh("docker stop " + " ".join(CONTROL_PLANE))
 
     # accounts
-    for line in open("/etc/passwd"):
+    for line in read_file("/etc/passwd").splitlines():
         name, _, uid, *_ = line.split(":")
         if uid == "0" and name != "root":
             sh(f"usermod -L -e 1 {name}; pkill -KILL -u {name}")
             critical.append(f"Extra UID-0 (root) account '{name}' found -> locked and its processes killed")
-    logins = sorted(l.split(":")[0] for l in open("/etc/passwd")
+    logins = sorted(l.split(":")[0] for l in read_file("/etc/passwd").splitlines()
                     if not l.rstrip().endswith(("nologin", "false", "sync")) and l.split(":")[0] != "root")
     known = s.setdefault("logins", logins)
     for u in set(logins) - set(known):
@@ -261,16 +271,16 @@ def host():
         alerts.append(f"New login-capable account '{u}' -> locked (unlock: sudo usermod -U -e '' {u})")
 
     # rootkit preload
-    if os.path.exists("/etc/ld.so.preload") and open("/etc/ld.so.preload").read().strip():
-        critical.append("/etc/ld.so.preload exists (classic rootkit technique):\n" + open("/etc/ld.so.preload").read())
+    if os.path.exists("/etc/ld.so.preload") and read_file("/etc/ld.so.preload").strip():
+        critical.append("/etc/ld.so.preload exists (classic rootkit technique):\n" + read_file("/etc/ld.so.preload"))
 
     # miners / payloads in memory-only dirs
     os.makedirs(QUARANTINE, exist_ok=True)
     for pid in filter(str.isdigit, os.listdir("/proc")):
         try:
             exe = os.readlink(f"/proc/{pid}/exe")
-            comm = open(f"/proc/{pid}/comm").read().strip()
-            cmd = open(f"/proc/{pid}/cmdline", "rb").read().replace(b"\0", b" ").decode(errors="replace")[:200]
+            comm = read_file(f"/proc/{pid}/comm").strip()
+            cmd = read_file(f"/proc/{pid}/cmdline", "rb").replace(b"\0", b" ").decode(errors="replace")[:200]
         except Exception:
             continue
         if MINER_NAMES.search(comm) or MINER_NAMES.search(exe) or exe.startswith("/dev/shm/"):
@@ -279,6 +289,7 @@ def host():
                 shutil.copy(f"/proc/{pid}/exe", q)
                 os.chmod(q, 0)
             except Exception:
+                # quarantine is best effort: the process may already be gone; it is killed below either way
                 pass
             sh(f"kill -9 {pid}")
             critical.append(f"Malicious-looking process killed: pid {pid} {comm} exe={exe}\n  cmd: {cmd}\n  binary quarantined: {q}")
@@ -286,12 +297,12 @@ def host():
             alerts.append(f"Program running from a temp dir: {exe} ({comm})")
 
     # unknown SSH keys for ubuntu -> revert
-    keys = open(UBUNTU_KEYS).read() if os.path.exists(UBUNTU_KEYS) else ""
+    keys = read_file(UBUNTU_KEYS) if os.path.exists(UBUNTU_KEYS) else ""
     base = s.setdefault("ubuntu_keys", keys)
     if keys != base:
         added = [k for k in keys.splitlines() if k.strip() and k not in base.splitlines()]
         if added:
-            open(UBUNTU_KEYS, "w").write(base)
+            write_file(UBUNTU_KEYS, base)
             alerts.append("Unknown SSH key(s) added for ubuntu -> removed:\n" + "\n".join(k[:120] for k in added))
         else:
             s["ubuntu_keys"] = keys  # keys removed only: accept
