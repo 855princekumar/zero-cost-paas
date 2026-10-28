@@ -1,6 +1,6 @@
 # 15 · Production Readiness: Scorecard, Gaps, Roadmap
 
-[← Troubleshooting](14-troubleshooting.md) · [Index](README.md) · [ADRs →](adr/README.md)
+[← Troubleshooting](14-troubleshooting.md) · [Index](README.md) · [New machine setup →](16-new-machine-setup.md)
 
 > **TL;DR**: Strong on perimeter security, patching, automation and cost control; honest gaps in
 > **offsite backups**, **edge protection (CDN/WAF)**, **external uptime monitoring** and
@@ -80,4 +80,4 @@ failure mode the host can observe, documented recovery, and a tested path to big
 does **not** mean multi-region HA or a managed WAF, those are explicit, documented trade-offs of the
 $0 constraint.
 
-[ADR index →](adr/README.md)
+[Next: New machine & from-scratch setup →](16-new-machine-setup.md)

@@ -39,7 +39,7 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | 2 | [Architecture](#architecture) | End-to-end diagram and request flow |
 | 3 | [What's inside](#whats-inside) | Every capability, grouped |
 | 4 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
-| 5 | [Documentation index](#documentation-index) | 15 chapters, case study to runbook |
+| 5 | [Documentation index](#documentation-index) | 17 chapters, case study to runbook |
 | 6 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
 | 7 | [Repository layout](#repository-layout) | Scripts and docs map |
 | 8 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
@@ -145,6 +145,13 @@ Details are in [docs/02-architecture.md](docs/02-architecture.md), which covers 
 ## Quick start
 
 > Read [docs/03-placeholders.md](docs/03-placeholders.md) first. Every `<PLACEHOLDER>` is explained there.
+> For the complete ordered checklist with a verification for every step, follow
+> [docs/16-new-machine-setup.md](docs/16-new-machine-setup.md) (Path C).
+
+> [!IMPORTANT]
+> **After cloning, on every computer, run once:** `git config core.hooksPath .githooks`
+> This enables the local branch protection that blocks deleting or rewriting `main`. Git does not
+> carry this setting over when you clone. Details: [docs/16-new-machine-setup.md](docs/16-new-machine-setup.md).
 
 ```bash
 # 0. Oracle Cloud account (free) -> create an API signing key -> ~/.oci/config   (docs/04)
@@ -198,6 +205,8 @@ Then open `https://<BASE_DOMAIN>`, change the password, **enable 2FA**, pick **"
 | 13 | [Operations runbook](docs/13-operations-runbook.md) | Day-2 tasks, secret rotation, incident response |
 | 14 | [Troubleshooting](docs/14-troubleshooting.md) | Every real issue hit, with symptom → cause → fix |
 | 15 | [Production readiness](docs/15-production-readiness.md) | Scorecard, gaps, roadmap |
+| 16 | [New machine & from-scratch setup](docs/16-new-machine-setup.md) | New device, restoring access, full rebuild, handover |
+| 17 | [Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md) | Free-tier comparison, gcloud / aws CLI setup, cost caveats |
 
 The full index with reading paths is in [docs/README.md](docs/README.md).
 
@@ -221,7 +230,7 @@ Examples: [free-only, no Pay-As-You-Go](docs/adr/0003-stay-free-only-no-payg.md)
 ```mermaid
 flowchart TB
     root(["zero-cost-paas"])
-    root --> docs["docs/<br/>15 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
+    root --> docs["docs/<br/>17 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
     docs --> adr["docs/adr/<br/>18 decision records"]
     root --> scripts["scripts/<br/>run in this order"]
 
@@ -231,7 +240,7 @@ flowchart TB
     end
     subgraph p2["2 · Provision"]
         direction LR
-        prov["provision.py"] ~~~ cinit["cloud-init.yaml"]
+        prov["provision.py"] ~~~ cinit["cloud-init.yaml"] ~~~ rci["render-cloud-init.py"]
     end
     subgraph p3["3 · Harden"]
         direction LR
@@ -258,6 +267,7 @@ flowchart TB
 | 1 | [`config.example.env`](scripts/config.example.env) | Every variable as a placeholder; copy to `keys/config.env` |
 | 1 | [`check-account.py`](scripts/check-account.py) | Read-only pre-flight: auth, account type, Always Free limits |
 | 2 | [`provision.py`](scripts/provision.py) | VCN, gateway, routes, security list, subnet and VM through the OCI SDK |
+| 2 | [`render-cloud-init.py`](scripts/render-cloud-init.py) | cloud-init with `harden.sh` embedded, for any cloud (GCP, AWS) |
 | 2 | [`cloud-init.yaml`](scripts/cloud-init.yaml) | First boot: updates, Docker, swap, fail2ban, firewall helper, hardening |
 | 3 | [`harden.sh`](scripts/harden.sh) | SSH, host firewall, DOCKER-USER guard, fail2ban, sysctl, DuckDNS timer |
 | 4 | [`coolify-setup.sh`](scripts/coolify-setup.sh) | Headless Coolify install and configuration |

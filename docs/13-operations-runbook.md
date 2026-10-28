@@ -92,7 +92,7 @@ Roadmap: nightly encrypted backups to OCI Object Storage (20 GB free).
 
 ## Restore on a fresh VM
 
-Same procedure the migrator automates ([11 · Migration](11-amd-to-arm-migration.md#3-restore--the-subtle-parts)):
+Same procedure the migrator automates ([11 · Migration](11-amd-to-arm-migration.md#3-restore-the-subtle-parts)):
 copy `/data/coolify` → run installer with the same version → restore SSH keys → `pg_restore --clean`
 → restore volumes → start → redeploy apps.
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- New chapter [16 · New machine & from-scratch setup](docs/16-new-machine-setup.md): workstation setup with git hooks, restoring access safely, recovery for every lost secret, full rebuild checklist with verifications, handover guide.
+- New chapter [17 · Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md): free-tier comparison (checked against official pages), headless `gcloud` / `aws` setup, what carries over, cost caveats; new `scripts/render-cloud-init.py`.
+- Branch protection substitutes (`.githooks/pre-push`, `branch-guard.yml`), CodeQL, Dependabot.
+
 ## v1.0.0 (2026-10-28): initial production build
 
 **Infrastructure**

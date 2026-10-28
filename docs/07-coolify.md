@@ -139,7 +139,7 @@ services:
       - /data/coolify/logs:/var/www/html/storage/logs
 ```
 
-This feeds the fail2ban `coolify-login` jail ([08 · Hardening](08-security-hardening.md#l5--fail2ban)).
+This feeds the fail2ban `coolify-login` jail ([08 · Hardening](08-security-hardening.md#l5-fail2ban)).
 
 ## 8. Updates
 

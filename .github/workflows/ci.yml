@@ -44,18 +44,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: relative links resolve
+      - name: relative links and anchors resolve
         run: |
           python - <<'EOF'
           import glob, os, re, sys
+
+          def slug(heading):  # GitHub heading anchor
+              return re.sub(r"[^\w\- ]", "", heading.strip().lower()).replace(" ", "-")
+
+          def anchors(path):
+              with open(path, encoding="utf-8") as f:
+                  return {slug(h) for h in re.findall(r"^#+ (.+)$", f.read(), re.M)}
+
           bad = []
           for md in glob.glob("**/*.md", recursive=True):
-              for link in re.findall(r"\]\(([^)#\s]+)", open(md, encoding="utf-8").read()):
+              with open(md, encoding="utf-8") as f:
+                  links = re.findall(r"\]\(([^)\s]+)\)", f.read())
+              for link in links:
                   if "://" in link or link.startswith("mailto:"):
                       continue
-                  target = os.path.normpath(os.path.join(os.path.dirname(md), link))
+                  path, _, anchor = link.partition("#")
+                  target = os.path.normpath(os.path.join(os.path.dirname(md), path)) if path else md
                   if not os.path.exists(target):
-                      bad.append(f"{md}: {link}")
-          print("\n".join(bad) or "all relative links OK")
+                      bad.append(f"{md}: missing {link}")
+                  elif anchor and target.endswith(".md") and anchor not in anchors(target):
+                      bad.append(f"{md}: missing anchor #{anchor}")
+          print("\n".join(bad) or "all relative links and anchors OK")
           sys.exit(1 if bad else 0)
           EOF

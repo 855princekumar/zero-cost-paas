@@ -59,6 +59,12 @@ key_file=~/.oci/oci_api_key.pem
 | VCN CIDR | Virtual Cloud Network range | `10.0.0.0/16` (subnet `10.0.0.0/24`) | No |
 | Docker address pool | Must not overlap the VCN | `172.20.0.0/14`, /24 per network | No |
 
+## Other clouds
+
+Placeholders for running the same stack on Google Cloud or AWS (`<GCP_PROJECT_ID>`,
+`<GCP_BILLING_ACCOUNT_ID>`, `<AWS_REGION>`, `<AWS_ACCOUNT_ID>`) are listed in
+[17 · Same stack on Google Cloud or AWS](17-other-clouds-gcp-aws.md#placeholders-added-by-this-chapter).
+
 ## Environment variables used by the scripts
 
 The scripts in [`scripts/`](../scripts) read these (see [`scripts/config.example.env`](../scripts/config.example.env)):
