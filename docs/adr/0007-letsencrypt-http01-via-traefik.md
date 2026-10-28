@@ -1,6 +1,6 @@
 # ADR-0007: Let's Encrypt HTTP-01 via Coolify's Traefik
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0005](0005-coolify-as-paas.md), [ADR-0006](0006-duckdns-wildcard-dns.md), [DNS & TLS](../06-dns-and-tls.md)
 
 ## Context
@@ -36,13 +36,13 @@ sequenceDiagram
 
 **Positive**
 - Zero-touch TLS for unlimited apps; certificates are standard and trusted.
-- Port 80 must stay open — it also serves the HTTP→HTTPS redirect.
+- Port 80 must stay open: it also serves the HTTP→HTTPS redirect.
 
 **Negative**
 - No wildcard certificate (DNS-01 would need a DNS-provider plugin; DuckDNS DNS-01 is possible but
   adds token exposure in Traefik). Per-host certificates are fine within Let's Encrypt limits
-  (50 certificates/week per registered domain — here, per DuckDNS subdomain).
-- During the first ~1–2 minutes after a deploy, visitors see Traefik's default certificate.
+  (50 certificates/week per registered domain, here, per DuckDNS subdomain).
+- During the first ~1-2 minutes after a deploy, visitors see Traefik's default certificate.
 
 ## Alternatives considered
 

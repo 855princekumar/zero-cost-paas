@@ -2,7 +2,7 @@
 
 [← Security hardening](08-security-hardening.md) · [Index](README.md) · [Next: Security automation →](10-security-automation.md)
 
-> **TL;DR** — All alerts go to `<ALERT_EMAIL>` through Gmail SMTP with an **App Password**
+> **TL;DR**: All alerts go to `<ALERT_EMAIL>` through Gmail SMTP with an **App Password**
 > (free, reliable, no extra service). Two producers: **Coolify** (deploys, server reachability, disk,
 > backups, patches) and the **host** (`health-check` every 5 min, `health-report` daily, boot notice,
 > unattended-upgrades reports, security-watch, migrator). A `notify` helper adds per-issue cooldowns

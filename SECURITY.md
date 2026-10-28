@@ -19,6 +19,23 @@ If you fork this and deploy it:
 If you find a security issue in the scripts or the documented setup, please report it privately
 (repository **Security** tab → **Report a vulnerability**) instead of opening a public issue.
 
+## Repository security controls
+
+| Control | How | When |
+|---|---|---|
+| Secret scanning | gitleaks over the full git history (`ci.yml`) | Every push and pull request |
+| Code scanning | CodeQL `security-and-quality` queries for Python and GitHub Actions (`codeql.yml`); the build fails on any finding | Every push, pull request and weekly |
+| Dependency alerts | Dependabot alerts (enabled) | Continuously |
+| Dependency security fixes | Dependabot security updates open pull requests automatically (enabled) | When an advisory affects a dependency |
+| Dependency freshness | Dependabot version updates for GitHub Actions and `scripts/requirements.txt` (`dependabot.yml`) | Weekly |
+| Script quality | shellcheck, Python syntax, cloud-init YAML, SVG validity, relative links (`ci.yml`) | Every push |
+| Least-privilege CI | Workflows run with `contents: read` only | Always |
+
+GitHub's hosted code-scanning and secret-scanning dashboards require GitHub Advanced Security on
+private repositories. The CI jobs above provide the same coverage without it. If the repository is
+made public, both dashboards become free: enable them under **Settings > Code security**, and set
+`upload: always` in `codeql.yml`.
+
 ## Upstream vulnerabilities
 
 The deployed system watches upstream sources itself (Coolify releases and GitHub security

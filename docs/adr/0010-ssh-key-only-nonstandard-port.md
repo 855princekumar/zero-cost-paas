@@ -1,6 +1,6 @@
 # ADR-0010: Key-only SSH on a non-standard public port
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0011](0011-defense-in-depth-network-layers.md), [ADR-0012](0012-fail2ban-for-ssh-and-coolify-login.md), [Security hardening](../08-security-hardening.md), [`scripts/harden.sh`](../../scripts/harden.sh)
 
 ## Context
@@ -44,7 +44,7 @@ Match Address 127.0.0.1,::1,172.16.0.0/12,10.0.0.0/16
 ```mermaid
 flowchart LR
   I[Internet] -->|<SSH_PORT> key-only, ubuntu| SSHD[sshd]
-  I -.->|22 blocked by security list| X((✗))
+  I -.->|22 blocked by security list| X((blocked))
   C[Coolify container 172.20.x.x] -->|22 root, key| SSHD
   M[Migrator on VCN 10.0.0.x] -->|22 ubuntu, key| SSHD
 ```
@@ -61,12 +61,12 @@ flowchart LR
 - Two listening ports to reason about.
 
 **Lesson:** on a freshly booted 24.04 image `/run/sshd` does not exist until the first connection, so
-`sshd -t` fails — the hardening script runs `mkdir -p /run/sshd` first (found by the migration dry run).
+`sshd -t` fails, the hardening script runs `mkdir -p /run/sshd` first (found by the migration dry run).
 
 ## Alternatives considered
 
 | Option | Why not (now) |
 |---|---|
-| Tailscale only, no public SSH | Best posture; deferred because the owner wants key-only access from any device first — documented upgrade |
+| Tailscale only, no public SSH | Best posture; deferred because the owner wants key-only access from any device first, documented upgrade |
 | IP allow-list | Owner's IP is dynamic |
 | Keep 22 public | Needless log noise and brute-force load |

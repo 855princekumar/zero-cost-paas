@@ -1,12 +1,12 @@
-# 10 · Security Automation — Feeds, Auto-Patching, Guardrails
+# 10 · Security Automation: Feeds, Auto-Patching, Guardrails
 
 [← Monitoring & alerts](09-monitoring-and-alerts.md) · [Index](README.md) · [Next: AMD → ARM migration →](11-amd-to-arm-migration.md)
 
-> **TL;DR** — [`security-watch.py`](../scripts/security-watch.py) (Python stdlib only, runs as root
+> **TL;DR**: [`security-watch.py`](../scripts/security-watch.py) (Python stdlib only, runs as root
 > from systemd timers) does two jobs. **Feeds (every 6 h):** read trusted sources, email anything new,
 > and **act**: upgrade Coolify at once for security releases / high-critical advisories, or **lock
 > down** the control plane if no fix exists. **Host (every 5 min):** look for intrusion indicators and
-> respond automatically — lock rogue accounts, kill and quarantine miners, revert unknown SSH keys,
+> respond automatically, lock rogue accounts, kill and quarantine miners, revert unknown SSH keys,
 > lock down on critical signs. On its very first run it found an authenticated-RCE advisory affecting
 > the running Coolify 4.5.0 and upgraded to 4.5.2 unattended.
 
@@ -17,7 +17,7 @@
 Coolify is PHP/Laravel and its build helper mounts the Docker socket, so **an RCE in Coolify is root
 on the host**. Real advisories exist (e.g. command injection through custom build commands → host
 root). For a solo operator, the gap between "advisory published" and "human reads email" is the
-dangerous window — so the safe actions are automated and the operator is informed.
+dangerous window, so the safe actions are automated and the operator is informed.
 
 ## 2. Trusted sources
 
@@ -76,7 +76,7 @@ that includes the running version **and** the running version is not ≥ any `pa
 ### The real first run
 
 ```text
-[SECURITY] Security watch enabled — Coolify running 4.5.0, latest release 4.5.2
+[SECURITY] Security watch enabled, Coolify running 4.5.0, latest release 4.5.2
   Coolify advisory GHSA-…  [HIGH]  Authenticated RCE via SHELL_SAFE_COMMAND_PATTERN regression → host root
   affects running 4.5.0: YES   patched in …
 [SECURITY] Coolify auto-upgraded to 4.5.2
@@ -110,7 +110,7 @@ stateDiagram-v2
     Lockdown --> Normal: fixed release auto-installed (advisory lockdown only)
 ```
 
-*Lockdown* stops `coolify` and `coolify-realtime` — the **control plane** an attacker would use.
+*Lockdown* stops `coolify` and `coolify-realtime`: the **control plane** an attacker would use.
 **Apps, Traefik/HTTPS and operator SSH keep running.** Coolify containers use `restart: always`, so
 the host check re-stops them if Docker or the VM restarts. Undo after investigating:
 

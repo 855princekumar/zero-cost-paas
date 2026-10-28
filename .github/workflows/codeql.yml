@@ -1,0 +1,56 @@
+name: CodeQL
+
+# GitHub's hosted code-scanning dashboard needs GitHub Advanced Security on private repos.
+# This runs the same CodeQL engine in CI instead: the build fails on any finding and the
+# SARIF report is kept as an artifact. (On a public repo, set upload: always to use the dashboard.)
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 1"   # weekly, catches new queries against unchanged code
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  analyze:
+    name: CodeQL (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, actions]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:${{ matrix.language }}
+          upload: never
+          output: sarif
+      - name: Keep report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-${{ matrix.language }}
+          path: sarif
+      - name: Fail on findings
+        run: |
+          python3 - <<'EOF'
+          import glob, json, sys
+          results = [(r["ruleId"], loc["physicalLocation"]["artifactLocation"]["uri"],
+                      loc["physicalLocation"]["region"].get("startLine"), r["message"]["text"])
+                     for f in glob.glob("sarif/*.sarif")
+                     for run in json.load(open(f))["runs"]
+                     for r in run.get("results", [])
+                     for loc in r.get("locations", [])[:1]]
+          for rule, uri, line, msg in results:
+              print(f"::warning file={uri},line={line}::{rule}: {msg}")
+          print(f"{len(results)} finding(s)")
+          sys.exit(1 if results else 0)
+          EOF

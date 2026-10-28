@@ -2,7 +2,7 @@
 
 [← Cost guardrails](12-cost-guardrails.md) · [Index](README.md) · [Next: Troubleshooting →](14-troubleshooting.md)
 
-> **TL;DR** — Copy-paste procedures for day-2 work: access, deploys, ports, **secret rotation**,
+> **TL;DR**: Copy-paste procedures for day-2 work: access, deploys, ports, **secret rotation**,
 > bans, lockdown, upgrades, **backups** (the `APP_KEY` above all), restore, reboots, and an incident
 > response playbook.
 
@@ -17,9 +17,9 @@ Dashboard: `https://<BASE_DOMAIN>` (email + password + TOTP).
 ## Deploy an app
 
 Coolify → Projects → + Add → Production → + New Resource → (Public repo | GitHub App | Docker image)
-→ Domains: `https://<APP_NAME>.<BASE_DOMAIN>` → Deploy. Certificate in ~1–2 minutes.
+→ Domains: `https://<APP_NAME>.<BASE_DOMAIN>` → Deploy. Certificate in ~1-2 minutes.
 
-## Open an additional public port (rare — apps should use 443)
+## Open an additional public port (rare: apps should use 443)
 
 ```bash
 # 1) cloud: add to OPEN_PORTS in scripts/provision.py, then
@@ -77,7 +77,7 @@ vm$ sudo DOCKER_ADDRESS_POOL_BASE=172.20.0.0/14 DOCKER_ADDRESS_POOL_SIZE=24 bash
 
 | What | Why | How |
 |---|---|---|
-| **`/data/coolify/source/.env`** | Contains **`APP_KEY`** — without it encrypted DB fields (env vars, keys) are unrecoverable | copy to a password manager / offline |
+| **`/data/coolify/source/.env`** | Contains **`APP_KEY`**: without it encrypted DB fields (env vars, keys) are unrecoverable | copy to a password manager / offline |
 | Coolify DB | Projects, settings | `docker exec coolify-db pg_dump -U coolify -d coolify -Fc > coolify.dump` |
 | `/data/coolify` | Proxy certs, SSH keys, compose files | `tar czf coolify-data.tgz -C / data/coolify` |
 | App volumes | Your data | Coolify → Database → Backups (S3-compatible target), or `tar` per volume |
@@ -98,7 +98,7 @@ copy `/data/coolify` → run installer with the same version → restore SSH key
 
 ## Reboot
 
-Automatic at 04:00 when updates require it. Manual: `vm$ sudo reboot` — Coolify, Traefik and apps
+Automatic at 04:00 when updates require it. Manual: `vm$ sudo reboot`: Coolify, Traefik and apps
 come back via restart policies; you receive a "Server booted" email.
 
 ## Check that automation is alive

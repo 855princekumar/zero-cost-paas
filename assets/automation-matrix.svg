@@ -1,113 +1,192 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760" role="img" aria-labelledby="t d">
-  <title id="t">Automation matrix</title>
-  <desc id="d">Table of every automated job on the VM: what it does, how often it runs, the automated action it may take, and whether it emails. Jobs: duckdns timer, health-check, security-watch host, security-watch feeds, daily health report, unattended upgrades, Coolify auto-update, fail2ban, and the AMD to ARM migrator.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 830" width="1400" height="830" font-family="Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Automation matrix: what runs by itself</title>
+  <desc id="d">Every automated job on the VM with how often it runs, what it watches, the automated action it may take and whether it emails: duckdns timer, health-check, security-watch host, security-watch feeds, daily health report, unattended upgrades, Coolify auto-update, fail2ban and the AMD to ARM migrator. Pulsing dots reflect each job's frequency.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0b1220"/>
-      <stop offset="1" stop-color="#111827"/>
-    </linearGradient>
+    <filter id="sh" x="-2%" y="-10%" width="104%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+    <style>
+      .tick { transform-box: fill-box; transform-origin: center; animation: tick 2s ease-in-out infinite; }
+      @keyframes tick { 0%, 100% { transform: scale(0.7); opacity: 0.35; } 40% { transform: scale(1.25); opacity: 1; } }
+      .f5m { animation-duration: 1.2s; }
+      .frt { animation-duration: 0.8s; }
+      .f6h { animation-duration: 3s; }
+      .fday { animation-duration: 4.5s; }
+      .farm { animation-duration: 2s; }
+      .flow { stroke-dasharray: 4 4; animation: dash 0.9s linear infinite; }
+      @keyframes dash { to { stroke-dashoffset: -16; } }
+      @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+    </style>
   </defs>
-  <rect width="1240" height="760" fill="url(#bg)"/>
 
-  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
-    <text x="30" y="44" font-size="24" font-weight="700" fill="#f8fafc">Automation matrix — what runs by itself</text>
-    <text x="30" y="66" font-size="13" fill="#94a3b8">Every job is a systemd unit/timer or a daemon on the VM — nothing depends on your laptop being on.</text>
+  <rect x="0.75" y="0.75" width="1398.5" height="828.5" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
 
-    <!-- header -->
-    <rect x="30" y="84" width="1180" height="40" rx="10" fill="#1e293b"/>
-    <g font-size="13" font-weight="700" fill="#cbd5e1">
-      <text x="48" y="109">Automation</text>
-      <text x="290" y="109">Runs</text>
-      <text x="420" y="109">Watches / does</text>
-      <text x="800" y="109">Automated action</text>
-      <text x="1080" y="109">Email</text>
-    </g>
+  <text x="32" y="46" fill="#0f172a" font-size="26" font-weight="700">Automation matrix: what runs by itself</text>
+  <text x="32" y="72" fill="#475569" font-size="14">Every job is a systemd unit, timer or daemon on the VM. Nothing depends on your laptop being on. Pulse speed reflects how often a job runs.</text>
 
-    <g font-size="13">
-      <!-- row helper: y step 66 -->
-      <g transform="translate(30,132)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#f59e0b"/>
-        <text x="18" y="26" font-weight="700" fill="#fde68a">duckdns.timer</text><text x="18" y="45" fill="#64748b" font-size="12">duckdns.service</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#1c1a12" stroke="#f59e0b"/><text x="297" y="35" text-anchor="middle" fill="#fde68a" font-size="12">5 min</text>
-        <text x="390" y="26" fill="#e2e8f0">Points &lt;BASE_DOMAIN&gt; at this VM's public IP</text><text x="390" y="45" fill="#94a3b8">wildcard sub-names follow automatically</text>
-        <text x="770" y="35" fill="#cbd5e1">re-registers IP after any change</text>
-        <text x="1050" y="35" fill="#64748b">—</text>
-      </g>
-      <g transform="translate(30,198)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#22c55e"/>
-        <text x="18" y="26" font-weight="700" fill="#bbf7d0">health-check</text><text x="18" y="45" fill="#64748b" font-size="12">health-check.timer</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#0f2320" stroke="#22c55e"/><text x="297" y="35" text-anchor="middle" fill="#bbf7d0" font-size="12">5 min</text>
-        <text x="390" y="26" fill="#e2e8f0">RAM+swap, disk ≥85%, Coolify containers,</text><text x="390" y="45" fill="#94a3b8">HTTPS /login 200, cert &lt;14 d, reboot-required, bans</text>
-        <text x="770" y="35" fill="#cbd5e1">alert; clears cooldown on recovery</text>
-        <text x="1050" y="35" fill="#86efac">✓ max 1 / issue / 6 h</text>
-      </g>
-      <g transform="translate(30,264)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#ef4444"/>
-        <text x="18" y="26" font-weight="700" fill="#fecaca">security-watch host</text><text x="18" y="45" fill="#64748b" font-size="12">security-watch-host.timer</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#2a1414" stroke="#ef4444"/><text x="297" y="35" text-anchor="middle" fill="#fecaca" font-size="12">5 min</text>
-        <text x="390" y="26" fill="#e2e8f0">UID-0 accounts, ld.so.preload, miners, /dev/shm,</text><text x="390" y="45" fill="#94a3b8">SSH keys, root SSH from public IP, file integrity</text>
-        <text x="770" y="26" fill="#fca5a5">kill · quarantine · lock · revert</text><text x="770" y="45" fill="#fca5a5">→ LOCKDOWN on critical</text>
-        <text x="1050" y="35" fill="#86efac">✓ immediately</text>
-      </g>
-      <g transform="translate(30,330)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#6366f1"/>
-        <text x="18" y="26" font-weight="700" fill="#c7d2fe">security-watch feeds</text><text x="18" y="45" fill="#64748b" font-size="12">security-watch-feeds.timer</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#15152b" stroke="#6366f1"/><text x="297" y="35" text-anchor="middle" fill="#c7d2fe" font-size="12">6 h</text>
-        <text x="390" y="26" fill="#e2e8f0">Coolify releases + advisories, Laravel/Livewire/</text><text x="390" y="45" fill="#94a3b8">Traefik advisories, CISA KEV (filtered to stack)</text>
-        <text x="770" y="26" fill="#a5b4fc">auto-upgrade Coolify, or lockdown</text><text x="770" y="45" fill="#a5b4fc">if no fix is released</text>
-        <text x="1050" y="35" fill="#86efac">✓ new items only</text>
-      </g>
-      <g transform="translate(30,396)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#14b8a6"/>
-        <text x="18" y="26" font-weight="700" fill="#99f6e4">health-report</text><text x="18" y="45" fill="#64748b" font-size="12">health-report.timer</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#0f2a2a" stroke="#14b8a6"/><text x="297" y="35" text-anchor="middle" fill="#99f6e4" font-size="12">daily 09:00</text>
-        <text x="390" y="26" fill="#e2e8f0">Uptime, memory, disk, containers, cert expiry,</text><text x="390" y="45" fill="#94a3b8">bans, failed logins, pending updates, migrator</text>
-        <text x="770" y="35" fill="#cbd5e1">summary only</text>
-        <text x="1050" y="35" fill="#86efac">✓ daily</text>
-      </g>
-      <g transform="translate(30,462)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#38bdf8"/>
-        <text x="18" y="26" font-weight="700" fill="#bae6fd">unattended-upgrades</text><text x="18" y="45" fill="#64748b" font-size="12">apt-daily-upgrade.timer</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#132033" stroke="#38bdf8"/><text x="297" y="35" text-anchor="middle" fill="#bae6fd" font-size="12">daily</text>
-        <text x="390" y="26" fill="#e2e8f0">Ubuntu security + Docker CE packages</text><text x="390" y="45" fill="#94a3b8">removes unused kernels/deps</text>
-        <text x="770" y="26" fill="#cbd5e1">install patches; auto-reboot</text><text x="770" y="45" fill="#cbd5e1">at 04:00 if kernel/libc needs it</text>
-        <text x="1050" y="35" fill="#86efac">✓ on change</text>
-      </g>
-      <g transform="translate(30,528)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#a78bfa"/>
-        <text x="18" y="26" font-weight="700" fill="#ddd6fe">Coolify auto-update</text><text x="18" y="45" fill="#64748b" font-size="12">built into Coolify</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#1a1625" stroke="#a78bfa"/><text x="297" y="35" text-anchor="middle" fill="#ddd6fe" font-size="12">daily</text>
-        <text x="390" y="26" fill="#e2e8f0">Upgrades Coolify to the latest stable release</text><text x="390" y="45" fill="#94a3b8">security-watch handles urgent ones sooner</text>
-        <text x="770" y="35" fill="#cbd5e1">upgrade in place</text>
-        <text x="1050" y="35" fill="#86efac">✓ via Coolify</text>
-      </g>
-      <g transform="translate(30,594)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#f87171"/>
-        <text x="18" y="26" font-weight="700" fill="#fecaca">fail2ban</text><text x="18" y="45" fill="#64748b" font-size="12">jails: sshd, coolify-login</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#2a1414" stroke="#f87171"/><text x="297" y="35" text-anchor="middle" fill="#fecaca" font-size="12">real time</text>
-        <text x="390" y="26" fill="#e2e8f0">SSH: 3 fails / 10 min · dashboard: 5 fails / 10 min</text><text x="390" y="45" fill="#94a3b8">from journald and Coolify's audit log</text>
-        <text x="770" y="35" fill="#cbd5e1">ban IP 24 h (escalating for SSH)</text>
-        <text x="1050" y="35" fill="#86efac">✓ dashboard bans</text>
-      </g>
-      <g transform="translate(30,660)">
-        <rect width="1180" height="60" rx="8" fill="#111827" stroke="#1e293b"/>
-        <rect width="6" height="60" rx="3" fill="#C74634"/>
-        <text x="18" y="26" font-weight="700" fill="#fecaca">oci-migrator</text><text x="18" y="45" fill="#64748b" font-size="12">systemd service, restarts</text>
-        <rect x="258" y="18" width="78" height="24" rx="12" fill="#1f1311" stroke="#C74634"/><text x="297" y="35" text-anchor="middle" fill="#fecaca" font-size="12">until ARM</text>
-        <text x="390" y="26" fill="#e2e8f0">Retries Ampere A1 capacity across fault domains</text><text x="390" y="45" fill="#94a3b8">then moves Coolify + data, switches DNS</text>
-        <text x="770" y="26" fill="#cbd5e1">launch · restore · cut over ·</text><text x="770" y="45" fill="#cbd5e1">delete old VM · resize to max</text>
-        <text x="1050" y="35" fill="#86efac">✓ start/done/fail</text>
-      </g>
-    </g>
-
-    <text x="30" y="744" font-size="12" fill="#64748b">Alerts go to &lt;ALERT_EMAIL&gt; through Gmail SMTP (msmtp on the host, SMTP settings inside Coolify). A "Server booted" email is also sent on every boot.</text>
+  <!-- header -->
+  <rect x="32" y="92" width="1336" height="40" rx="10" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <g fill="#334155" font-size="13.5" font-weight="700">
+    <text x="56" y="117">Automation</text>
+    <text x="300" y="117">Runs</text>
+    <text x="440" y="117">Watches / does</text>
+    <text x="850" y="117">Automated action</text>
+    <text x="1186" y="117">Email</text>
   </g>
+
+  <!-- row template: y0 = 142 + i*72, height 64; text lines at y0+27 and y0+47 -->
+
+  <!-- 1 duckdns -->
+  <g>
+    <rect x="32" y="142" width="1336" height="64" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="142" width="5" height="64" rx="2" fill="#d97706"/>
+    <text x="56" y="169" fill="#d97706" font-size="14" font-weight="700">duckdns.timer</text>
+    <text x="56" y="189" fill="#64748b" font-size="12">duckdns.service</text>
+    <rect x="300" y="160" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="178" text-anchor="middle" fill="#d97706" font-size="12.5">5 min</text>
+    <circle class="tick f5m" cx="414" cy="173" r="5" fill="#d97706"/>
+    <text x="440" y="169" fill="#0f172a" font-size="13">Points &lt;BASE_DOMAIN&gt; at this VM's public IP</text>
+    <text x="440" y="189" fill="#475569" font-size="12.5">wildcard sub-names follow automatically</text>
+    <text x="850" y="179" fill="#334155" font-size="13">re-registers the IP after any change</text>
+    <text x="1186" y="179" fill="#64748b" font-size="13">none</text>
+  </g>
+
+  <!-- 2 health-check -->
+  <g>
+    <rect x="32" y="214" width="1336" height="64" rx="10" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="214" width="5" height="64" rx="2" fill="#16a34a"/>
+    <text x="56" y="241" fill="#16a34a" font-size="14" font-weight="700">health-check</text>
+    <text x="56" y="261" fill="#64748b" font-size="12">health-check.timer</text>
+    <rect x="300" y="232" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="250" text-anchor="middle" fill="#16a34a" font-size="12.5">5 min</text>
+    <circle class="tick f5m" cx="414" cy="245" r="5" fill="#16a34a"/>
+    <text x="440" y="241" fill="#0f172a" font-size="13">RAM + swap, disk 85%+, Coolify containers,</text>
+    <text x="440" y="261" fill="#475569" font-size="12.5">HTTPS /login 200, cert under 14 days, reboot, bans</text>
+    <text x="850" y="241" fill="#334155" font-size="13">alert; clears the cooldown</text>
+    <text x="850" y="261" fill="#334155" font-size="13">on recovery</text>
+    <path class="flow" d="M1124,246 L1160,246" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="251" fill="#15803d" font-size="13">max 1 per issue / 6 h</text>
+  </g>
+
+  <!-- 3 security-watch host -->
+  <g>
+    <rect x="32" y="286" width="1336" height="64" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="286" width="5" height="64" rx="2" fill="#e11d48"/>
+    <text x="56" y="313" fill="#e11d48" font-size="14" font-weight="700">security-watch host</text>
+    <text x="56" y="333" fill="#64748b" font-size="12">security-watch-host.timer</text>
+    <rect x="300" y="304" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="322" text-anchor="middle" fill="#e11d48" font-size="12.5">5 min</text>
+    <circle class="tick f5m" cx="414" cy="317" r="5" fill="#e11d48"/>
+    <text x="440" y="313" fill="#0f172a" font-size="13">UID-0 accounts, ld.so.preload, miners, /dev/shm,</text>
+    <text x="440" y="333" fill="#475569" font-size="12.5">SSH keys, root SSH from a public IP, file integrity</text>
+    <text x="850" y="313" fill="#e11d48" font-size="13">kill, quarantine, lock, revert</text>
+    <text x="850" y="333" fill="#be123c" font-size="13" font-weight="700">LOCKDOWN on critical</text>
+    <path class="flow" d="M1124,318 L1160,318" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="323" fill="#15803d" font-size="13">immediately</text>
+  </g>
+
+  <!-- 4 security-watch feeds -->
+  <g>
+    <rect x="32" y="358" width="1336" height="64" rx="10" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="358" width="5" height="64" rx="2" fill="#4f46e5"/>
+    <text x="56" y="385" fill="#4f46e5" font-size="14" font-weight="700">security-watch feeds</text>
+    <text x="56" y="405" fill="#64748b" font-size="12">security-watch-feeds.timer</text>
+    <rect x="300" y="376" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="394" text-anchor="middle" fill="#4f46e5" font-size="12.5">6 h</text>
+    <circle class="tick f6h" cx="414" cy="389" r="5" fill="#4f46e5"/>
+    <text x="440" y="385" fill="#0f172a" font-size="13">Coolify releases + advisories, Laravel/Livewire</text>
+    <text x="440" y="405" fill="#475569" font-size="12.5">and Traefik advisories, CISA KEV (filtered to stack)</text>
+    <text x="850" y="385" fill="#4f46e5" font-size="13">auto-upgrade Coolify, or lockdown</text>
+    <text x="850" y="405" fill="#4f46e5" font-size="13">if no fix is released</text>
+    <path class="flow" d="M1124,390 L1160,390" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="395" fill="#15803d" font-size="13">new items only</text>
+  </g>
+
+  <!-- 5 health-report -->
+  <g>
+    <rect x="32" y="430" width="1336" height="64" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="430" width="5" height="64" rx="2" fill="#0d9488"/>
+    <text x="56" y="457" fill="#0d9488" font-size="14" font-weight="700">health-report</text>
+    <text x="56" y="477" fill="#64748b" font-size="12">health-report.timer</text>
+    <rect x="300" y="448" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="466" text-anchor="middle" fill="#0d9488" font-size="12.5">daily 09:00</text>
+    <circle class="tick fday" cx="414" cy="461" r="5" fill="#0d9488"/>
+    <text x="440" y="457" fill="#0f172a" font-size="13">Uptime, memory, disk, containers, cert expiry,</text>
+    <text x="440" y="477" fill="#475569" font-size="12.5">bans, failed logins, pending updates, migrator</text>
+    <text x="850" y="467" fill="#334155" font-size="13">summary only</text>
+    <path class="flow" d="M1124,462 L1160,462" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="467" fill="#15803d" font-size="13">daily</text>
+  </g>
+
+  <!-- 6 unattended-upgrades -->
+  <g>
+    <rect x="32" y="502" width="1336" height="64" rx="10" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="502" width="5" height="64" rx="2" fill="#0284c7"/>
+    <text x="56" y="529" fill="#0284c7" font-size="14" font-weight="700">unattended-upgrades</text>
+    <text x="56" y="549" fill="#64748b" font-size="12">apt-daily-upgrade.timer</text>
+    <rect x="300" y="520" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="538" text-anchor="middle" fill="#0284c7" font-size="12.5">daily</text>
+    <circle class="tick fday" cx="414" cy="533" r="5" fill="#0284c7"/>
+    <text x="440" y="529" fill="#0f172a" font-size="13">Ubuntu security + Docker CE packages</text>
+    <text x="440" y="549" fill="#475569" font-size="12.5">removes unused kernels and dependencies</text>
+    <text x="850" y="529" fill="#334155" font-size="13">install patches; auto-reboot at</text>
+    <text x="850" y="549" fill="#334155" font-size="13">04:00 if kernel or libc needs it</text>
+    <path class="flow" d="M1124,534 L1160,534" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="539" fill="#15803d" font-size="13">on change</text>
+  </g>
+
+  <!-- 7 Coolify auto-update -->
+  <g>
+    <rect x="32" y="574" width="1336" height="64" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="574" width="5" height="64" rx="2" fill="#7c3aed"/>
+    <text x="56" y="601" fill="#7c3aed" font-size="14" font-weight="700">Coolify auto-update</text>
+    <text x="56" y="621" fill="#64748b" font-size="12">built into Coolify</text>
+    <rect x="300" y="592" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="610" text-anchor="middle" fill="#7c3aed" font-size="12.5">daily</text>
+    <circle class="tick fday" cx="414" cy="605" r="5" fill="#7c3aed"/>
+    <text x="440" y="601" fill="#0f172a" font-size="13">Upgrades Coolify to the latest stable release</text>
+    <text x="440" y="621" fill="#475569" font-size="12.5">security-watch handles urgent ones sooner</text>
+    <text x="850" y="611" fill="#334155" font-size="13">upgrade in place</text>
+    <path class="flow" d="M1124,606 L1160,606" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="611" fill="#15803d" font-size="13">via Coolify</text>
+  </g>
+
+  <!-- 8 fail2ban -->
+  <g>
+    <rect x="32" y="646" width="1336" height="64" rx="10" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="646" width="5" height="64" rx="2" fill="#e11d48"/>
+    <text x="56" y="673" fill="#e11d48" font-size="14" font-weight="700">fail2ban</text>
+    <text x="56" y="693" fill="#64748b" font-size="12">jails: sshd, coolify-login</text>
+    <rect x="300" y="664" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="682" text-anchor="middle" fill="#e11d48" font-size="12.5">real time</text>
+    <circle class="tick frt" cx="414" cy="677" r="5" fill="#e11d48"/>
+    <text x="440" y="673" fill="#0f172a" font-size="13">SSH: 3 fails in 10 min. Dashboard: 5 fails in 10 min</text>
+    <text x="440" y="693" fill="#475569" font-size="12.5">reads journald and Coolify's audit log</text>
+    <text x="850" y="673" fill="#334155" font-size="13">ban the IP for 24 h</text>
+    <text x="850" y="693" fill="#334155" font-size="13">(escalating for SSH)</text>
+    <path class="flow" d="M1124,678 L1160,678" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="683" fill="#15803d" font-size="13">dashboard bans</text>
+  </g>
+
+  <!-- 9 oci-migrator -->
+  <g>
+    <rect x="32" y="718" width="1336" height="64" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+    <rect x="32" y="718" width="5" height="64" rx="2" fill="#C74634"/>
+    <text x="56" y="745" fill="#C74634" font-size="14" font-weight="700">oci-migrator</text>
+    <text x="56" y="765" fill="#64748b" font-size="12">systemd service, restarts</text>
+    <rect x="300" y="736" width="96" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="348" y="754" text-anchor="middle" fill="#C74634" font-size="12.5">until ARM</text>
+    <circle class="tick farm" cx="414" cy="749" r="5" fill="#C74634"/>
+    <text x="440" y="745" fill="#0f172a" font-size="13">Retries Ampere A1 capacity across fault domains,</text>
+    <text x="440" y="765" fill="#475569" font-size="12.5">then moves Coolify + data and switches DNS</text>
+    <text x="850" y="745" fill="#334155" font-size="13">launch, restore, cut over,</text>
+    <text x="850" y="765" fill="#334155" font-size="13">delete old VM, resize to max</text>
+    <path class="flow" d="M1124,750 L1160,750" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+    <text x="1186" y="755" fill="#15803d" font-size="13">start, done, fail</text>
+  </g>
+
+  <text x="32" y="812" fill="#64748b" font-size="12.5">Alerts go to &lt;ALERT_EMAIL&gt; through Gmail SMTP (msmtp on the host, SMTP settings inside Coolify). A "Server booted" email is also sent on every boot.</text>
 </svg>

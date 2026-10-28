@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-10-28 — v1.0.0: initial production build
+## v1.0.0 (2026-10-28): initial production build
 
 **Infrastructure**
 - Headless OCI provisioning with the Python SDK: VCN, internet gateway, route table, security list, subnet.

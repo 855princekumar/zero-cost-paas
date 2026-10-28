@@ -1,6 +1,6 @@
 # ADR-0013: Gmail SMTP for alerts
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0014](0014-automated-security-guardrails-and-lockdown.md), [ADR-0017](0017-secrets-handling.md), [Monitoring & alerts](../09-monitoring-and-alerts.md)
 
 ## Context
@@ -37,7 +37,7 @@ flowchart LR
 - App Password is scoped and **revocable independently** of the Google account password.
 
 **Negative**
-- Gmail sending limits (~500/day) — cooldowns keep us far below.
+- Gmail sending limits (~500/day): cooldowns keep us far below.
 - App Password is a long-lived secret on the VM (root-only file); rotation documented in the runbook.
 - Alerts depend on a third party; the daily report doubles as a heartbeat (missing report = problem).
 

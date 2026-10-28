@@ -1,142 +1,151 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="880" viewBox="0 0 1300 880" role="img" aria-labelledby="t d">
-  <title id="t">security-watch decision tree</title>
-  <desc id="d">Left: vulnerability feeds every six hours. A high or critical Coolify advisory affecting the running version triggers an automatic upgrade when a fix is released, otherwise a lockdown; security releases trigger an upgrade; everything else is emailed. Right: host checks every five minutes. Critical indicators (extra UID-0 account, ld.so.preload, crypto-miner or /dev/shm executable, root SSH from a public IP) are contained and trigger lockdown; lesser findings are locked, reverted or emailed. Bottom: what lockdown stops and how to undo it.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1380 976" width="1380" height="976" role="img" aria-labelledby="t d" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title id="t">Automated guardrails: how security-watch decides</title>
+  <desc id="d">Decision flow of security-watch. Feeds every 6 hours: a high or critical Coolify advisory affecting the running version triggers an automatic upgrade if a fix is released, otherwise a lockdown of the Coolify control plane. Host checks every 5 minutes: critical intrusion indicators are contained and trigger lockdown, lesser findings are fixed automatically or emailed.</desc>
+  <style>
+    @keyframes dash { to { stroke-dashoffset: -28; } }
+    .flow { fill: none; stroke-width: 2.2; stroke-dasharray: 8 6; animation: dash 1.1s linear infinite; }
+    @keyframes breathe { 0%, 100% { stroke-opacity: 0.55; } 50% { stroke-opacity: 1; } }
+    .alarm { animation: breathe 2.4s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0b1220"/>
-      <stop offset="1" stop-color="#160f1f"/>
-    </linearGradient>
-    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0 0 L10 5 L0 10 z" fill="#cbd5e1"/>
+    <filter id="sh" x="-5%" y="-20%" width="110%" height="150%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+
+    <marker id="a_pYes" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
     </marker>
+
+    <marker id="a_pNoFix" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e11d48"/>
+    </marker>
+
+    <marker id="a_pNo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+
+    <marker id="a_pCrit" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e11d48"/>
+    </marker>
+
+    <marker id="a_pLess" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+
+    <path id="mYes" d="M340,158 L340,396 L175,396 L175,488"/>
+
+    <path id="mNoFix" d="M340,396 L505,396 L505,488"/>
+
+    <path id="mNo" d="M340,236 L690,236 L690,692 L650,692"/>
+
+    <path id="mCrit" d="M1035.0,158 L1035.0,200"/>
+
+    <path id="mLess" d="M1340,127.0 L1360,127.0 L1360,506 L1340,506"/>
+
   </defs>
-  <rect width="1300" height="880" fill="url(#bg)"/>
+  <rect x="0.75" y="0.75" width="1378.5" height="974.5" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="30" y="46" font-size="28" fill="#0f172a" font-weight="700">Automated guardrails: how security-watch decides</text>
+  <text x="30" y="72" font-size="14" fill="#475569">Edge decisions are taken on the VM itself, then you are emailed. Everything else is information only.</text>
 
-  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
-    <text x="30" y="44" font-size="24" font-weight="700" fill="#f8fafc">Automated guardrails — how security-watch decides</text>
-    <text x="30" y="66" font-size="13" fill="#94a3b8">"Edge decisions" taken on the VM itself, then you are emailed. Everything else is information only.</text>
+  <path class="flow" d="M340,158 L340,186" stroke="#16a34a"/>
 
-    <!-- ===== LEFT: feeds ===== -->
-    <g font-size="13">
-      <g transform="translate(30,90)">
-        <rect width="600" height="56" rx="12" fill="#15152b" stroke="#6366f1" stroke-width="1.5"/>
-        <text x="18" y="25" font-size="16" font-weight="700" fill="#c7d2fe">Feeds · every 6 h</text>
-        <text x="18" y="44" fill="#94a3b8">Coolify releases + advisories · Laravel/Livewire/Traefik · CISA KEV</text>
-      </g>
+  <path class="flow" d="M340,286 L340,350" stroke="#16a34a"/>
 
-      <!-- diamond 1 -->
-      <g transform="translate(330,170)">
-        <path d="M0 0 L150 50 L0 100 L-150 50 Z" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
-        <text x="0" y="44" text-anchor="middle" fill="#e0e7ff" font-weight="700">Coolify advisory affects</text>
-        <text x="0" y="62" text-anchor="middle" fill="#e0e7ff" font-weight="700">running version, HIGH/CRIT?</text>
-      </g>
-      <!-- diamond 2 -->
-      <g transform="translate(330,330)">
-        <path d="M0 0 L130 45 L0 90 L-130 45 Z" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
-        <text x="0" y="42" text-anchor="middle" fill="#e0e7ff" font-weight="700">Fixed version</text>
-        <text x="0" y="60" text-anchor="middle" fill="#e0e7ff" font-weight="700">released?</text>
-      </g>
-      <!-- outcome: upgrade -->
-      <g transform="translate(40,470)">
-        <rect width="270" height="96" rx="12" fill="#0f2320" stroke="#22c55e" stroke-width="2"/>
-        <text x="16" y="28" font-size="15" font-weight="700" fill="#bbf7d0">⟳ Auto-upgrade Coolify</text>
-        <text x="16" y="50" fill="#cbd5e1">to latest release via installer</text>
-        <text x="16" y="68" fill="#cbd5e1">(keeps .env, custom compose)</text>
-        <text x="16" y="86" fill="#86efac">✉ result emailed</text>
-      </g>
-      <!-- outcome: lockdown -->
-      <g transform="translate(350,470)">
-        <rect width="270" height="96" rx="12" fill="#2a1414" stroke="#ef4444" stroke-width="2"/>
-        <text x="16" y="28" font-size="15" font-weight="700" fill="#fecaca">⛔ LOCKDOWN</text>
-        <text x="16" y="50" fill="#cbd5e1">no fix yet → stop dashboard</text>
-        <text x="16" y="68" fill="#cbd5e1">until a fix ships (then upgrade</text>
-        <text x="16" y="86" fill="#cbd5e1">+ unlock automatically)</text>
-      </g>
-      <!-- other outcomes -->
-      <g transform="translate(30,600)">
-        <rect width="600" height="104" rx="12" fill="#111827" stroke="#475569"/>
-        <text x="16" y="26" font-size="14" font-weight="700" fill="#e2e8f0">Otherwise</text>
-        <text x="16" y="50" fill="#cbd5e1">• release notes mention security / CVE → auto-upgrade (same path)</text>
-        <text x="16" y="70" fill="#cbd5e1">• new Coolify release, PHP/Traefik advisory, KEV match → ✉ email</text>
-        <text x="16" y="90" fill="#94a3b8">• advisory without a version range → email only, never auto-acts</text>
-      </g>
+  <path class="flow" d="M200,396 L175,396 L175,488" stroke="#16a34a" marker-end="url(#a_pYes)"/>
 
-      <g stroke="#cbd5e1" stroke-width="2" fill="none">
-        <path d="M330 146 V168" marker-end="url(#a)"/>
-        <path d="M330 270 V328" marker-end="url(#a)"/>
-        <path d="M480 220 H650 V652 H632" marker-end="url(#a)"/>
-        <path d="M200 375 H175 V468" marker-end="url(#a)"/>
-        <path d="M460 375 H485 V468" marker-end="url(#a)"/>
-      </g>
-      <g font-weight="700">
-        <text x="338" y="300" fill="#86efac">yes</text>
-        <text x="500" y="212" fill="#fca5a5">no</text>
-        <text x="150" y="366" fill="#86efac">yes</text>
-        <text x="476" y="366" fill="#fca5a5">no</text>
-      </g>
-    </g>
+  <path class="flow" d="M480,396 L505,396 L505,488" stroke="#e11d48" marker-end="url(#a_pNoFix)"/>
 
-    <!-- ===== RIGHT: host ===== -->
-    <g font-size="13">
-      <g transform="translate(670,90)">
-        <rect width="600" height="56" rx="12" fill="#2a1414" stroke="#ef4444" stroke-width="1.5"/>
-        <text x="18" y="25" font-size="16" font-weight="700" fill="#fecaca">Host checks · every 5 min</text>
-        <text x="18" y="44" fill="#94a3b8">accounts · processes · SSH keys · auth logs · file integrity</text>
-      </g>
+  <path class="flow" d="M510,236 L690,236 L690,692 L650,692" stroke="#64748b" marker-end="url(#a_pNo)"/>
 
-      <g transform="translate(670,170)">
-        <rect width="600" height="210" rx="12" fill="#1f1414" stroke="#ef4444" stroke-width="2"/>
-        <text x="18" y="28" font-size="15" font-weight="700" fill="#fca5a5">CRITICAL indicators → contain + LOCKDOWN</text>
-        <g fill="#e2e8f0">
-          <text x="18" y="58">Extra UID-0 (root-equivalent) account</text>
-          <text x="18" y="82">/etc/ld.so.preload present (rootkit technique)</text>
-          <text x="18" y="106">Crypto-miner name or binary running from /dev/shm</text>
-          <text x="18" y="130">Root SSH login from a public IP</text>
-        </g>
-        <g fill="#fca5a5">
-          <text x="380" y="58">→ lock + kill its processes</text>
-          <text x="380" y="82">→ alert, lockdown</text>
-          <text x="380" y="106">→ kill -9 + quarantine</text>
-          <text x="380" y="130">→ alert, lockdown</text>
-        </g>
-        <rect x="18" y="150" width="564" height="44" rx="8" fill="#2a1414"/>
-        <text x="32" y="177" fill="#fecaca" font-weight="700">✉ "CRITICAL intrusion indicators" + "LOCKDOWN" emails immediately</text>
-      </g>
+  <path class="flow" d="M1035.0,158 L1035.0,200" stroke="#e11d48" marker-end="url(#a_pCrit)"/>
 
-      <g transform="translate(670,404)">
-        <rect width="600" height="200" rx="12" fill="#1c1a12" stroke="#f59e0b" stroke-width="1.5"/>
-        <text x="18" y="28" font-size="15" font-weight="700" fill="#fde68a">Lesser findings → fix automatically or tell you</text>
-        <g fill="#e2e8f0">
-          <text x="18" y="58">New login-capable account</text>
-          <text x="18" y="82">Unknown SSH key for ubuntu</text>
-          <text x="18" y="106">Auth / sudo / cron / systemd / sshd file changed</text>
-          <text x="18" y="130">Program executing from /tmp or /var/tmp</text>
-        </g>
-        <g fill="#fcd34d">
-          <text x="380" y="58">→ locked (usermod -L)</text>
-          <text x="380" y="82">→ removed (reverted)</text>
-          <text x="380" y="106">→ email, re-baseline</text>
-          <text x="380" y="130">→ email</text>
-        </g>
-        <text x="18" y="172" fill="#94a3b8">one email per distinct finding per 6 h · expected after your own changes</text>
-        <text x="18" y="190" fill="#94a3b8">or package updates — read, then ignore if it was you</text>
-      </g>
+  <path class="flow" d="M1340,127.0 L1360,127.0 L1360,506 L1340,506" stroke="#d97706" marker-end="url(#a_pLess)"/>
 
-      <g transform="translate(670,628)">
-        <rect width="600" height="76" rx="12" fill="#111827" stroke="#475569"/>
-        <text x="18" y="28" font-size="14" font-weight="700" fill="#e2e8f0">Always on (preventive)</text>
-        <text x="18" y="52" fill="#cbd5e1">egress to mining-pool ports rejected · Coolify internal ports dropped</text>
-        <text x="18" y="68" fill="#94a3b8">lockdown re-enforced if Docker restarts Coolify (restart=always)</text>
-      </g>
-    </g>
+  <circle r="5.5" fill="#16a34a" stroke="#ffffff" stroke-width="1.5">
+    <animateMotion dur="4.0s" begin="0.0s" repeatCount="indefinite" rotate="auto"><mpath href="#mYes"/></animateMotion>
+  </circle>
 
-    <!-- ===== lockdown explainer ===== -->
-    <g transform="translate(30,728)" font-size="13">
-      <rect width="1240" height="128" rx="14" fill="#1a0f12" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="8 5"/>
-      <text x="20" y="32" font-size="17" font-weight="700" fill="#fecaca">What LOCKDOWN means</text>
-      <circle cx="30" cy="58" r="7" fill="#ef4444"/><text x="46" y="63" fill="#e2e8f0">Stopped: <tspan font-weight="700">coolify</tspan> (dashboard/API) and <tspan font-weight="700">coolify-realtime</tspan> — an attacker abusing a Coolify bug loses the control plane.</text>
-      <circle cx="30" cy="84" r="7" fill="#22c55e"/><text x="46" y="89" fill="#e2e8f0">Still running: your apps, databases, Traefik/HTTPS, and your SSH on &lt;SSH_PORT&gt; — visitors notice nothing.</text>
-      <circle cx="30" cy="110" r="7" fill="#38bdf8"/><text x="46" y="115" fill="#e2e8f0">Undo after investigating: <tspan font-family="Consolas, Menlo, monospace" fill="#7dd3fc">sudo /usr/local/sbin/security-watch.py unlock</tspan></text>
-    </g>
-  </g>
+  <circle r="5.5" fill="#e11d48" stroke="#ffffff" stroke-width="1.5">
+    <animateMotion dur="4.0s" begin="2.6s" repeatCount="indefinite" rotate="auto"><mpath href="#mNoFix"/></animateMotion>
+  </circle>
+
+  <circle r="5.5" fill="#475569" stroke="#ffffff" stroke-width="1.5">
+    <animateMotion dur="4.0s" begin="1.2s" repeatCount="indefinite" rotate="auto"><mpath href="#mNo"/></animateMotion>
+  </circle>
+
+  <circle r="5.5" fill="#e11d48" stroke="#ffffff" stroke-width="1.5">
+    <animateMotion dur="2.0s" begin="0.4s" repeatCount="indefinite" rotate="auto"><mpath href="#mCrit"/></animateMotion>
+  </circle>
+
+  <circle r="5.5" fill="#d97706" stroke="#ffffff" stroke-width="1.5">
+    <animateMotion dur="4.0s" begin="1.4s" repeatCount="indefinite" rotate="auto"><mpath href="#mLess"/></animateMotion>
+  </circle>
+
+  <rect x="30" y="96" width="620" height="62" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" filter="url(#sh)"/>
+<text x="50" y="122" font-size="16" fill="#4338ca" font-weight="700">Feeds · every 6 h</text>
+<text x="50" y="144" font-size="12.5" fill="#475569">Coolify releases + advisories · Laravel / Livewire / Traefik advisories · CISA KEV</text>
+<polygon points="340,186 510,236 340,286 170,236" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" filter="url(#sh)"/><text x="340" y="232" font-size="13.5" fill="#312e81" font-weight="700" text-anchor="middle">Coolify advisory affects the</text><text x="340" y="250" font-size="13.5" fill="#312e81" font-weight="700" text-anchor="middle">running version, HIGH/CRIT?</text>
+<polygon points="340,350 480,396 340,442 200,396" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" filter="url(#sh)"/><text x="340" y="392" font-size="13.5" fill="#312e81" font-weight="700" text-anchor="middle">Fixed version</text><text x="340" y="410" font-size="13.5" fill="#312e81" font-weight="700" text-anchor="middle">released?</text>
+<rect x="363.6" y="307.0" width="32.8" height="22" rx="11" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/><text x="380" y="322.5" font-size="12.5" fill="#16a34a" font-weight="700" text-anchor="middle">yes</text>
+<rect x="577.4" y="203" width="25.2" height="22" rx="11" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/><text x="590" y="218.5" font-size="12.5" fill="#475569" font-weight="700" text-anchor="middle">no</text>
+<rect x="133.6" y="363" width="32.8" height="22" rx="11" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/><text x="150" y="378.5" font-size="12.5" fill="#16a34a" font-weight="700" text-anchor="middle">yes</text>
+<rect x="517.4" y="363" width="25.2" height="22" rx="11" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/><text x="530" y="378.5" font-size="12.5" fill="#e11d48" font-weight="700" text-anchor="middle">no</text>
+<rect x="30" y="488" width="290" height="108" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="1.5" filter="url(#sh)"/>
+<text x="48" y="516" font-size="16" fill="#15803d" font-weight="700">Auto-upgrade Coolify</text>
+<text x="48" y="540" font-size="12.5" fill="#0f172a">to the latest release via the installer</text>
+<text x="48" y="559" font-size="12.5" fill="#475569">(keeps .env and custom compose)</text>
+<text x="48" y="580" font-size="12.5" fill="#15803d">Email: result of the upgrade</text>
+<rect x="360" y="488" width="290" height="108" rx="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.5" filter="url(#sh)"/>
+<rect class="alarm" x="357" y="485" width="296" height="114" rx="14" fill="none" stroke="#e11d48" stroke-width="2"/>
+<text x="378" y="516" font-size="16" fill="#be123c" font-weight="700">LOCKDOWN</text>
+<text x="378" y="540" font-size="12.5" fill="#0f172a">no fix yet: stop the dashboard</text>
+<text x="378" y="559" font-size="12.5" fill="#475569">until a fix ships, then upgrade</text>
+<text x="378" y="580" font-size="12.5" fill="#475569">and unlock automatically</text>
+<rect x="30" y="632" width="620" height="118" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" filter="url(#sh)"/>
+<text x="48" y="660" font-size="15" fill="#0f172a" font-weight="700">Otherwise</text>
+<text x="48" y="684" font-size="12.5" fill="#0f172a">• release notes mention security / CVE: auto-upgrade (same path)</text>
+<text x="48" y="705" font-size="12.5" fill="#0f172a">• new Coolify release, PHP or Traefik advisory, KEV match: email</text>
+<text x="48" y="726" font-size="12.5" fill="#64748b">• advisory without a version range: email only, never acts</text>
+<rect x="730" y="96" width="610" height="62" rx="12" fill="#fdf2f0" stroke="#C74634" stroke-width="1.5" filter="url(#sh)"/>
+<text x="750" y="122" font-size="16" fill="#b4372a" font-weight="700">Host checks · every 5 min</text>
+<text x="750" y="144" font-size="12.5" fill="#475569">accounts · processes · SSH keys · auth logs · file integrity</text>
+<rect x="730" y="200" width="610" height="230" rx="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.5" filter="url(#sh)"/>
+<text x="750" y="230" font-size="15.5" fill="#be123c" font-weight="700">CRITICAL indicators: contain + LOCKDOWN</text>
+<text x="750" y="264" font-size="13" fill="#0f172a">Extra UID-0 (root-equivalent) account</text>
+<text x="1120" y="264" font-size="13" fill="#be123c">→ lock + kill its processes</text>
+<text x="750" y="292" font-size="13" fill="#0f172a">/etc/ld.so.preload present (rootkit technique)</text>
+<text x="1120" y="292" font-size="13" fill="#be123c">→ alert, lockdown</text>
+<text x="750" y="320" font-size="13" fill="#0f172a">Crypto-miner, or binary running from /dev/shm</text>
+<text x="1120" y="320" font-size="13" fill="#be123c">→ kill -9 + quarantine</text>
+<text x="750" y="348" font-size="13" fill="#0f172a">Root SSH login from a public IP</text>
+<text x="1120" y="348" font-size="13" fill="#be123c">→ alert, lockdown</text>
+<rect x="748" y="372" width="574" height="40" rx="8" fill="#fff1f2" stroke="#fecdd3" stroke-width="1.5"/>
+<text x="764" y="397" font-size="13" fill="#9f1239" font-weight="600">Email, immediately: CRITICAL intrusion indicators + LOCKDOWN</text>
+<rect x="730" y="466" width="610" height="214" rx="12" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#sh)"/>
+<text x="750" y="496" font-size="15.5" fill="#b45309" font-weight="700">Lesser findings: fix automatically or tell you</text>
+<text x="750" y="530" font-size="13" fill="#0f172a">New login-capable account</text>
+<text x="1120" y="530" font-size="13" fill="#b45309">→ locked (usermod -L)</text>
+<text x="750" y="558" font-size="13" fill="#0f172a">Unknown SSH key for ubuntu</text>
+<text x="1120" y="558" font-size="13" fill="#b45309">→ removed (reverted)</text>
+<text x="750" y="586" font-size="13" fill="#0f172a">Auth / sudo / cron / systemd / sshd file changed</text>
+<text x="1120" y="586" font-size="13" fill="#b45309">→ email, re-baseline</text>
+<text x="750" y="614" font-size="13" fill="#0f172a">Program executing from /tmp or /var/tmp</text>
+<text x="1120" y="614" font-size="13" fill="#b45309">→ email</text>
+<text x="750" y="644" font-size="12.5" fill="#64748b">One email per distinct finding per 6 h. Expected after your own</text>
+<text x="750" y="663" font-size="12.5" fill="#64748b">changes or package updates: read it, then ignore it if it was you.</text>
+<rect x="730" y="712" width="610" height="84" rx="12" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" filter="url(#sh)"/>
+<text x="750" y="740" font-size="15" fill="#0f766e" font-weight="700">Always on (preventive)</text>
+<text x="750" y="763" font-size="12.5" fill="#0f172a">egress to mining-pool ports rejected · Coolify internal ports dropped</text>
+<text x="750" y="782" font-size="12.5" fill="#475569">lockdown re-enforced if Docker restarts Coolify (restart=always)</text>
+<rect x="30" y="822" width="1310" height="136" rx="12" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5" stroke-dasharray="7 6"/>
+<text x="52" y="854" font-size="17" fill="#be123c" font-weight="700">What LOCKDOWN means</text>
+<circle cx="60" cy="879.5" r="6" fill="#e11d48"/>
+<text x="76" y="884" font-size="13.5" fill="#0f172a">Stopped: coolify (dashboard/API) and coolify-realtime. An attacker abusing a Coolify bug loses the control plane.</text>
+<circle cx="60" cy="905.5" r="6" fill="#16a34a"/>
+<text x="76" y="910" font-size="13.5" fill="#0f172a">Still running: your apps, databases, Traefik/HTTPS, and your SSH on &lt;SSH_PORT&gt;. Visitors notice nothing.</text>
+<circle cx="60" cy="931.5" r="6" fill="#0284c7"/>
+<text x="76" y="936" font-size="13.5" fill="#0f172a">Undo after investigating:</text>
+<text x="242" y="936" font-size="13.5" fill="#0369a1" font-family="Consolas, Menlo, monospace">sudo /usr/local/sbin/security-watch.py unlock</text>
+
 </svg>

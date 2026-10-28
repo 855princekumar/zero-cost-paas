@@ -2,7 +2,7 @@
 
 [← Case study](01-case-study.md) · [Index](README.md) · [Next: Placeholders →](03-placeholders.md)
 
-> **TL;DR** — One Always Free VM in a dedicated VCN. Traefik (inside Coolify) is the only HTTP(S)
+> **TL;DR**: One Always Free VM in a dedicated VCN. Traefik (inside Coolify) is the only HTTP(S)
 > entry point; it terminates TLS with Let's Encrypt certificates and routes `*.<BASE_DOMAIN>` to app
 > containers. Coolify (Laravel/PHP) is the control plane and manages the host as root over an
 > **internal** SSH connection. Systemd timers on the host handle DNS updates, health checks,
@@ -109,14 +109,14 @@ flowchart TB
 
 | Port | Listener | Public? | Why |
 |---|---|---|---|
-| `<SSH_PORT>` | sshd | ✅ | Operator SSH, key only |
-| 22 | sshd | ❌ (VCN/Docker only) | Coolify → host management; migration inside the VCN |
-| 80 | Traefik | ✅ | ACME HTTP-01 + redirect to HTTPS |
-| 443 | Traefik | ✅ | Dashboard + all apps |
-| 8000 → 8080 | Coolify UI (direct) | ❌ | Served through Traefik instead |
-| 6001 / 6002 | realtime / terminal | ❌ | Proxied by Traefik at `/app` and `/terminal/ws` |
-| 8080 | Traefik dashboard | ❌ | Never public |
-| 5432 / 6379 | Postgres / Redis | ❌ | Not published at all |
+| `<SSH_PORT>` | sshd | Yes | Operator SSH, key only |
+| 22 | sshd | No (VCN/Docker only) | Coolify → host management; migration inside the VCN |
+| 80 | Traefik | Yes | ACME HTTP-01 + redirect to HTTPS |
+| 443 | Traefik | Yes | Dashboard + all apps |
+| 8000 → 8080 | Coolify UI (direct) | No | Served through Traefik instead |
+| 6001 / 6002 | realtime / terminal | No | Proxied by Traefik at `/app` and `/terminal/ws` |
+| 8080 | Traefik dashboard | No | Never public |
+| 5432 / 6379 | Postgres / Redis | No | Not published at all |
 
 ## 4. Trust boundaries
 
@@ -237,14 +237,14 @@ flowchart LR
 
 | Data | Location | Backed up / migrated | Notes |
 |---|---|---|---|
-| Coolify config & secrets (`APP_KEY`, DB/Redis passwords) | `/data/coolify/source/.env` | ✅ migrated; **back up offline** | Losing `APP_KEY` makes encrypted DB fields unreadable |
-| Coolify database | Docker volume `coolify-db` | ✅ `pg_dump -Fc` → `pg_restore` | Projects, servers, env vars, notification settings |
-| Coolify SSH keys | `/data/coolify/ssh/keys` | ✅ restored after reinstall | Used for root SSH to the host |
-| TLS certificates | `/data/coolify/proxy/acme.json` | ✅ | Avoids re-issuance after migration |
-| App/service compose files | `/data/coolify/applications`, `/services`, `/databases` | ✅ | |
-| App data | Named Docker volumes | ✅ tarred per volume | Anonymous (hash-named) volumes skipped |
-| Coolify logs (audit) | `/data/coolify/logs` (host mount) | — | Feeds fail2ban `coolify-login` |
-| Host security state | `/var/lib/security-watch/state.json` | — | Baselines, seen advisories, lockdown flag |
+| Coolify config & secrets (`APP_KEY`, DB/Redis passwords) | `/data/coolify/source/.env` | Yes, migrated; **back up offline** | Losing `APP_KEY` makes encrypted DB fields unreadable |
+| Coolify database | Docker volume `coolify-db` | Yes, `pg_dump -Fc` → `pg_restore` | Projects, servers, env vars, notification settings |
+| Coolify SSH keys | `/data/coolify/ssh/keys` | Yes, restored after reinstall | Used for root SSH to the host |
+| TLS certificates | `/data/coolify/proxy/acme.json` | Yes | Avoids re-issuance after migration |
+| App/service compose files | `/data/coolify/applications`, `/services`, `/databases` | Yes | |
+| App data | Named Docker volumes | Yes, tarred per volume | Anonymous (hash-named) volumes skipped |
+| Coolify logs (audit) | `/data/coolify/logs` (host mount) | - | Feeds fail2ban `coolify-login` |
+| Host security state | `/var/lib/security-watch/state.json` | - | Baselines, seen advisories, lockdown flag |
 
 ## 7. Lifecycle of the platform
 
@@ -254,7 +254,7 @@ stateDiagram-v2
     AMD_StandIn --> Migrating: migrator gets A1 capacity
     Migrating --> AMD_StandIn: any stage fails (retry in 5 min, DNS untouched)
     Migrating --> ARM_Live: health gate passed → DNS cut-over
-    ARM_Live --> ARM_Max: finalize: delete AMD, grow disk to 200 GB, resize to 2/12
+    ARM_Live --> ARM_Max: finalize deletes AMD, grows disk to 200 GB, resizes to 2/12
     ARM_Max --> Lockdown: critical indicator / unfixable advisory
     Lockdown --> ARM_Max: operator investigates → unlock
     ARM_Max --> [*]

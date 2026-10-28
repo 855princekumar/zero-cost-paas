@@ -1,10 +1,10 @@
-# 07 · Coolify — The Self-Hosted Vercel/Netlify
+# 07 · Coolify: The Self-Hosted Vercel/Netlify
 
 [← DNS & TLS](06-dns-and-tls.md) · [Index](README.md) · [Next: Security hardening →](08-security-hardening.md)
 
-> **TL;DR** — Coolify is installed **headlessly**: the admin account is pre-created from installer
+> **TL;DR**: Coolify is installed **headlessly**: the admin account is pre-created from installer
 > environment variables, the Docker address pool is moved off the VCN range, and the dashboard
-> domain, app wildcard domain and "registration disabled" are set through `php artisan tinker` —
+> domain, app wildcard domain and "registration disabled" are set through `php artisan tinker` -
 > so there is never a window where a stranger could open the dashboard and claim admin. An end-to-end
 > deploy through the API (with a temporary token, revoked afterwards) proved app HTTPS works.
 
@@ -35,7 +35,7 @@ address pool) → download compose files → `.env` secrets (`APP_KEY`, DB/Redis
 for `root@host.docker.internal` → pull images → start & health-check.
 
 > **Gotcha:** if the password lacks a symbol, the `RootUserSeeder` logs
-> `Invalid Root User Environment Variables` and **no admin is created** — while registration stays
+> `Invalid Root User Environment Variables` and **no admin is created**: while registration stays
 > open. Port 8000 was closed at the cloud firewall, so nobody could race to register. Fix: re-run the
 > seeder with a compliant password, then **delete the `ROOT_*` lines from `.env`**:
 >
@@ -59,7 +59,7 @@ $srv->settings->save();
 $srv->setupDynamicProxyConfiguration();        // writes Traefik dynamic config for the dashboard
 ```
 
-The PHP file is copied into the container with **mode 0644** — a `mktemp` file is 0600 and the
+The PHP file is copied into the container with **mode 0644**: a `mktemp` file is 0600 and the
 non-root PHP process can't read it (tinker then silently receives an empty script).
 
 ## 3. Coolify ↔ host
@@ -80,7 +80,7 @@ Check:
 echo trim(instant_remote_process(["whoami"], \App\Models\Server::find(0)));   // → root
 ```
 
-In the onboarding wizard choose **"This machine"** (not Hetzner/Vultr/DigitalOcean/Hostinger — those
+In the onboarding wizard choose **"This machine"** (not Hetzner/Vultr/DigitalOcean/Hostinger, those
 create paid servers).
 
 ## 4. Deploying apps
@@ -92,7 +92,7 @@ create paid servers).
 | Docker image | + New Resource → Docker Image | Pre-built images; best on small VMs |
 | Docker Compose / Services | One-click services (Postgres, Redis, Plausible, …) | Backends & databases |
 
-Domains: use `https://<APP_NAME>.<BASE_DOMAIN>` — **keep `https://`** so Traefik requests a
+Domains: use `https://<APP_NAME>.<BASE_DOMAIN>`: **keep `https://`** so Traefik requests a
 certificate. Builds run in `coolify-helper`; on the 1 GB AMD stand-in prefer static sites or
 pre-built images, heavy builds belong on the A1.
 
@@ -145,7 +145,7 @@ This feeds the fail2ban `coolify-login` jail ([08 · Hardening](08-security-hard
 
 * Coolify's own **auto-update** is enabled (daily).
 * [`security-watch.py`](../scripts/security-watch.py) upgrades **immediately** when a release
-  mentions security fixes or a high/critical advisory affects the running version — it did exactly
+  mentions security fixes or a high/critical advisory affects the running version, it did exactly
   that on its first run (4.5.0 → 4.5.2) ([10 · Automation](10-security-automation.md)).
 * Manual: re-run the installer with a version: `bash install.sh <version>` (keeps `.env`).
 

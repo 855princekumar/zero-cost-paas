@@ -1,6 +1,6 @@
 # ADR-0014: Automated security guardrails and lockdown
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0005](0005-coolify-as-paas.md), [ADR-0013](0013-gmail-smtp-for-alerts.md), [ADR-0018](0018-unattended-upgrades-and-auto-reboot.md), [Security automation](../10-security-automation.md), [`scripts/security-watch.py`](../../scripts/security-watch.py)
 
 ## Context
@@ -13,7 +13,7 @@ watch advisories around the clock, so the server needs to **notice and react on 
 
 `security-watch.py` (Python stdlib only, root, systemd timers):
 
-**Feeds — every 6 h, trusted sources only**
+**Feeds, every 6 h, trusted sources only**
 
 | Source | Purpose |
 |---|---|
@@ -22,7 +22,7 @@ watch advisories around the clock, so the server needs to **notice and react on 
 | GitHub Advisory DB: `laravel/framework`, `livewire/livewire`, `traefik/v3` | High/critical stack advisories (info) |
 | **CISA KEV** catalog | Actively exploited CVEs filtered to stack keywords (PHP, Laravel, Docker, OpenSSH, kernel, …) |
 
-**Host checks — every 5 min**: extra UID-0 accounts, new login accounts, `/etc/ld.so.preload`,
+**Host checks, every 5 min**: extra UID-0 accounts, new login accounts, `/etc/ld.so.preload`,
 miner process names / binaries executing from `/dev/shm`, programs running from temp dirs, unknown
 SSH keys for `ubuntu`, root SSH logins from public IPs, integrity hashes of ~40 auth/persistence files.
 
@@ -68,7 +68,7 @@ path (not PID) with 6 h cooldowns; only clear-cut indicators trigger lockdown.
 **Negative**
 - Auto-upgrades can introduce regressions; mitigated by health checks and email.
 - Heuristic host checks are not an EDR; a careful attacker can evade them.
-- GitHub API unauthenticated rate limit (60/h) — we use ~6 calls per run.
+- GitHub API unauthenticated rate limit (60/h), we use ~6 calls per run.
 
 ## Alternatives considered
 

@@ -1,8 +1,8 @@
-# 14 · Troubleshooting — Every Real Issue Hit
+# 14 · Troubleshooting: Every Real Issue Hit
 
 [← Operations runbook](13-operations-runbook.md) · [Index](README.md) · [Next: Production readiness →](15-production-readiness.md)
 
-> **TL;DR** — These are not hypothetical. Each row happened while building this platform; the fix is
+> **TL;DR**: These are not hypothetical. Each row happened while building this platform; the fix is
 > already in the scripts.
 
 ## Cloud & provisioning
@@ -44,7 +44,7 @@
 | After migration Coolify can't SSH to host | Installer generated a **new** localhost key on the fresh server | Restore migrated keys, `ssh-keygen -y` → root `authorized_keys` |
 | Restore script exits 255 with no error | `ssh-keygen -y` on `ssh_key@….lock` fails; with `pipefail` the loop's pipeline fails → `set -e` | Skip `*.lock`/`*.pub`; `\|\| true` inside the loop |
 | Restore unit log empty | `StandardOutput=file:` and `StandardError=file:` on the same path truncate each other | Use `append:` for both |
-| New app shows certificate error for ~1–2 min | ACME issuance in progress; Traefik serves its default cert | Wait; check `docker logs coolify-proxy \| grep -i acme` |
+| New app shows certificate error for ~1-2 min | ACME issuance in progress; Traefik serves its default cert | Wait; check `docker logs coolify-proxy \| grep -i acme` |
 | Healthy install but proxy missing after restore | Proxy starts asynchronously | `docker restart coolify-proxy`; Coolify also reconciles it |
 
 ## Automation & scripting

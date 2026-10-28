@@ -1,7 +1,7 @@
 # ADR-0017: Secrets handling
 
-- **Status:** Accepted — 2026-10-28
-- **Related:** [ADR-0016](0016-least-privilege-automation-identity.md), [Placeholders](../03-placeholders.md), [Runbook — rotation](../13-operations-runbook.md)
+- **Status:** Accepted: 2026-10-28
+- **Related:** [ADR-0016](0016-least-privilege-automation-identity.md), [Placeholders](../03-placeholders.md), [Runbook, rotation](../13-operations-runbook.md)
 
 ## Context
 
@@ -10,7 +10,7 @@ Gmail App Password, Coolify admin password, Coolify `APP_KEY`/DB/Redis passwords
 Coolify API tokens. Some subtle leak paths were identified:
 
 - **Cloud-init `user_data` is readable from inside the VM** via the instance metadata service
-  (`169.254.169.254`) — by any process, including containers. Secrets must never be in user_data.
+  (`169.254.169.254`), by any process, including containers. Secrets must never be in user_data.
 - Coolify's headless install puts `ROOT_USERNAME/ROOT_USER_EMAIL/ROOT_USER_PASSWORD` into
   `/data/coolify/source/.env`.
 - Command-line arguments are visible in `ps` to other users.
@@ -26,7 +26,7 @@ Coolify API tokens. Some subtle leak paths were identified:
 | Gmail App Password | `keys/` | `/etc/msmtprc` (600), Coolify DB | stdin; revocable at Google |
 | Coolify admin password | `keys/` (delete after change) | hashed in DB | `ROOT_*` lines **removed** from `.env` after seeding |
 | Coolify `APP_KEY` etc. | offline backup recommended | `/data/coolify/source/.env` | needed to decrypt the DB on restore |
-| Temporary API tokens | — | DB | created with 30–60 min expiry, **revoked** after use; API re-disabled |
+| Temporary API tokens | - | DB | created with 30-60 min expiry, **revoked** after use; API re-disabled |
 
 Repository rules: `keys/`, `*.pem`, `*.env` (except `*.example.env`), `config` are git-ignored; a CI
 secret scan (gitleaks) runs on every push; documentation uses `<PLACEHOLDERS>` only.

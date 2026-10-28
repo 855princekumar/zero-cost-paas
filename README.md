@@ -9,6 +9,8 @@ It costs $0 a month and was provisioned entirely through the OCI API, with no co
 It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and contains threats automatically.
 
 ![CI](https://img.shields.io/badge/CI-gitleaks_%C2%B7_shellcheck_%C2%B7_lint-2ea44f?style=flat-square&logo=githubactions&logoColor=white)
+![CodeQL](https://img.shields.io/badge/CodeQL-security--and--quality-1f6feb?style=flat-square&logo=github&logoColor=white)
+![Dependabot](https://img.shields.io/badge/Dependabot-alerts_%2B_updates-025E8C?style=flat-square&logo=dependabot&logoColor=white)
 ![Cost](https://img.shields.io/badge/cost-%240.00%2Fmonth-22c55e?style=flat-square)
 ![Oracle Cloud](https://img.shields.io/badge/Oracle_Cloud-Always_Free-C74634?style=flat-square&logo=oracle&logoColor=white)
 ![Coolify](https://img.shields.io/badge/PaaS-Coolify_v4-6b16ed?style=flat-square)
@@ -95,41 +97,41 @@ Details are in [docs/02-architecture.md](docs/02-architecture.md), which covers 
 <table>
 <tr><td width="50%" valign="top">
 
-**🏗️ Infrastructure as code (headless)**
+**Infrastructure as code (headless)**
 - OCI Python SDK provisioning of the VCN, gateway, routes, security list and subnet
 - cloud-init first boot: updates, Docker, swap, fail2ban, firewall helper
 - Retries for "Out of host capacity" across fault domains, with a smaller-shape fallback
 - Read-only pre-flight check of account type, limits and usage
 
-**🚀 Platform (your own Vercel/Netlify)**
+**Platform (your own Vercel/Netlify)**
 - Coolify v4 installed headlessly: admin seeded, sign-up and API off
 - Git push to deploy (GitHub App, public repos, Docker images, Compose)
 - Wildcard app domains `https://<APP_NAME>.<BASE_DOMAIN>`
 - Automatic Let's Encrypt certificates via Traefik, renewed automatically
 
-**🌐 DNS & TLS at $0**
+**DNS & TLS at $0**
 - DuckDNS with wildcard resolution, kept current by a systemd timer
 - HTTP → HTTPS redirect and a certificate per host
 
 </td><td width="50%" valign="top">
 
-**🛡️ Security (defense in depth)**
+**Security (defense in depth)**
 - Only `<SSH_PORT>`/80/443 public, enforced in three firewall layers
 - SSH key-only, no root from outside, fail2ban with escalating bans
 - Coolify login: 2FA, brute-force bans in `DOCKER-USER`
 - sysctl hardening, unattended upgrades with auto-reboot
 - Blocking of outbound connections to mining-pool ports
 
-**🤖 Self-defending automation**
+**Self-defending automation**
 - Feeds: Coolify releases and advisories, Laravel/Livewire/Traefik GitHub advisories, CISA KEV
 - Auto-upgrade on security fixes, **lockdown** of the control plane when no fix exists
 - Intrusion checks: UID-0 accounts, rootkit preload, miners, rogue SSH keys, file integrity
 
-**📬 Observability**
+**Observability**
 - Gmail SMTP alerts with per-issue cooldowns, a daily health report and a boot notice
 - Coolify notifications: deploys, server reachability, disk > 80%, backups
 
-**🔁 Self-migration AMD → ARM**
+**Self-migration AMD → ARM**
 - Waits for Ampere capacity, then moves Coolify with no data loss
 - Health-gated DNS cutover, then the old VM deletes itself and the new one grows to the free maximum
 
@@ -216,30 +218,55 @@ Examples: [free-only, no Pay-As-You-Go](docs/adr/0003-stay-free-only-no-payg.md)
 
 ## Repository layout
 
-```text
-.
-├── README.md                    ← you are here
-├── docs/                        ← 15 chapters + ADRs
-│   ├── README.md                   index and reading paths
-│   ├── 01-case-study.md … 15-production-readiness.md
-│   └── adr/                        18 Architecture Decision Records
-├── assets/                      ← SVG infographics (architecture, security, cost, flows)
-├── scripts/
-│   ├── config.example.env          every variable, as placeholders
-│   ├── check-account.py            read-only pre-flight (auth, account type, limits)
-│   ├── provision.py                network + VM (OCI SDK)
-│   ├── cloud-init.yaml             first boot
-│   ├── harden.sh                   SSH, firewall, fail2ban, sysctl, DuckDNS timer
-│   ├── coolify-setup.sh            headless Coolify install + configuration
-│   ├── monitoring.sh               email alerts, health checks, daily report
-│   ├── security.sh                 auto-patching, egress guard, security-watch timers
-│   ├── security-watch.py           vulnerability feeds + intrusion guardrails
-│   ├── create-automation-user.py   least-privilege IAM identity
-│   ├── migrate.py · finalize.py    AMD → ARM self-migration
-│   └── deploy-migrator.sh          runs the migration as a service on the VM
-├── SECURITY.md · CHANGELOG.md · LICENSE
-└── .github/workflows/ci.yml     gitleaks · shellcheck · syntax · link check
+```mermaid
+flowchart TB
+    root(["zero-cost-paas"])
+    root --> docs["docs/<br/>15 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
+    docs --> adr["docs/adr/<br/>18 decision records"]
+    root --> scripts["scripts/<br/>run in this order"]
+
+    subgraph p1["1 · Pre-flight"]
+        direction LR
+        cfg["config.example.env"] ~~~ chk["check-account.py"]
+    end
+    subgraph p2["2 · Provision"]
+        direction LR
+        prov["provision.py"] ~~~ cinit["cloud-init.yaml"]
+    end
+    subgraph p3["3 · Harden"]
+        direction LR
+        hard["harden.sh"]
+    end
+    subgraph p4["4 · Platform"]
+        direction LR
+        cool["coolify-setup.sh"]
+    end
+    subgraph p5["5 · Observe and defend"]
+        direction LR
+        mon["monitoring.sh"] ~~~ sec["security.sh"] ~~~ sw["security-watch.py"]
+    end
+    subgraph p6["6 · Migrate AMD to ARM"]
+        direction LR
+        iam["create-automation-user.py"] --> dep["deploy-migrator.sh"] --> mig["migrate.py"] --> fin["finalize.py"]
+    end
+
+    scripts --> p1 --> p2 --> p3 --> p4 --> p5 --> p6
 ```
+
+| Phase | Script | What it does |
+|---|---|---|
+| 1 | [`config.example.env`](scripts/config.example.env) | Every variable as a placeholder; copy to `keys/config.env` |
+| 1 | [`check-account.py`](scripts/check-account.py) | Read-only pre-flight: auth, account type, Always Free limits |
+| 2 | [`provision.py`](scripts/provision.py) | VCN, gateway, routes, security list, subnet and VM through the OCI SDK |
+| 2 | [`cloud-init.yaml`](scripts/cloud-init.yaml) | First boot: updates, Docker, swap, fail2ban, firewall helper, hardening |
+| 3 | [`harden.sh`](scripts/harden.sh) | SSH, host firewall, DOCKER-USER guard, fail2ban, sysctl, DuckDNS timer |
+| 4 | [`coolify-setup.sh`](scripts/coolify-setup.sh) | Headless Coolify install and configuration |
+| 5 | [`monitoring.sh`](scripts/monitoring.sh) | Gmail alerts, 5-minute health checks, daily report |
+| 5 | [`security.sh`](scripts/security.sh) | Auto-patching, egress guard, security-watch timers |
+| 5 | [`security-watch.py`](scripts/security-watch.py) | Vulnerability feeds and intrusion guardrails with lockdown |
+| 6 | [`create-automation-user.py`](scripts/create-automation-user.py) | Least-privilege OCI identity for the migrator |
+| 6 | [`deploy-migrator.sh`](scripts/deploy-migrator.sh) | Runs the migration as a service on the VM |
+| 6 | [`migrate.py`](scripts/migrate.py), [`finalize.py`](scripts/finalize.py) | Health-gated AMD to ARM move, then cleanup and resize on the ARM VM |
 
 ---
 
