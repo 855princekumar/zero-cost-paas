@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-labelledby="t d">
+  <title id="t">Zero-Cost PaaS</title>
+  <desc id="d">Project banner: self-hosted Vercel/Netlify alternative on Oracle Cloud Always Free with Coolify. Highlights: $0 per month, automatic HTTPS, self-healing security, headless infrastructure as code.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.6" stop-color="#111a2e"/>
+      <stop offset="1" stop-color="#1a1430"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C74634"/>
+      <stop offset="0.5" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.85" cy="0.3" r="0.6">
+      <stop offset="0" stop-color="#6366f1" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#1e293b" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="320" fill="url(#bg)"/>
+  <rect width="1280" height="320" fill="url(#grid)" opacity="0.55"/>
+  <rect width="1280" height="320" fill="url(#glow)"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#accent)"/>
+
+  <!-- logo mark: cloud + bolt -->
+  <g transform="translate(70,92)">
+    <rect x="0" y="0" width="120" height="120" rx="28" fill="#111827" stroke="#334155" stroke-width="2"/>
+    <path d="M28 78 a18 18 0 0 1 4 -35 a24 24 0 0 1 46 -6 a16 16 0 0 1 14 41 z" fill="none" stroke="#14b8a6" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M64 50 L52 74 H64 L58 94 L78 66 H66 L72 50 Z" fill="#f59e0b"/>
+  </g>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="220" y="140" font-size="64" font-weight="800" fill="#f8fafc" letter-spacing="-1">Zero-Cost <tspan fill="#14b8a6">PaaS</tspan></text>
+    <text x="222" y="182" font-size="22" fill="#cbd5e1">Self-hosted Vercel/Netlify on Oracle Cloud Always Free + Coolify</text>
+    <text x="222" y="210" font-size="15" fill="#94a3b8">Provisioned headlessly via the OCI API · hardened · monitored · self-migrating</text>
+
+    <g font-size="15" font-weight="600">
+      <g transform="translate(222,236)">
+        <rect width="128" height="36" rx="18" fill="#14532d" stroke="#22c55e"/>
+        <circle cx="20" cy="18" r="6" fill="#22c55e"/>
+        <text x="34" y="23" fill="#dcfce7">$0 / month</text>
+      </g>
+      <g transform="translate(364,236)">
+        <rect width="132" height="36" rx="18" fill="#134e4a" stroke="#14b8a6"/>
+        <rect x="14" y="13" width="12" height="10" rx="2" fill="#14b8a6"/>
+        <path d="M16 13 v-3 a4 4 0 0 1 8 0 v3" fill="none" stroke="#14b8a6" stroke-width="2"/>
+        <text x="34" y="23" fill="#ccfbf1">Auto-HTTPS</text>
+      </g>
+      <g transform="translate(510,236)">
+        <rect width="200" height="36" rx="18" fill="#312e81" stroke="#6366f1"/>
+        <path d="M20 9 l9 4 v6 c0 5 -4 8 -9 9 c-5 -1 -9 -4 -9 -9 v-6 z" fill="#6366f1"/>
+        <text x="36" y="23" fill="#e0e7ff">Self-healing security</text>
+      </g>
+      <g transform="translate(724,236)">
+        <rect width="150" height="36" rx="18" fill="#451a03" stroke="#f59e0b"/>
+        <text x="16" y="23" fill="#f59e0b" font-family="Consolas, Menlo, monospace">&gt;_</text>
+        <text x="40" y="23" fill="#fef3c7">Headless IaC</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- right side stack illustration -->
+  <g transform="translate(960,58)" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+    <rect x="0" y="0" width="250" height="204" rx="16" fill="#0f172a" stroke="#334155"/>
+    <circle cx="20" cy="18" r="5" fill="#ef4444"/><circle cx="36" cy="18" r="5" fill="#f59e0b"/><circle cx="52" cy="18" r="5" fill="#22c55e"/>
+    <g transform="translate(16,36)">
+      <rect width="218" height="30" rx="8" fill="#1e293b" stroke="#C74634"/>
+      <text x="12" y="20" fill="#fecaca">Oracle Cloud · Always Free</text>
+    </g>
+    <g transform="translate(16,74)">
+      <rect width="218" height="30" rx="8" fill="#1e293b" stroke="#64748b"/>
+      <text x="12" y="20" fill="#e2e8f0">Ubuntu 24.04 · Docker</text>
+    </g>
+    <g transform="translate(16,112)">
+      <rect width="218" height="30" rx="8" fill="#1e293b" stroke="#6366f1"/>
+      <text x="12" y="20" fill="#e0e7ff">Coolify · Traefik · Let's Encrypt</text>
+    </g>
+    <g transform="translate(16,150)">
+      <rect width="218" height="30" rx="8" fill="#1e293b" stroke="#14b8a6"/>
+      <text x="12" y="20" fill="#ccfbf1">https://&lt;app&gt;.&lt;BASE_DOMAIN&gt;</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="660" viewBox="0 0 1300 660" role="img" aria-labelledby="t d">
+  <title id="t">AMD to ARM self-migration pipeline</title>
+  <desc id="d">Seven resumable stages run by the oci-migrator service on the AMD stand-in VM: launch the Ampere A1 VM with capacity retries, first boot and hardening, back up and stream Coolify data, install the same Coolify version and restore in a detached unit, a health gate requiring HTTPS 200 and Coolify-to-host SSH, DNS cutover with arm64 redeploys, and finalize on the ARM VM which deletes the AMD VM, grows the disk from 150 to 200 GB and resizes to the free maximum. The source keeps serving until the health gate passes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#14101e"/>
+    </linearGradient>
+    <linearGradient id="amd" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C74634"/>
+      <stop offset="1" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="arm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#cbd5e1"/>
+    </marker>
+  </defs>
+  <rect width="1300" height="660" fill="url(#bg)"/>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="36" y="44" font-size="24" font-weight="700" fill="#f8fafc">Self-migration: AMD stand-in → Ampere A1 (ARM)</text>
+    <text x="36" y="66" font-size="13" fill="#94a3b8">migrate.py runs as a systemd service on the AMD VM · every stage is idempotent and resumes after a restart · laptop can be off</text>
+
+    <!-- stages: x = 36 + i*178, width 160 -->
+    <g font-size="12">
+      <g transform="translate(36,92)">
+        <rect width="160" height="250" rx="12" fill="#1f1311" stroke="#C74634" stroke-width="1.5"/>
+        <circle cx="24" cy="26" r="14" fill="#C74634"/><text x="24" y="31" text-anchor="middle" font-weight="800" fill="#fff" font-size="13">1</text>
+        <text x="46" y="31" font-size="14" font-weight="700" fill="#fecaca">Launch</text>
+        <text x="12" y="62" fill="#e2e8f0">A1.Flex in home region</text>
+        <text x="12" y="80" fill="#cbd5e1">try 2/12 then 1/6</text>
+        <text x="12" y="98" fill="#cbd5e1">× 3 fault domains</text>
+        <text x="12" y="116" fill="#cbd5e1">boot = 200 − used GB</text>
+        <text x="12" y="146" fill="#94a3b8">"Out of host capacity"</text>
+        <text x="12" y="164" fill="#94a3b8">→ sleep 30 s, retry</text>
+        <text x="12" y="182" fill="#94a3b8">forever</text>
+        <rect x="12" y="206" width="136" height="28" rx="6" fill="#2a1414"/>
+        <text x="20" y="225" fill="#fca5a5">✉ "Got an A1 VM"</text>
+      </g>
+      <g transform="translate(214,92)">
+        <rect width="160" height="250" rx="12" fill="#1c1a12" stroke="#f59e0b" stroke-width="1.5"/>
+        <circle cx="24" cy="26" r="14" fill="#f59e0b"/><text x="24" y="31" text-anchor="middle" font-weight="800" fill="#1c1917" font-size="13">2</text>
+        <text x="46" y="31" font-size="14" font-weight="700" fill="#fde68a">First boot</text>
+        <text x="12" y="62" fill="#e2e8f0">cloud-init:</text>
+        <text x="12" y="80" fill="#cbd5e1">updates, Docker,</text>
+        <text x="12" y="98" fill="#cbd5e1">swap, fail2ban</text>
+        <text x="12" y="116" fill="#cbd5e1">+ injected harden.sh</text>
+        <text x="12" y="146" fill="#94a3b8">wait for</text>
+        <text x="12" y="164" fill="#94a3b8">/var/log/setup-done</text>
+        <text x="12" y="182" fill="#94a3b8">(≤ 60 min)</text>
+      </g>
+      <g transform="translate(392,92)">
+        <rect width="160" height="250" rx="12" fill="#132033" stroke="#38bdf8" stroke-width="1.5"/>
+        <circle cx="24" cy="26" r="14" fill="#38bdf8"/><text x="24" y="31" text-anchor="middle" font-weight="800" fill="#0b1220" font-size="13">3</text>
+        <text x="46" y="31" font-size="14" font-weight="700" fill="#bae6fd">Backup</text>
+        <text x="12" y="62" fill="#e2e8f0">pg_dump coolify-db</text>
+        <text x="12" y="80" fill="#cbd5e1">tar /data/coolify</text>
+        <text x="12" y="98" fill="#cbd5e1">tar app volumes</text>
+        <text x="12" y="116" fill="#cbd5e1">record version</text>
+        <text x="12" y="146" fill="#94a3b8">streamed over SSH</text>
+        <text x="12" y="164" fill="#94a3b8">on the private VCN</text>
+        <text x="12" y="182" fill="#94a3b8">(no copies at rest)</text>
+      </g>
+      <g transform="translate(570,92)">
+        <rect width="160" height="250" rx="12" fill="#17142e" stroke="#6366f1" stroke-width="1.5"/>
+        <circle cx="24" cy="26" r="14" fill="#6366f1"/><text x="24" y="31" text-anchor="middle" font-weight="800" fill="#fff" font-size="13">4</text>
+        <text x="46" y="31" font-size="14" font-weight="700" fill="#c7d2fe">Restore</text>
+        <text x="12" y="62" fill="#e2e8f0">same Coolify version</text>
+        <text x="12" y="80" fill="#cbd5e1">keep APP_KEY (.env)</text>
+        <text x="12" y="98" fill="#cbd5e1">restore old SSH keys</text>
+        <text x="12" y="116" fill="#cbd5e1">pg_restore, volumes</text>
+        <text x="12" y="146" fill="#94a3b8">runs detached via</text>
+        <text x="12" y="164" fill="#94a3b8">systemd-run; polled</text>
+        <text x="12" y="182" fill="#94a3b8">(survives SSH drops)</text>
+      </g>
+
+      <!-- gate -->
+      <g transform="translate(748,92)">
+        <rect width="160" height="250" rx="12" fill="#0f2320" stroke="#22c55e" stroke-width="2.5"/>
+        <circle cx="24" cy="26" r="14" fill="#22c55e"/><text x="24" y="31" text-anchor="middle" font-weight="800" fill="#052e16" font-size="13">5</text>
+        <text x="46" y="31" font-size="14" font-weight="700" fill="#bbf7d0">Health gate</text>
+        <path d="M80 50 l26 22 l-26 22 l-26 -22 z" fill="#14532d" stroke="#22c55e" stroke-width="2"/>
+        <text x="80" y="77" text-anchor="middle" fill="#bbf7d0" font-weight="800" font-size="13">GO?</text>
+        <text x="12" y="118" fill="#e2e8f0">HTTPS /login = 200</text>
+        <text x="12" y="136" fill="#cbd5e1">with migrated cert</text>
+        <text x="12" y="154" fill="#e2e8f0">Coolify → host SSH</text>
+        <text x="12" y="172" fill="#cbd5e1">returns "root"</text>
+        <text x="12" y="200" fill="#94a3b8">fail → service retries,</text>
+        <text x="12" y="218" fill="#94a3b8">DNS untouched</text>
+      </g>
+
+      <g transform="translate(926,92)">
+        <rect width="160" height="250" rx="12" fill="#0f2229" stroke="#14b8a6" stroke-width="1.5"/>
+        <circle cx="24" cy="26" r="14" fill="#14b8a6"/><text x="24" y="31" text-anchor="middle" font-weight="800" fill="#042f2e" font-size="13">6</text>
+        <text x="46" y="31" font-size="14" font-weight="700" fill="#99f6e4">Cutover</text>
+        <text x="12" y="62" fill="#e2e8f0">DuckDNS → ARM IP</text>
+        <text x="12" y="80" fill="#cbd5e1">AMD stops updating</text>
+        <text x="12" y="98" fill="#cbd5e1">alerts + guardrails</text>
+        <text x="12" y="116" fill="#cbd5e1">installed on ARM</text>
+        <text x="12" y="146" fill="#94a3b8">temp API token →</text>
+        <text x="12" y="164" fill="#94a3b8">redeploy apps arm64</text>
+        <text x="12" y="182" fill="#94a3b8">→ token revoked</text>
+        <rect x="12" y="206" width="136" height="28" rx="6" fill="#0f2a2a"/>
+        <text x="20" y="225" fill="#5eead4">✉ "now on ARM"</text>
+      </g>
+      <g transform="translate(1104,92)">
+        <rect width="160" height="250" rx="12" fill="#1f1311" stroke="#14b8a6" stroke-width="1.5"/>
+        <circle cx="24" cy="26" r="14" fill="#14b8a6"/><text x="24" y="31" text-anchor="middle" font-weight="800" fill="#042f2e" font-size="13">7</text>
+        <text x="46" y="31" font-size="14" font-weight="700" fill="#99f6e4">Finalize</text>
+        <text x="12" y="62" fill="#e2e8f0">runs ON the ARM VM</text>
+        <text x="12" y="80" fill="#cbd5e1">terminate AMD + disk</text>
+        <text x="12" y="98" fill="#cbd5e1">grow boot 150→200 GB</text>
+        <text x="12" y="116" fill="#cbd5e1">resize to free max</text>
+        <text x="12" y="146" fill="#94a3b8">growpart online;</text>
+        <text x="12" y="164" fill="#94a3b8">shred API key, remove</text>
+        <text x="12" y="182" fill="#94a3b8">migration SSH key</text>
+        <rect x="12" y="206" width="136" height="28" rx="6" fill="#0f2a2a"/>
+        <text x="20" y="225" fill="#5eead4">✉ "Done"</text>
+      </g>
+    </g>
+
+    <g stroke="#cbd5e1" stroke-width="2.5" fill="none">
+      <path d="M196 216 H212" marker-end="url(#a)"/>
+      <path d="M374 216 H390" marker-end="url(#a)"/>
+      <path d="M552 216 H568" marker-end="url(#a)"/>
+      <path d="M730 216 H746" marker-end="url(#a)"/>
+      <path d="M908 216 H924" marker-end="url(#a)"/>
+      <path d="M1086 216 H1102" marker-end="url(#a)"/>
+    </g>
+
+    <!-- who serves traffic timeline -->
+    <text x="36" y="392" font-size="16" font-weight="700" fill="#e2e8f0">Who serves &lt;BASE_DOMAIN&gt;</text>
+    <g font-size="13">
+      <text x="36" y="430" fill="#fecaca">AMD (source)</text>
+      <rect x="150" y="414" width="776" height="24" rx="12" fill="url(#amd)"/>
+      <text x="166" y="431" fill="#fff">serving — stages 1-5 never touch DNS or the source</text>
+      <rect x="926" y="414" width="178" height="24" rx="12" fill="#7f1d1d" fill-opacity="0.35" stroke="#C74634" stroke-dasharray="4 3"/>
+      <text x="936" y="431" fill="#fca5a5">draining</text>
+      <text x="1112" y="431" fill="#94a3b8">deleted</text>
+
+      <text x="36" y="474" fill="#99f6e4">ARM (target)</text>
+      <rect x="214" y="458" width="712" height="24" rx="12" fill="#0f2a2a" stroke="#14b8a6" stroke-dasharray="4 3"/>
+      <text x="230" y="475" fill="#5eead4">building + verifying privately (resolve-to-localhost checks)</text>
+      <rect x="926" y="458" width="338" height="24" rx="12" fill="url(#arm)"/>
+      <text x="942" y="475" fill="#f0fdfa">serving · 2 OCPU / 12 GB / 200 GB</text>
+    </g>
+    <path d="M926 400 V496" stroke="#22c55e" stroke-width="2" stroke-dasharray="5 4"/>
+    <text x="932" y="510" font-size="12" fill="#86efac">DNS cutover (TTL 60 s)</text>
+
+    <!-- rollback + tested -->
+    <g transform="translate(36,536)">
+      <rect width="600" height="96" rx="12" fill="#111827" stroke="#22c55e"/>
+      <text x="18" y="30" font-size="15" font-weight="700" fill="#bbf7d0">Rollback by design</text>
+      <text x="18" y="54" font-size="13" fill="#cbd5e1">The source keeps serving until the health gate passes. A failure anywhere</text>
+      <text x="18" y="72" font-size="13" fill="#cbd5e1">before stage 6 just emails you and retries in 5 min (6 h alert cooldown).</text>
+    </g>
+    <g transform="translate(664,536)">
+      <rect width="600" height="96" rx="12" fill="#111827" stroke="#6366f1"/>
+      <text x="18" y="30" font-size="15" font-weight="700" fill="#c7d2fe">Dry-run tested before going live</text>
+      <text x="18" y="54" font-size="13" fill="#cbd5e1">--dry-run migrated the live instance onto a throwaway free VM (stages 1-5):</text>
+      <text x="18" y="72" font-size="13" fill="#cbd5e1">found and fixed 4 bugs, then passed every check; test VM deleted.</text>
+    </g>
+  </g>
+</svg>
