@@ -1,11 +1,11 @@
-# 08 · Security Hardening — Defense in Depth
+# 08 · Security Hardening: Defense in Depth
 
 [← Coolify](07-coolify.md) · [Index](README.md) · [Next: Monitoring & alerts →](09-monitoring-and-alerts.md)
 
-> **TL;DR** — Seven independent layers: cloud security list → host iptables → Docker-aware
+> **TL;DR**: Seven independent layers: cloud security list → host iptables → Docker-aware
 > `DOCKER-USER` rules → SSH lockdown → fail2ban (SSH **and** dashboard) → kernel/sysctl hardening
 > → application controls (2FA, registration off, API off). Only `<SSH_PORT>`, 80 and 443 answer
-> from the internet — verified with an external port scan. All of it is in the idempotent
+> from the internet, verified with an external port scan. All of it is in the idempotent
 > [`harden.sh`](../scripts/harden.sh), which also runs on first boot of the ARM VM.
 
 ![Security layers](../assets/security-layers.svg)
@@ -22,13 +22,13 @@ flowchart TB
     L6 --> L7
 ```
 
-## L1 — Cloud perimeter (OCI security list)
+## L1: Cloud perimeter (OCI security list)
 
 Ingress only `<SSH_PORT>`, 80, 443 from the internet (+ ICMP 3/4 and intra-VCN). Stateful, enforced
 **outside** the VM, so it holds even if the host firewall were flushed. See
 [05 · Provisioning](05-provisioning.md#security-list-exact-rules).
 
-## L2 — Host firewall (iptables INPUT)
+## L2: Host firewall (iptables INPUT)
 
 The Oracle image's default policy rejects everything not explicitly accepted. `open-ports` inserts
 ACCEPT rules above the REJECT and persists them with `netfilter-persistent`:
@@ -37,7 +37,7 @@ ACCEPT rules above the REJECT and persists them with `netfilter-persistent`:
 vm$ sudo open-ports 80 443 <SSH_PORT>
 ```
 
-## L3 — Docker-aware filtering (DOCKER-USER)
+## L3: Docker-aware filtering (DOCKER-USER)
 
 Published container ports are DNAT'd in `PREROUTING` and go through `FORWARD`, **never `INPUT`**.
 Coolify publishes 8000 (UI), 6001/6002 (realtime/terminal) and Traefik 8080 on `0.0.0.0`. Even
@@ -58,7 +58,7 @@ done
 The same chain hosts the fail2ban dashboard bans and the **egress guard** (REJECT to common
 crypto-mining pool ports `3333,5555,14433,14444,45560,45700`, also in `OUTPUT`).
 
-## L4 — SSH
+## L4: SSH
 
 `/etc/ssh/sshd_config.d/00-hardening.conf` (first match wins, so `00-` beats cloud-init's `50-`):
 
@@ -99,7 +99,7 @@ vm$ sudo sshd -T -C addr=172.20.1.5,user=root,host=x | grep -i permitrootlogin  
 ```
 
 Ubuntu 24.04 uses **socket activation**: after changing `Port`, run `systemctl daemon-reload` and
-restart `ssh.socket`. `sshd -t` fails on a fresh boot unless `/run/sshd` exists — `harden.sh` creates
+restart `ssh.socket`. `sshd -t` fails on a fresh boot unless `/run/sshd` exists, `harden.sh` creates
 it first (this bug was caught by the migration dry run).
 
 Cut-over procedure for the port change (no lockout risk):
@@ -108,7 +108,7 @@ Cut-over procedure for the port change (no lockout risk):
 2. open `<SSH_PORT>` in the security list, **test a login**,
 3. remove 22 from the security list, re-scan.
 
-## L5 — fail2ban
+## L5: fail2ban
 
 ```ini
 # /etc/fail2ban/jail.d/sshd.local
@@ -124,7 +124,7 @@ enabled = true
 port = 22,<SSH_PORT>
 ```
 
-Dashboard brute force — Coolify's audit log line contains the real client IP (Traefik forwards it):
+Dashboard brute force, Coolify's audit log line contains the real client IP (Traefik forwards it):
 
 ```ini
 # /etc/fail2ban/filter.d/coolify-login.conf
@@ -153,18 +153,18 @@ vm$ sudo fail2ban-regex /tmp/sample.log /etc/fail2ban/filter.d/coolify-login.con
 vm$ sudo fail2ban-client status coolify-login
 ```
 
-## L6 — Application controls
+## L6: Application controls
 
 | Control | State |
 |---|---|
-| Dashboard only via HTTPS on `<BASE_DOMAIN>` | ✅ (8000 closed) |
-| Admin pre-created, **registration disabled** | ✅ |
-| **TOTP 2FA** required on every login | ✅ |
+| Dashboard only via HTTPS on `<BASE_DOMAIN>` | Yes (8000 closed) |
+| Admin pre-created, **registration disabled** | Yes |
+| **TOTP 2FA** required on every login | Yes |
 | Coolify API | disabled (enabled only temporarily by automation, tokens revoked) |
-| Coolify login throttling (Fortify) + fail2ban | ✅ |
-| `ROOT_*` credentials removed from `.env` | ✅ |
+| Coolify login throttling (Fortify) + fail2ban | Yes |
+| `ROOT_*` credentials removed from `.env` | Yes |
 
-## L7 — Kernel, OS, patches
+## L7: Kernel, OS, patches
 
 ```ini
 # /etc/sysctl.d/99-hardening.conf
@@ -187,7 +187,7 @@ fs.protected_symlinks = 1
 Unattended upgrades: Ubuntu security + **Docker CE** origins daily, unused kernels removed, email
 report on change, **automatic reboot at 04:00** when required ([ADR 0018](adr/0018-unattended-upgrades-and-auto-reboot.md)).
 
-## Verification — external port scan
+## Verification: external port scan
 
 From a workstation on the internet:
 
@@ -208,15 +208,15 @@ for p in 22 <SSH_PORT> 80 443 8000 8080 6001 6002 5432; do
 
 | # | Threat (STRIDE) | Vector | Mitigations | Residual risk |
 |---|---|---|---|---|
-| T1 | Spoofing — SSH credential guessing | Internet → SSH | Key-only, non-standard port, 3 tries, fail2ban 24 h escalating | Stolen private key (keep `keys/` safe) |
-| T2 | Spoofing — dashboard password guessing | Internet → 443 | 2FA, Fortify throttle, fail2ban 5/10 min → 24 h | Phished TOTP (low) |
-| T3 | Elevation — Coolify RCE (helper has Docker socket = host root) | Authenticated or unauthenticated app bug | Same-day auto-upgrade on advisories, lockdown if unfixed, single admin, 2FA | 0-day before advisory publication |
-| T4 | Elevation — exposed internal ports | 8000/6001/6002/8080 | L1 + DOCKER-USER drop | None known |
-| T5 | Tampering — DNS hijack | Leaked DuckDNS token | Token root-only, never in git; certificate expiry alerts | DuckDNS account compromise |
-| T6 | Tampering — persistence (cron, systemd, keys, ld.so.preload) | Post-exploitation | security-watch integrity checks, key revert, account lock, lockdown | Kernel-level rootkit |
-| T7 | Denial of service | L7 floods | Single node; Traefik; OCI network | **No CDN/WAF** (DuckDNS) — roadmap |
-| T8 | Resource abuse — crypto-mining | Compromised app/container | Miner kill + quarantine, egress guard, memory/CPU alerts | Novel miners on non-standard ports |
-| T9 | Information disclosure — secrets in repo | Git push | `.gitignore`, placeholders, secret scan in CI | Human error |
+| T1 | Spoofing: SSH credential guessing | Internet → SSH | Key-only, non-standard port, 3 tries, fail2ban 24 h escalating | Stolen private key (keep `keys/` safe) |
+| T2 | Spoofing: dashboard password guessing | Internet → 443 | 2FA, Fortify throttle, fail2ban 5/10 min → 24 h | Phished TOTP (low) |
+| T3 | Elevation: Coolify RCE (helper has Docker socket = host root) | Authenticated or unauthenticated app bug | Same-day auto-upgrade on advisories, lockdown if unfixed, single admin, 2FA | 0-day before advisory publication |
+| T4 | Elevation: exposed internal ports | 8000/6001/6002/8080 | L1 + DOCKER-USER drop | None known |
+| T5 | Tampering: DNS hijack | Leaked DuckDNS token | Token root-only, never in git; certificate expiry alerts | DuckDNS account compromise |
+| T6 | Tampering: persistence (cron, systemd, keys, ld.so.preload) | Post-exploitation | security-watch integrity checks, key revert, account lock, lockdown | Kernel-level rootkit |
+| T7 | Denial of service | L7 floods | Single node; Traefik; OCI network | **No CDN/WAF** (DuckDNS), roadmap |
+| T8 | Resource abuse, crypto-mining | Compromised app/container | Miner kill + quarantine, egress guard, memory/CPU alerts | Novel miners on non-standard ports |
+| T9 | Information disclosure: secrets in repo | Git push | `.gitignore`, placeholders, secret scan in CI | Human error |
 | T10 | Repudiation | Unknown actions | Coolify audit log, journald, email trail | Logs are local only (roadmap: shipping) |
 | T11 | Cloud account takeover → billing | OCI API key leak | Free-only account (no billing possible), least-privilege automation key | Resource deletion |
 

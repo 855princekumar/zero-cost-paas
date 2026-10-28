@@ -1,6 +1,6 @@
 # ADR-0015: Self-migrating AMD → ARM
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0004](0004-ampere-a1-target-amd-micro-standin.md), [ADR-0016](0016-least-privilege-automation-identity.md), [Migration chapter](../11-amd-to-arm-migration.md), [`scripts/migrate.py`](../../scripts/migrate.py), [`scripts/finalize.py`](../../scripts/finalize.py)
 
 ## Context

@@ -2,7 +2,7 @@
 
 [← Security automation](10-security-automation.md) · [Index](README.md) · [Next: Cost guardrails →](12-cost-guardrails.md)
 
-> **TL;DR** — The free A1 VM (2 OCPU / 12 GB) was unavailable ("Out of host capacity"), so the
+> **TL;DR**: The free A1 VM (2 OCPU / 12 GB) was unavailable ("Out of host capacity"), so the
 > platform went live on a 1 GB AMD Micro. [`migrate.py`](../scripts/migrate.py) runs **as a service on
 > the AMD VM** (no laptop needed): it waits for A1 capacity, builds and hardens the new VM, copies
 > Coolify (DB, config, certificates, SSH keys, volumes), proves the copy is healthy, and only then
@@ -52,7 +52,7 @@ tar czf - -C / data/coolify root/migrate | ssh target 'sudo tar xzf - -C /root/m
 App containers (`label=coolify.managed=true`) are stopped during the volume copy for consistency and
 **restarted in a `finally` block** even if the transfer fails.
 
-## 3. Restore — the subtle parts
+## 3. Restore: the subtle parts
 
 ```mermaid
 sequenceDiagram
@@ -76,7 +76,7 @@ sequenceDiagram
 | Installer **regenerates** the localhost SSH key on a fresh server (no `coolify-db` volume yet) | Restore migrated `ssh/keys`, derive public keys with `ssh-keygen -y`, re-add to root's `authorized_keys` |
 | Permissions | Match the installer: `chown -R 9999:root` + `chmod -R 700` on `source`, `ssh`, `images` only |
 | Long step on a weak VM drops SSH | Run detached with `systemd-run`, poll state |
-| Certificates | `proxy/acme.json` travels with `/data/coolify` — no re-issuance burst |
+| Certificates | `proxy/acme.json` travels with `/data/coolify`: no re-issuance burst |
 
 ## 4. Health gate
 
@@ -86,7 +86,7 @@ tinker: instant_remote_process(["whoami"], Server::find(0))                     
 ```
 
 This proves Traefik routing, the migrated certificate, the Laravel app + DB, and Coolify's ability to
-manage its host — before any user traffic moves.
+manage its host, before any user traffic moves.
 
 ## 5. Cutover
 
@@ -128,7 +128,7 @@ vm$ journalctl -fu oci-migrator
 ## 8. Dry-run methodology
 
 The same code ran from the workstation with `--dry-run` against a **second free AMD Micro** named
-`migrate-test` (50 + 50 GB ≤ 200 GB): stages 1–5 for real, against the live source, with DNS and the
+`migrate-test` (50 + 50 GB ≤ 200 GB): stages 1-5 for real, against the live source, with DNS and the
 source VM untouched. Then the redeploy step and migrated data were verified, and the test VM deleted.
 
 | Run | Result | Bug found | Fix |
@@ -137,14 +137,14 @@ source VM untouched. Then the redeploy step and migrated data were verified, and
 | 2 | Restore failed (exit 255) | **SSH session dropped** while the 1/8-OCPU VM pulled images (load ≈ 4) | Restore runs as a detached `systemd-run` unit; `ServerAliveCountMax=10` |
 | 3 | Restore unit exited 255 | `ssh-keygen -y` on a **`.lock` file** + `set -o pipefail` aborted the script | Skip `*.lock`/`*.pub`, tolerate errors inside the loop |
 | 3b | Health gate "cannot SSH" | Tinker received an **empty script**: `mktemp` file is 0600, PHP runs non-root | `chmod 644` before `docker cp` |
-| 4 | ✅ all green | — | — |
+| 4 | Yes, all green | - | - |
 
 Verified on the copy: admin user present, `fqdn` and `wildcard_domain` kept, registration disabled,
 all Coolify containers healthy (incl. proxy), Coolify's key authorized for root, redeploy step OK,
 temporary token revoked.
 
 Measured timings (1 GB Micro target): launch ~1 min · first boot ~10 min · backup + transfer ~15 s
-(fresh install) · install + restore ~4–5 min · health gate ~2 min.
+(fresh install) · install + restore ~4-5 min · health gate ~2 min.
 
 ## 9. Notifications
 

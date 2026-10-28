@@ -1,6 +1,6 @@
 # ADR-0012: fail2ban for SSH and the Coolify login, plus 2FA
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0010](0010-ssh-key-only-nonstandard-port.md), [ADR-0011](0011-defense-in-depth-network-layers.md), [Security hardening](../08-security-hardening.md)
 
 ## Context
@@ -41,7 +41,7 @@ while the host runs in local time.
 ```mermaid
 flowchart LR
   A[Attacker] -->|wrong password ×5| T[Traefik] --> C[Coolify]
-  C -->|audit log login_failed + IP| L[/data/coolify/logs]
+  C -->|audit log login_failed + IP| L["/data/coolify/logs"]
   L --> F[fail2ban coolify-login]
   F -->|iptables DOCKER-USER DROP| T
   F --> E[email alert]

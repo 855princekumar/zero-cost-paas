@@ -1,10 +1,10 @@
-# 12 · Cost Guardrails — Why This Stays at $0
+# 12 · Cost Guardrails: Why This Stays at $0
 
 [← AMD → ARM migration](11-amd-to-arm-migration.md) · [Index](README.md) · [Next: Operations runbook →](13-operations-runbook.md)
 
-> **TL;DR** — The account is **free-only** (trial ended, never upgraded), so Oracle *cannot* bill
-> it: non-free shapes have a limit of **0** and simply fail to create. Every component — DNS,
-> certificates, SMTP, feeds, Coolify — is free. A $1 budget alert exists as a tripwire anyway. The
+> **TL;DR**: The account is **free-only** (trial ended, never upgraded), so Oracle *cannot* bill
+> it: non-free shapes have a limit of **0** and simply fail to create. Every component, DNS,
+> certificates, SMTP, feeds, Coolify, is free. A $1 budget alert exists as a tripwire anyway. The
 > only cost-adjacent risk is **idle reclamation** of Always Free VMs, which is mitigated, not ignored.
 
 ![Cost breakdown](../assets/cost-breakdown.svg)
@@ -14,11 +14,11 @@
 | | Free-only (chosen) | Pay-As-You-Go |
 |---|---|---|
 | Can be charged | **No** | Yes, for anything beyond Always Free |
-| Spending cap | Structural (paid limits = 0) | **None** — budgets alert *after* spend |
+| Spending cap | Structural (paid limits = 0) | **None**: budgets alert *after* spend |
 | A1 limit observed | 2 OCPU / 12 GB | typically 4 / 24 |
 | A1 capacity priority | Low (frequent "Out of host capacity") | Higher |
 | Idle reclamation | Applies | Does not apply |
-| Fits "no charge without confirmation" | ✅ | ❌ |
+| Fits "no charge without confirmation" | Yes | No |
 
 Decision: [ADR 0003](adr/0003-stay-free-only-no-payg.md).
 
@@ -43,7 +43,7 @@ Decision: [ADR 0003](adr/0003-stay-free-only-no-payg.md).
 | GitHub API (unauthenticated) / CISA KEV | $0 |
 | Coolify (Apache-2.0, self-hosted) | $0 |
 
-## 3. What could cost money — and why it can't
+## 3. What could cost money: and why it can't
 
 | Potential cost | Prevention |
 |---|---|

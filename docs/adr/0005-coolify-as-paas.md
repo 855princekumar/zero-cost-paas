@@ -1,12 +1,12 @@
 # ADR-0005: Coolify as the PaaS layer
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0007](0007-letsencrypt-http01-via-traefik.md), [ADR-0009](0009-docker-address-pool-172-20.md), [Coolify chapter](../07-coolify.md)
 
 ## Context
 
-We want the Vercel/Netlify developer experience — push to git, get a build, get
-`https://<APP_NAME>.<BASE_DOMAIN>` with a valid certificate — on one small VM, plus databases and
+We want the Vercel/Netlify developer experience, push to git, get a build, get
+`https://<APP_NAME>.<BASE_DOMAIN>` with a valid certificate, on one small VM, plus databases and
 long-running services that serverless platforms cannot host.
 
 ## Decision
@@ -39,7 +39,7 @@ flowchart LR
   the host). Its own advisories have included authenticated RCE → host root. Mitigated by
   [ADR-0012](0012-fail2ban-for-ssh-and-coolify-login.md) (2FA + brute-force bans) and
   [ADR-0014](0014-automated-security-guardrails-and-lockdown.md) (auto-patch, lockdown).
-- ~700–900 MB RAM baseline for its own containers (heavy for the 1 GB stand-in).
+- ~700-900 MB RAM baseline for its own containers (heavy for the 1 GB stand-in).
 - Installer quirks we had to handle: Docker pool overlap, password policy requiring a symbol,
   localhost SSH key regeneration on fresh hosts.
 
@@ -49,6 +49,6 @@ flowchart LR
 |---|---|---|
 | Dokku | Tiny, Heroku-like | No UI, per-app TLS plugin, weaker multi-service story |
 | CapRover | UI, one-click apps | Docker Swarm based; less active; fewer notifications |
-| k3s + Argo/Flux | Industry standard | Far too heavy for 1–12 GB, steep ops burden for one node |
+| k3s + Argo/Flux | Industry standard | Far too heavy for 1-12 GB, steep ops burden for one node |
 | Plain docker-compose + Caddy | Simple | No git-push deploys, no UI, everything manual |
 | Dokploy | Similar to Coolify | Younger ecosystem at decision time |

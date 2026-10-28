@@ -2,7 +2,7 @@
 
 [← Repository home](../README.md)
 
-> **TL;DR** — This folder is the full engineering record of a **zero-cost, self-hosted Vercel/Netlify
+> **TL;DR**: This folder is the full engineering record of a **zero-cost, self-hosted Vercel/Netlify
 > alternative** built on Oracle Cloud *Always Free* with Coolify. Everything was provisioned
 > **headlessly through the OCI API** (no web console clicks), hardened in depth, monitored by email,
 > guarded by automated security responses, and designed to migrate itself from a temporary AMD VM to
@@ -15,7 +15,7 @@
 | 01 | [Case study](01-case-study.md) | Problem, constraints, discoveries, outcome metrics, lessons, timeline |
 | 02 | [Architecture](02-architecture.md) | System context, components, network topology, trust boundaries, data flows |
 | 03 | [Placeholders & configuration](03-placeholders.md) | Every `<PLACEHOLDER>` used in the docs and where secrets live |
-| 04 | [OCI API setup](04-oci-api-setup.md) | API signing key, SDK, auth check, account type, limits — no console |
+| 04 | [OCI API setup](04-oci-api-setup.md) | API signing key, SDK, auth check, account type, limits, no console |
 | 05 | [Provisioning](05-provisioning.md) | VCN, security list, image choice, launch, capacity retry, cloud-init |
 | 06 | [DNS & TLS](06-dns-and-tls.md) | DuckDNS wildcard, updater timer, Let's Encrypt via Traefik, Cloudflare limits |
 | 07 | [Coolify](07-coolify.md) | Headless install, configuration via tinker, deploying apps, 2FA |
@@ -28,7 +28,7 @@
 | 14 | [Troubleshooting](14-troubleshooting.md) | Every real issue hit: symptom → cause → fix |
 | 15 | [Production readiness](15-production-readiness.md) | Scorecard, gaps, roadmap, SLO suggestions |
 
-**Architecture Decision Records:** [adr/README.md](adr/README.md) — 18 ADRs explaining *why* each choice was made.
+**Architecture Decision Records:** [adr/README.md](adr/README.md): 18 ADRs explaining *why* each choice was made.
 
 ## Visual assets
 
@@ -54,7 +54,7 @@ flowchart LR
 | I want to… | Read |
 |---|---|
 | **Replicate the setup** | 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 13 |
-| **Understand the security model** | 02 → 08 → 10 → ADRs 0010–0018 → 15 |
+| **Understand the security model** | 02 → 08 → 10 → ADRs 0010-0018 → 15 |
 | **Review it as a portfolio piece** | 01 → 02 → 11 → 14 → ADR index → 15 |
 | **Operate it day to day** | 13 → 14 → 09 |
 

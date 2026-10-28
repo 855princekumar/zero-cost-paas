@@ -2,7 +2,7 @@
 
 Every value that is personal, secret, or specific to one deployment is written in this
 documentation as `<UPPER_SNAKE_CASE>`. Replace them with your own values. **Never commit the real
-values** — secrets live only in a local `keys/` directory (git-ignored) and on the VM in root-only files.
+values**, secrets live only in a local `keys/` directory (git-ignored) and on the VM in root-only files.
 
 > Rule of thumb: if a value would let someone log in, send mail as you, change DNS, call the cloud
 > API, or identify you, it is a placeholder here.
@@ -44,7 +44,7 @@ key_file=~/.oci/oci_api_key.pem
 | Placeholder | What it is | Example (fake) | Secret? |
 |---|---|---|---|
 | `<DUCKDNS_SUBDOMAIN>` | Your DuckDNS name (without `.duckdns.org`) | `myapps` | No |
-| `<BASE_DOMAIN>` | `<DUCKDNS_SUBDOMAIN>.duckdns.org` — Coolify dashboard | `myapps.duckdns.org` | No |
+| `<BASE_DOMAIN>` | `<DUCKDNS_SUBDOMAIN>.duckdns.org`: Coolify dashboard | `myapps.duckdns.org` | No |
 | `<APP_NAME>` | Per-app subdomain → `https://<APP_NAME>.<BASE_DOMAIN>` | `blog` | No |
 | `<DUCKDNS_TOKEN>` | DuckDNS account token (can repoint your domain!) | `xxxxxxxx-xxxx-…` | **Yes** |
 

@@ -1,13 +1,13 @@
 # ADR-0001: Oracle Cloud Always Free as the host
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Deciders:** project owner
 - **Related:** [ADR-0003](0003-stay-free-only-no-payg.md), [ADR-0004](0004-ampere-a1-target-amd-micro-standin.md), [Case study](../01-case-study.md), [Cost guardrails](../12-cost-guardrails.md)
 
 ## Context
 
 The goal is a **permanent, $0** live Linux environment to test and publish projects the way
-Vercel/Netlify do — real public HTTPS, Docker, git deploys — without a trial that expires and
+Vercel/Netlify do, real public HTTPS, Docker, git deploys, without a trial that expires and
 without any chance of a bill.
 
 Free tiers compared at decision time:
@@ -29,8 +29,8 @@ only there). Use the Ampere A1 shape as the long-term server and E2.1.Micro as a
 ## Consequences
 
 **Positive**
-- Real VM with root, Docker, systemd — anything that runs on Linux runs here.
-- Generous egress (10 TB/month) — no surprise bandwidth bills for public sites.
+- Real VM with root, Docker, systemd: anything that runs on Linux runs here.
+- Generous egress (10 TB/month): no surprise bandwidth bills for public sites.
 - ARM A1 cores are full physical cores; 1 Gbps network per OCPU.
 
 **Negative**
@@ -47,6 +47,6 @@ only there). Use the Ampere A1 shape as the long-term server and E2.1.Micro as a
 | Option | Why not |
 |---|---|
 | AWS/GCP/Azure free tiers | 1 GB RAM, time-limited, or bill after expiry |
-| Serverless (Vercel/Netlify) | No Docker/root, no databases or workers, vendor lock-in — the thing we are replacing |
+| Serverless (Vercel/Netlify) | No Docker/root, no databases or workers, vendor lock-in, the thing we are replacing |
 | Home server + tunnel | Depends on home power/ISP, exposes home network, not "cloud" |
 | Paid VPS (~$5/mo) | Violates the zero-cost constraint |

@@ -2,8 +2,8 @@
 
 [← Placeholders](03-placeholders.md) · [Index](README.md) · [Next: Provisioning →](05-provisioning.md)
 
-> **TL;DR** — The only thing taken from the Oracle web console is an **API signing key** (generated
-> once under *My profile → API keys*). From then on everything — audit, network, VMs, budgets, IAM —
+> **TL;DR**: The only thing taken from the Oracle web console is an **API signing key** (generated
+> once under *My profile → API keys*). From then on everything, audit, network, VMs, budgets, IAM -
 > is done with the **OCI Python SDK** from a virtualenv. Before building anything, query the account
 > type and the real service limits: they decide the architecture.
 
@@ -40,7 +40,7 @@ mkdir -p ~/.oci && cp <downloaded-private>.pem ~/.oci/oci_api_key.pem && chmod 6
 ## 2. SDK instead of `oci-cli`
 
 `pip install oci-cli` failed on Python 3.14: it pins an old **PyYAML** without wheels for that
-interpreter, and building it needs MSVC. The CLI is only a wrapper — the **SDK** (`pip install oci`)
+interpreter, and building it needs MSVC. The CLI is only a wrapper, the **SDK** (`pip install oci`)
 has the same API surface and installs cleanly.
 
 ```bash
@@ -61,7 +61,7 @@ print([ad.name for ad in idc.list_availability_domains(cfg["tenancy"]).data])
 ```
 
 A successful call proves the key, fingerprint and OCIDs line up. Many regions have a **single
-availability domain** with three **fault domains** — the capacity-retry loop later rotates through them.
+availability domain** with three **fault domains**: the capacity-retry loop later rotates through them.
 
 ## 4. Is the account free-only or Pay-As-You-Go?
 
@@ -75,8 +75,8 @@ for s in sc.list_subscriptions(compartment_id=cfg["tenancy"]).data.items:
 
 | `payment_model` | Meaning | Can it be charged? |
 |---|---|---|
-| `FREE_TRIAL` (end date in the past) | Trial over, **free-only** | **No** — non-free resources simply can't be created |
-| `PAY_AS_YOU_GO` | Upgraded account | **Yes** — budgets only *alert*, they do not block |
+| `FREE_TRIAL` (end date in the past) | Trial over, **free-only** | **No**: non-free resources simply can't be created |
+| `PAY_AS_YOU_GO` | Upgraded account | **Yes**: budgets only *alert*, they do not block |
 
 ## 5. Real limits, not the brochure
 
@@ -113,7 +113,7 @@ print([(v.display_name, v.cidr_block) for v in vn.list_vcns(cfg["tenancy"]).data
 ```
 
 An empty tenancy means the scripts own every resource they create (all are tagged
-`freeform_tags={"purpose": "always-free"}` and found again by display name — idempotency).
+`freeform_tags={"purpose": "always-free"}` and found again by display name, idempotency).
 
 ## 7. Budget alert (belt and braces)
 

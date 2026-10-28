@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-Each significant choice in this build is recorded as an **ADR** — a short document that captures
+Each significant choice in this build is recorded as an **ADR**: a short document that captures
 *why* something was done, what else was considered, and what it costs. If you fork this setup and
 change a decision, add a new ADR that **supersedes** the old one instead of editing history.
 

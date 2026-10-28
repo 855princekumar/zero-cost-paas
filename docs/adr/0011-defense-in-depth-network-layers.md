@@ -1,6 +1,6 @@
 # ADR-0011: Defense-in-depth network layers
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0010](0010-ssh-key-only-nonstandard-port.md), [ADR-0012](0012-fail2ban-for-ssh-and-coolify-login.md), [Security hardening](../08-security-hardening.md)
 
 ## Context
@@ -30,15 +30,15 @@ Verified with an external TCP scan: open = `<SSH_PORT>`, 80, 443; closed = 22, 8
 
 ```mermaid
 flowchart TB
-  NET[Internet] --> SL{OCI security list}
-  SL -->|<SSH_PORT> 80 443| NIC[VM ens3]
-  SL -.x|everything else| D1((drop))
-  NIC --> PR[PREROUTING DNAT]
-  PR -->|to host process| IN{INPUT}
-  PR -->|to container| DU{DOCKER-USER}
-  IN -->|ACCEPT above REJECT| SSH[sshd]
-  DU -->|ctorigdstport 8000/6001/6002/8080| D2((drop))
-  DU -->|80/443| TR[Traefik]
+  NET["Internet"] --> SL{"OCI security list"}
+  SL -->|"SSH_PORT, 80, 443"| NIC["VM ens3"]
+  SL -.->|"everything else"| D1(("drop"))
+  NIC --> PR["PREROUTING DNAT"]
+  PR -->|"to host process"| IN{"INPUT"}
+  PR -->|"to container"| DU{"DOCKER-USER"}
+  IN -->|"ACCEPT above REJECT"| SSH["sshd"]
+  DU -->|"ctorigdstport 8000, 6001, 6002, 8080"| D2(("drop"))
+  DU -->|"80, 443"| TR["Traefik"]
 ```
 
 ## Consequences

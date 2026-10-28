@@ -1,14 +1,14 @@
 # ADR-0009: Docker address pool `172.20.0.0/14`
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0005](0005-coolify-as-paas.md), [ADR-0010](0010-ssh-key-only-nonstandard-port.md), [Coolify chapter](../07-coolify.md), [Troubleshooting](../14-troubleshooting.md)
 
 ## Context
 
 Reading Coolify's installer before running it showed it configures Docker's
 `default-address-pools` to **`10.0.0.0/8`** (size /24). The OCI VCN is **`10.0.0.0/16`** with the
-VM subnet **`10.0.0.0/24`**. A Docker bridge could be allocated `10.0.0.0/24` — the same range as
-the VM's own subnet — breaking routing to the gateway, the internet, and SSH.
+VM subnet **`10.0.0.0/24`**. A Docker bridge could be allocated `10.0.0.0/24`: the same range as
+the VM's own subnet, breaking routing to the gateway, the internet, and SSH.
 
 ## Decision
 
@@ -44,7 +44,7 @@ flowchart LR
 - `172.16.0.0/12` is a single, clean range to trust in sshd `Match Address` and fail2ban `ignoreip`.
 
 **Negative**
-- A setting to remember on every reinstall/upgrade — encoded in scripts to avoid drift.
+- A setting to remember on every reinstall/upgrade, encoded in scripts to avoid drift.
 
 ## Alternatives considered
 

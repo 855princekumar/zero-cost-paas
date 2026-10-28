@@ -1,8 +1,8 @@
-# 05 · Provisioning — Network, VM, First Boot
+# 05 · Provisioning: Network, VM, First Boot
 
 [← OCI API setup](04-oci-api-setup.md) · [Index](README.md) · [Next: DNS & TLS →](06-dns-and-tls.md)
 
-> **TL;DR** — [`provision.py`](../scripts/provision.py) creates a VCN, internet gateway, route,
+> **TL;DR**: [`provision.py`](../scripts/provision.py) creates a VCN, internet gateway, route,
 > security list and public subnet, then launches Ubuntu 24.04 with a cloud-init that installs Docker,
 > swap, fail2ban and a firewall helper. Every call is idempotent (resources are found by display
 > name). A1 launches retry across fault domains and fall back to a smaller shape that is grown later.
@@ -10,7 +10,7 @@
 ```bash
 $ python scripts/provision.py network   # VCN, IGW, route table, security list, subnet
 $ python scripts/provision.py micro     # AMD E2.1.Micro stand-in (50 GB boot)
-# The A1 (ARM) VM is launched by migrate.py — see chapter 11.
+# The A1 (ARM) VM is launched by migrate.py: see chapter 11.
 ```
 
 ## 1. Network
@@ -29,7 +29,7 @@ flowchart LR
 | Internet gateway | `free-vm-igw` | enabled |
 | Route table | VCN default | `0.0.0.0/0 → free-vm-igw` |
 | Subnet | `free-vm-subnet` | `10.0.0.0/24`, public IPs allowed, DNS label `public` |
-| Security list | VCN default | see below — **replaced wholesale** on every run |
+| Security list | VCN default | see below, **replaced wholesale** on every run |
 
 ### Security list (exact rules)
 
@@ -130,7 +130,7 @@ it in place later (one reboot).
 ### Gotcha: Oracle's iptables REJECT position
 
 Oracle's Ubuntu images ship `/etc/iptables/rules.v4` that ends `INPUT` with
-`REJECT --reject-with icmp-host-prohibited`. On this image the REJECT was **rule 5**, not 6 —
+`REJECT --reject-with icmp-host-prohibited`. On this image the REJECT was **rule 5**, not 6 -
 inserting at a fixed position put ports 80/443 *after* the REJECT. The helper finds the line number:
 
 ```sh

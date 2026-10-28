@@ -1,8 +1,8 @@
-# 06 · DNS & TLS — Free Domain, Free Certificates
+# 06 · DNS & TLS: Free Domain, Free Certificates
 
 [← Provisioning](05-provisioning.md) · [Index](README.md) · [Next: Coolify →](07-coolify.md)
 
-> **TL;DR** — DuckDNS gives a free `<DUCKDNS_SUBDOMAIN>.duckdns.org` and **every sub-name
+> **TL;DR**: DuckDNS gives a free `<DUCKDNS_SUBDOMAIN>.duckdns.org` and **every sub-name
 > `*.<BASE_DOMAIN>` resolves to the same IP**, so each app gets a domain with zero DNS work. A
 > systemd timer keeps the record pointed at the VM. Traefik obtains a Let's Encrypt certificate per
 > hostname via HTTP-01 and renews it automatically. Cloudflare can't front a DuckDNS name; that is a
@@ -47,7 +47,7 @@ OnBootSec=1min
 OnUnitActiveSec=5min
 ```
 
-`ip=` (empty) makes DuckDNS use the request's source address — the VM's public IP via the IGW.
+`ip=` (empty) makes DuckDNS use the request's source address, the VM's public IP via the IGW.
 During migration the **old VM's timer is disabled** and the new VM's enabled, so the record cannot
 flip back ([11 · Migration](11-amd-to-arm-migration.md)).
 
@@ -74,7 +74,7 @@ sequenceDiagram
 | Property | Value |
 |---|---|
 | Challenge | HTTP-01 on port 80 (why port 80 stays open) |
-| Scope | One certificate **per hostname** (no wildcard cert — that would need DNS-01) |
+| Scope | One certificate **per hostname** (no wildcard cert, that would need DNS-01) |
 | Validity | 90 days, auto-renewed by Traefik |
 | Storage | `/data/coolify/proxy/acme.json` (migrated with the platform) |
 | Time to first cert | ~2 minutes after deploy in testing |
@@ -92,9 +92,9 @@ Location: https://<BASE_DOMAIN>/
 ```
 
 While a certificate is being issued, clients briefly see Traefik's default self-signed certificate;
-this is expected for the first ~1–2 minutes of a new hostname.
+this is expected for the first ~1-2 minutes of a new hostname.
 
-The health checker emails if the dashboard certificate is < 14 days from expiry (renewal failed) —
+The health checker emails if the dashboard certificate is < 14 days from expiry (renewal failed) -
 see [09 · Monitoring](09-monitoring-and-alerts.md).
 
 ## 3. Why not Cloudflare?
@@ -106,10 +106,10 @@ random `trycloudflare.com` hostnames).
 
 | Option | Cost | Cloudflare? | Notes |
 |---|---|---|---|
-| DuckDNS (current) | $0 | ❌ | Instant, wildcard, API updates |
-| `eu.org` free domain | $0 | ✅ | Manual approval, can take weeks |
-| `is-a.dev` / similar | $0 | ⚠️ | Via GitHub PR, policy restrictions |
-| Own domain | ~$1–10/yr | ✅ | Breaks the strict $0 constraint |
+| DuckDNS (current) | $0 | No | Instant, wildcard, API updates |
+| `eu.org` free domain | $0 | Yes | Manual approval, can take weeks |
+| `is-a.dev` / similar | $0 | Partial | Via GitHub PR, policy restrictions |
+| Own domain | ~$1-10/yr | Yes | Breaks the strict $0 constraint |
 
 Upgrade path when a Cloudflare-capable domain exists: move DNS to Cloudflare, set records to
 **proxied**, switch Traefik to DNS-01 (wildcard cert) or Cloudflare origin certs, and restrict

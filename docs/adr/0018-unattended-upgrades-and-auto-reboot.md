@@ -1,6 +1,6 @@
 # ADR-0018: Unattended upgrades and automatic reboot
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0014](0014-automated-security-guardrails-and-lockdown.md), [ADR-0013](0013-gmail-smtp-for-alerts.md), [Security automation](../10-security-automation.md)
 
 ## Context

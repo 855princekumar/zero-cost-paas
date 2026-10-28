@@ -1,6 +1,6 @@
 # ADR-0003: Stay on a free-only tenancy (no Pay-As-You-Go)
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0001](0001-oracle-cloud-always-free.md), [ADR-0004](0004-ampere-a1-target-amd-micro-standin.md), [Cost guardrails](../12-cost-guardrails.md)
 
 ## Context
@@ -13,7 +13,7 @@ Facts gathered via the API (Subscriptions + Limits):
 |---|---|
 | Subscription `payment_model` | `FREE_TRIAL`, trial window ended → **free-only** tenancy |
 | A1 core / memory limit | **2 OCPU / 12 GB** (documented maximum is 4 / 24) |
-| E4/E5/Standard2 limits | **0** — paid shapes cannot be launched at all |
+| E4/E5/Standard2 limits | **0**: paid shapes cannot be launched at all |
 | Block storage | 200 GB |
 
 Upgrading to Pay-As-You-Go (PAYG) typically raises A1 limits and capacity priority and removes

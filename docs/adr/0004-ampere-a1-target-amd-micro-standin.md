@@ -1,16 +1,16 @@
 # ADR-0004: Ampere A1 as the target, AMD Micro as a stand-in
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0015](0015-self-migrating-amd-to-arm.md), [Provisioning](../05-provisioning.md), [Migration](../11-amd-to-arm-migration.md)
 
 ## Context
 
-The first A1 launch attempts (2 OCPU / 12 GB) returned **`Out of host capacity`** repeatedly — the
+The first A1 launch attempts (2 OCPU / 12 GB) returned **`Out of host capacity`** repeatedly, the
 home region had no free ARM hosts. Waiting could take hours to days. Meanwhile the owner wanted a
 usable server *now*.
 
 Storage is a shared pool of **200 GB** across all boot and block volumes. A boot volume has a
-minimum of ~47–50 GB.
+minimum of ~47-50 GB.
 
 | Shape | CPU | RAM | Availability |
 |---|---|---|---|

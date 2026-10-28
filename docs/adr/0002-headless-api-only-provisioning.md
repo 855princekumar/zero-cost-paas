@@ -1,13 +1,13 @@
 # ADR-0002: Headless, API-only provisioning
 
-- **Status:** Accepted — 2026-10-28
+- **Status:** Accepted: 2026-10-28
 - **Related:** [ADR-0016](0016-least-privilege-automation-identity.md), [OCI API setup](../04-oci-api-setup.md), [Provisioning](../05-provisioning.md), [`scripts/provision.py`](../../scripts/provision.py)
 
 ## Context
 
 Console click-ops is not reproducible, not reviewable and not shareable. The only manual step
 we accept is creating an **API signing key** for the user (Profile → API keys) once; everything
-after that — network, firewall, VMs, budgets, IAM — must be code.
+after that, network, firewall, VMs, budgets, IAM, must be code.
 
 The obvious tool, `oci-cli`, failed to install on the workstation's **Python 3.14**: it pins an older
 **PyYAML** that has no prebuilt wheel for 3.14 and needs a C compiler (*"Microsoft Visual C++ 14.0

@@ -1,6 +1,6 @@
 # ADR-0016: Least-privilege automation identity
 
-- **Status:** Accepted — 2026-10-28 (creation requires explicit owner approval)
+- **Status:** Accepted: 2026-10-28 (creation requires explicit owner approval)
 - **Related:** [ADR-0002](0002-headless-api-only-provisioning.md), [ADR-0015](0015-self-migrating-amd-to-arm.md), [ADR-0017](0017-secrets-handling.md)
 
 ## Context
@@ -21,7 +21,7 @@ Create a dedicated identity (`<OCI_AUTOMATION_USER>`, e.g. `vps-automation`):
   Allow group vps-automation to use virtual-network-family in tenancy
   Allow group vps-automation to inspect compartments in tenancy
   ```
-- **Capabilities:** API keys only — console password, auth tokens, SMTP credentials, customer secret
+- **Capabilities:** API keys only: console password, auth tokens, SMTP credentials, customer secret
   keys, OAuth and DB credentials **disabled**.
 - Fresh RSA-2048 API key generated locally; the private key is copied to the VM as root-only 600.
 - After `finalize.py` completes, the key is **shredded** on the ARM VM and the migrator's SSH key is

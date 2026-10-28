@@ -1,140 +1,141 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="800" viewBox="0 0 1300 800" role="img" aria-labelledby="t d">
-  <title id="t">HTTPS request lifecycle and certificate issuance</title>
-  <desc id="d">Top: a browser request resolves the wildcard DuckDNS name, passes the OCI Security List on port 443, is DNAT'd by Docker to Traefik, which terminates TLS using the SNI-matched Let's Encrypt certificate and routes by Host header to the app container. Bottom: the ACME HTTP-01 sequence by which Traefik obtains and renews certificates.</desc>
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0b1220"/>
-      <stop offset="1" stop-color="#101826"/>
-    </linearGradient>
-    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#14b8a6"/>
-    </marker>
-    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#22c55e"/>
-    </marker>
-    <marker id="y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#f59e0b"/>
-    </marker>
-  </defs>
-  <rect width="1300" height="800" fill="url(#bg)"/>
-
-  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
-    <text x="30" y="42" font-size="24" font-weight="700" fill="#f8fafc">Request lifecycle — https://&lt;APP_NAME&gt;.&lt;BASE_DOMAIN&gt;</text>
-    <text x="30" y="64" font-size="13" fill="#94a3b8">One public IP, unlimited apps: wildcard DNS + SNI routing + per-host certificates</text>
-
-    <!-- step cards -->
-    <g font-size="12">
-      <g transform="translate(30,96)">
-        <rect width="190" height="210" rx="14" fill="#111827" stroke="#64748b" stroke-width="1.5"/>
-        <circle cx="28" cy="30" r="15" fill="#64748b"/><text x="28" y="35" text-anchor="middle" font-weight="800" fill="#fff" font-size="14">1</text>
-        <text x="52" y="35" font-size="15" font-weight="700" fill="#f1f5f9">Browser</text>
-        <text x="16" y="70" fill="#cbd5e1">GET https://</text>
-        <text x="16" y="88" fill="#cbd5e1">&lt;APP_NAME&gt;.</text>
-        <text x="16" y="106" fill="#cbd5e1">&lt;BASE_DOMAIN&gt;/</text>
-        <text x="16" y="140" fill="#94a3b8">HTTP :80 also accepted,</text>
-        <text x="16" y="158" fill="#94a3b8">answered with a 302 to</text>
-        <text x="16" y="176" fill="#94a3b8">HTTPS by Traefik</text>
-      </g>
-      <g transform="translate(240,96)">
-        <rect width="190" height="210" rx="14" fill="#1c1a12" stroke="#f59e0b" stroke-width="1.5"/>
-        <circle cx="28" cy="30" r="15" fill="#f59e0b"/><text x="28" y="35" text-anchor="middle" font-weight="800" fill="#1c1917" font-size="14">2</text>
-        <text x="52" y="35" font-size="15" font-weight="700" fill="#fde68a">DNS</text>
-        <text x="16" y="70" fill="#cbd5e1">DuckDNS answers for</text>
-        <text x="16" y="88" fill="#cbd5e1">*.&lt;BASE_DOMAIN&gt;</text>
-        <text x="16" y="106" fill="#cbd5e1">→ &lt;VM_PUBLIC_IP&gt;</text>
-        <text x="16" y="140" fill="#94a3b8">TTL 60 s · record kept</text>
-        <text x="16" y="158" fill="#94a3b8">fresh by duckdns.timer</text>
-        <text x="16" y="176" fill="#94a3b8">every 5 min on the VM</text>
-      </g>
-      <g transform="translate(450,96)">
-        <rect width="190" height="210" rx="14" fill="#1f1311" stroke="#C74634" stroke-width="1.5"/>
-        <circle cx="28" cy="30" r="15" fill="#C74634"/><text x="28" y="35" text-anchor="middle" font-weight="800" fill="#fff" font-size="14">3</text>
-        <text x="52" y="35" font-size="15" font-weight="700" fill="#fecaca">OCI edge</text>
-        <text x="16" y="70" fill="#cbd5e1">Internet gateway →</text>
-        <text x="16" y="88" fill="#cbd5e1">Security List allows</text>
-        <text x="16" y="106" fill="#86efac" font-weight="700">tcp/443 ✓  tcp/80 ✓</text>
-        <text x="16" y="140" fill="#94a3b8">stateful: return</text>
-        <text x="16" y="158" fill="#94a3b8">traffic allowed</text>
-        <text x="16" y="176" fill="#94a3b8">automatically</text>
-      </g>
-      <g transform="translate(660,96)">
-        <rect width="190" height="210" rx="14" fill="#2a1414" stroke="#ef4444" stroke-width="1.5"/>
-        <circle cx="28" cy="30" r="15" fill="#ef4444"/><text x="28" y="35" text-anchor="middle" font-weight="800" fill="#fff" font-size="14">4</text>
-        <text x="52" y="35" font-size="15" font-weight="700" fill="#fecaca">VM netfilter</text>
-        <text x="16" y="70" fill="#cbd5e1">PREROUTING DNAT</text>
-        <text x="16" y="88" fill="#cbd5e1">:443 → Traefik container</text>
-        <text x="16" y="106" fill="#cbd5e1">FORWARD → DOCKER-USER</text>
-        <text x="16" y="140" fill="#94a3b8">fail2ban bans for</text>
-        <text x="16" y="158" fill="#94a3b8">login brute force are</text>
-        <text x="16" y="176" fill="#94a3b8">enforced here</text>
-      </g>
-      <g transform="translate(870,96)">
-        <rect width="190" height="210" rx="14" fill="#0f2a2a" stroke="#14b8a6" stroke-width="1.5"/>
-        <circle cx="28" cy="30" r="15" fill="#14b8a6"/><text x="28" y="35" text-anchor="middle" font-weight="800" fill="#042f2e" font-size="14">5</text>
-        <text x="52" y="35" font-size="15" font-weight="700" fill="#99f6e4">Traefik</text>
-        <text x="16" y="70" fill="#cbd5e1">TLS handshake: SNI picks</text>
-        <text x="16" y="88" fill="#cbd5e1">cert from acme.json</text>
-        <text x="16" y="106" fill="#cbd5e1">router: Host(`&lt;APP&gt;…`)</text>
-        <text x="16" y="140" fill="#94a3b8">labels written by Coolify</text>
-        <text x="16" y="158" fill="#94a3b8">when you set a domain</text>
-        <text x="16" y="176" fill="#94a3b8">on a resource</text>
-      </g>
-      <g transform="translate(1080,96)">
-        <rect width="190" height="210" rx="14" fill="#132033" stroke="#38bdf8" stroke-width="1.5"/>
-        <circle cx="28" cy="30" r="15" fill="#38bdf8"/><text x="28" y="35" text-anchor="middle" font-weight="800" fill="#0b1220" font-size="14">6</text>
-        <text x="52" y="35" font-size="15" font-weight="700" fill="#bae6fd">App container</text>
-        <text x="16" y="70" fill="#cbd5e1">plain HTTP on the</text>
-        <text x="16" y="88" fill="#cbd5e1">private Docker network</text>
-        <text x="16" y="106" fill="#cbd5e1">(172.20.x.x)</text>
-        <text x="16" y="140" fill="#94a3b8">no published ports;</text>
-        <text x="16" y="158" fill="#94a3b8">only reachable through</text>
-        <text x="16" y="176" fill="#94a3b8">Traefik</text>
-      </g>
-    </g>
-    <g fill="none" stroke="#14b8a6" stroke-width="3">
-      <path d="M220 200 H240" marker-end="url(#a)"/>
-      <path d="M430 200 H450" marker-end="url(#a)"/>
-      <path d="M640 200 H660" marker-end="url(#a)"/>
-      <path d="M850 200 H870" marker-end="url(#a)"/>
-      <path d="M1060 200 H1080" marker-end="url(#a)"/>
-      <path d="M1175 306 V336 H125 V306" stroke-dasharray="7 5" marker-end="url(#a)"/>
-    </g>
-    <text x="560" y="356" font-size="13" fill="#5eead4">response travels back over the same encrypted connection</text>
-
-    <!-- ACME panel -->
-    <rect x="30" y="386" width="1240" height="384" rx="16" fill="#0d1b14" stroke="#22c55e" stroke-width="1.5"/>
-    <text x="54" y="420" font-size="18" font-weight="700" fill="#bbf7d0">Certificate issuance — ACME HTTP-01 (automatic, free)</text>
-    <text x="54" y="442" font-size="13" fill="#94a3b8">Triggered the first time Traefik sees a new Host rule; renewed automatically ~30 days before the 90-day expiry.</text>
-
-    <!-- lifelines -->
-    <g font-size="14" font-weight="700" text-anchor="middle">
-      <rect x="110" y="462" width="170" height="40" rx="10" fill="#0f2a2a" stroke="#14b8a6"/><text x="195" y="488" fill="#99f6e4">Traefik</text>
-      <rect x="545" y="462" width="170" height="40" rx="10" fill="#1e293b" stroke="#22c55e"/><text x="630" y="488" fill="#bbf7d0">Let's Encrypt</text>
-      <rect x="980" y="462" width="170" height="40" rx="10" fill="#1c1a12" stroke="#f59e0b"/><text x="1065" y="488" fill="#fde68a">DuckDNS</text>
-    </g>
-    <g stroke="#334155" stroke-width="2" stroke-dasharray="4 4">
-      <path d="M195 502 V752"/><path d="M630 502 V752"/><path d="M1065 502 V752"/>
-    </g>
-    <g font-size="13" fill="none" stroke-width="2.2">
-      <path d="M195 530 H626" stroke="#22c55e" marker-end="url(#g)"/>
-      <text x="215" y="524" fill="#d1fae5" stroke="none">① new order for &lt;APP_NAME&gt;.&lt;BASE_DOMAIN&gt;</text>
-      <path d="M630 566 H199" stroke="#22c55e" marker-end="url(#g)"/>
-      <text x="215" y="560" fill="#d1fae5" stroke="none">② challenge token</text>
-      <path d="M630 602 H1061" stroke="#f59e0b" stroke-dasharray="6 4" marker-end="url(#y)"/>
-      <text x="650" y="596" fill="#fde68a" stroke="none">③ resolve host → &lt;VM_PUBLIC_IP&gt;</text>
-      <path d="M630 638 H199" stroke="#22c55e" marker-end="url(#g)"/>
-      <text x="215" y="632" fill="#d1fae5" stroke="none">④ GET http://…/.well-known/acme-challenge/&lt;token&gt; (port 80)</text>
-      <path d="M195 674 H626" stroke="#22c55e" marker-end="url(#g)"/>
-      <text x="215" y="668" fill="#d1fae5" stroke="none">⑤ key authorization → validated · CSR finalized</text>
-      <path d="M630 710 H199" stroke="#22c55e" marker-end="url(#g)"/>
-      <text x="215" y="704" fill="#d1fae5" stroke="none">⑥ signed certificate → stored in /data/coolify/proxy/acme.json</text>
-    </g>
-    <g font-size="12" fill="#94a3b8">
-      <text x="760" y="660">Why it works for free:</text>
-      <text x="760" y="680">• port 80 stays open for challenges</text>
-      <text x="760" y="698">• DuckDNS is on the Public Suffix List, so</text>
-      <text x="760" y="716">  rate limits apply per &lt;BASE_DOMAIN&gt;</text>
-      <text x="760" y="734">• acme.json migrates with /data/coolify</text>
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1400" height="880" viewBox="0 0 1400 880" role="img" aria-labelledby="t d">
+<title id="t">HTTPS request lifecycle and certificate issuance</title>
+<desc id="d">Top: a browser request resolves the wildcard DuckDNS name, passes the OCI Security List on port 443, is DNAT'd by Docker to Traefik, which terminates TLS with the SNI-matched Let's Encrypt certificate and routes by Host header to the app container; the response returns over the same connection. Bottom: the ACME HTTP-01 sequence by which Traefik obtains and renews certificates. Animated dots show the order.</desc>
+<style>
+.f { stroke-dasharray: 7 5; animation: flow 1.1s linear infinite; }
+.fs { stroke-dasharray: 7 5; animation: flow 1.8s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -24; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<defs>
+<filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/></filter>
+<filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<marker id="m-0d9488" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0d9488"/></marker><marker id="m-16a34a" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#16a34a"/></marker><marker id="m-475569" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#475569"/></marker><marker id="m-d97706" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#d97706"/></marker><marker id="m-4f46e5" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4f46e5"/></marker><marker id="m-e11d48" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e11d48"/></marker><marker id="m-0284c7" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0284c7"/></marker><marker id="m-7c3aed" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7c3aed"/></marker>
+</defs>
+<rect x="0.75" y="0.75" width="1398.5" height="878.5" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<text x="40" y="46" font-size="26" fill="#0f172a" font-weight="700">Request lifecycle: https://&lt;APP_NAME&gt;.&lt;BASE_DOMAIN&gt;</text>
+<text x="40" y="72" font-size="14" fill="#64748b">One public IP, unlimited apps: wildcard DNS + SNI routing + per-host certificates</text>
+<rect x="28" y="100" width="192" height="220" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="56" cy="130" r="14" fill="#64748b"/>
+<text x="56" y="135" font-size="14" fill="#ffffff" font-weight="800" text-anchor="middle">1</text>
+<text x="80" y="136" font-size="15" fill="#0f172a" font-weight="700">Browser</text>
+<text x="44" y="174" font-size="12" fill="#0f172a">GET https://</text>
+<text x="44" y="193" font-size="12" fill="#0f172a">&lt;APP_NAME&gt;.</text>
+<text x="44" y="212" font-size="12" fill="#0f172a">&lt;BASE_DOMAIN&gt;/</text>
+<text x="44" y="250" font-size="12" fill="#64748b">HTTP :80 is accepted too</text>
+<text x="44" y="269" font-size="12" fill="#64748b">and redirected (302)</text>
+<text x="44" y="288" font-size="12" fill="#64748b">to HTTPS by Traefik</text>
+<path id="r0" class="f" d="M223 210.0 H253" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#m-0d9488)"/>
+<rect x="256" y="100" width="192" height="220" rx="14" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="284" cy="130" r="14" fill="#d97706"/>
+<text x="284" y="135" font-size="14" fill="#ffffff" font-weight="800" text-anchor="middle">2</text>
+<text x="308" y="136" font-size="15" fill="#0f172a" font-weight="700">DNS</text>
+<text x="272" y="174" font-size="12" fill="#0f172a">DuckDNS answers</text>
+<text x="272" y="193" font-size="12" fill="#0f172a">*.&lt;BASE_DOMAIN&gt;</text>
+<text x="272" y="212" font-size="12" fill="#0f172a">with &lt;VM_PUBLIC_IP&gt;</text>
+<text x="272" y="250" font-size="12" fill="#64748b">TTL 60 s; record kept</text>
+<text x="272" y="269" font-size="12" fill="#64748b">fresh by duckdns.timer</text>
+<text x="272" y="288" font-size="12" fill="#64748b">every 5 min on the VM</text>
+<path id="r1" class="f" d="M451 210.0 H481" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#m-0d9488)"/>
+<rect x="484" y="100" width="192" height="220" rx="14" fill="#ffffff" stroke="#C74634" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="512" cy="130" r="14" fill="#C74634"/>
+<text x="512" y="135" font-size="14" fill="#ffffff" font-weight="800" text-anchor="middle">3</text>
+<text x="536" y="136" font-size="15" fill="#0f172a" font-weight="700">OCI edge</text>
+<text x="500" y="174" font-size="12" fill="#0f172a">Internet gateway</text>
+<text x="500" y="193" font-size="12" fill="#0f172a">then Security List:</text>
+<text x="500" y="212" font-size="12" fill="#0d9488" font-weight="600">allow tcp/443, tcp/80</text>
+<text x="500" y="250" font-size="12" fill="#64748b">stateful: return</text>
+<text x="500" y="269" font-size="12" fill="#64748b">traffic is allowed</text>
+<text x="500" y="288" font-size="12" fill="#64748b">automatically</text>
+<path id="r2" class="f" d="M679 210.0 H709" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#m-0d9488)"/>
+<rect x="712" y="100" width="192" height="220" rx="14" fill="#ffffff" stroke="#e11d48" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="740" cy="130" r="14" fill="#e11d48"/>
+<text x="740" y="135" font-size="14" fill="#ffffff" font-weight="800" text-anchor="middle">4</text>
+<text x="764" y="136" font-size="15" fill="#0f172a" font-weight="700">VM netfilter</text>
+<text x="728" y="174" font-size="12" fill="#0f172a">PREROUTING: DNAT</text>
+<text x="728" y="193" font-size="12" fill="#0f172a">:443 to Traefik</text>
+<text x="728" y="212" font-size="12" fill="#0f172a">FORWARD, DOCKER-USER</text>
+<text x="728" y="250" font-size="12" fill="#64748b">fail2ban bans for</text>
+<text x="728" y="269" font-size="12" fill="#64748b">login brute force</text>
+<text x="728" y="288" font-size="12" fill="#64748b">are enforced here</text>
+<path id="r3" class="f" d="M907 210.0 H937" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#m-0d9488)"/>
+<rect x="940" y="100" width="192" height="220" rx="14" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="968" cy="130" r="14" fill="#0d9488"/>
+<text x="968" y="135" font-size="14" fill="#ffffff" font-weight="800" text-anchor="middle">5</text>
+<text x="992" y="136" font-size="15" fill="#0f172a" font-weight="700">Traefik</text>
+<text x="956" y="174" font-size="12" fill="#0f172a">TLS: SNI picks the</text>
+<text x="956" y="193" font-size="12" fill="#0f172a">cert from acme.json</text>
+<text x="956" y="212" font-size="12" fill="#0f172a">router: Host(&lt;APP&gt;)</text>
+<text x="956" y="250" font-size="12" fill="#64748b">labels written by</text>
+<text x="956" y="269" font-size="12" fill="#64748b">Coolify when you set</text>
+<text x="956" y="288" font-size="12" fill="#64748b">a domain on a resource</text>
+<path id="r4" class="f" d="M1135 210.0 H1165" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#m-0d9488)"/>
+<rect x="1168" y="100" width="192" height="220" rx="14" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="1196" cy="130" r="14" fill="#0284c7"/>
+<text x="1196" y="135" font-size="14" fill="#ffffff" font-weight="800" text-anchor="middle">6</text>
+<text x="1220" y="136" font-size="15" fill="#0f172a" font-weight="700">App container</text>
+<text x="1184" y="174" font-size="12" fill="#0f172a">plain HTTP on the</text>
+<text x="1184" y="193" font-size="12" fill="#0f172a">private Docker net</text>
+<text x="1184" y="212" font-size="12" fill="#0f172a">(172.20.x.x)</text>
+<text x="1184" y="250" font-size="12" fill="#64748b">no published ports;</text>
+<text x="1184" y="269" font-size="12" fill="#64748b">reachable only</text>
+<text x="1184" y="288" font-size="12" fill="#64748b">through Traefik</text>
+<path id="ret" class="fs" d="M1264.0 323 V360 H124.0 V325" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#m-0d9488)"/>
+<rect x="28" y="392" width="1344" height="462" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+<text x="52" y="424" font-size="17" fill="#15803d" font-weight="700">Certificate issuance: ACME HTTP-01 (automatic, free)</text>
+<text x="52" y="446" font-size="12" fill="#64748b">Triggered the first time Traefik sees a new Host rule; renewed automatically about 30 days before the 90-day expiry.</text>
+<rect x="140" y="468" width="180" height="40" rx="10" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" filter="url(#shadow)"/>
+<text x="230" y="493" font-size="14" fill="#0d9488" font-weight="700" text-anchor="middle">Traefik</text>
+<path d="M230 510 V838" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 5"/>
+<rect x="670" y="468" width="180" height="40" rx="10" fill="#ffffff" stroke="#16a34a" stroke-width="1.5" filter="url(#shadow)"/>
+<text x="760" y="493" font-size="14" fill="#16a34a" font-weight="700" text-anchor="middle">Let's Encrypt</text>
+<path d="M760 510 V838" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 5"/>
+<rect x="1090" y="468" width="180" height="40" rx="10" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#shadow)"/>
+<text x="1180" y="493" font-size="14" fill="#d97706" font-weight="700" text-anchor="middle">DuckDNS</text>
+<path d="M1180 510 V838" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 5"/>
+<path id="m0" class="f" d="M236 552 H754" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#m-16a34a)"/>
+<circle cx="348" cy="539" r="9" fill="#16a34a"/>
+<text x="348" y="543" font-size="11" fill="#ffffff" font-weight="800" text-anchor="middle">1</text>
+<text x="495.0" y="543" font-size="12" fill="#0f172a" text-anchor="middle">new order for &lt;APP_NAME&gt;.&lt;BASE_DOMAIN&gt;</text>
+<path id="m1" class="f" d="M754 598 H236" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#m-16a34a)"/>
+<circle cx="426" cy="585" r="9" fill="#16a34a"/>
+<text x="426" y="589" font-size="11" fill="#ffffff" font-weight="800" text-anchor="middle">2</text>
+<text x="495.0" y="589" font-size="12" fill="#0f172a" text-anchor="middle">challenge token</text>
+<path id="m2" class="f" d="M766 644 H1174" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#m-d97706)"/>
+<circle cx="785" cy="631" r="9" fill="#d97706"/>
+<text x="785" y="635" font-size="11" fill="#ffffff" font-weight="800" text-anchor="middle">3</text>
+<text x="970.0" y="635" font-size="12" fill="#0f172a" text-anchor="middle">resolve &lt;APP_NAME&gt;.&lt;BASE_DOMAIN&gt; → &lt;VM_PUBLIC_IP&gt;</text>
+<path id="m3" class="f" d="M754 690 H236" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#m-16a34a)"/>
+<circle cx="307" cy="677" r="9" fill="#16a34a"/>
+<text x="307" y="681" font-size="11" fill="#ffffff" font-weight="800" text-anchor="middle">4</text>
+<text x="495.0" y="681" font-size="12" fill="#0f172a" text-anchor="middle">GET /.well-known/acme-challenge/&lt;token&gt; on port 80</text>
+<path id="m4" class="f" d="M236 736 H754" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#m-16a34a)"/>
+<circle cx="331" cy="723" r="9" fill="#16a34a"/>
+<text x="331" y="727" font-size="11" fill="#ffffff" font-weight="800" text-anchor="middle">5</text>
+<text x="495.0" y="727" font-size="12" fill="#0f172a" text-anchor="middle">key authorization: validated, CSR finalized</text>
+<path id="m5" class="f" d="M754 782 H236" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#m-16a34a)"/>
+<circle cx="276" cy="769" r="9" fill="#16a34a"/>
+<text x="276" y="773" font-size="11" fill="#ffffff" font-weight="800" text-anchor="middle">6</text>
+<text x="495.0" y="773" font-size="12" fill="#0f172a" text-anchor="middle">signed certificate, stored in /data/coolify/proxy/acme.json</text>
+<rect x="790" y="692" width="360" height="128" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#shadow)"/>
+<text x="806" y="716" font-size="13" fill="#0f172a" font-weight="700">Why it works for free</text>
+<text x="806" y="740" font-size="12" fill="#64748b">• port 80 stays open for HTTP-01 challenges</text>
+<text x="806" y="759" font-size="12" fill="#64748b">• DuckDNS is on the Public Suffix List, so rate</text>
+<text x="815" y="778" font-size="12" fill="#64748b">limits apply per &lt;BASE_DOMAIN&gt;, not duckdns.org</text>
+<text x="806" y="797" font-size="12" fill="#64748b">• acme.json moves with /data/coolify on migration</text>
+<circle r="4" fill="#0d9488" filter="url(#glow)"><animateMotion dur="3.0s" begin="-0.0s" repeatCount="indefinite"><mpath xlink:href="#r0"/></animateMotion></circle>
+<circle r="4" fill="#0d9488" filter="url(#glow)"><animateMotion dur="3.0s" begin="-0.5s" repeatCount="indefinite"><mpath xlink:href="#r1"/></animateMotion></circle>
+<circle r="4" fill="#0d9488" filter="url(#glow)"><animateMotion dur="3.0s" begin="-1.0s" repeatCount="indefinite"><mpath xlink:href="#r2"/></animateMotion></circle>
+<circle r="4" fill="#0d9488" filter="url(#glow)"><animateMotion dur="3.0s" begin="-1.5s" repeatCount="indefinite"><mpath xlink:href="#r3"/></animateMotion></circle>
+<circle r="4" fill="#0d9488" filter="url(#glow)"><animateMotion dur="3.0s" begin="-2.0s" repeatCount="indefinite"><mpath xlink:href="#r4"/></animateMotion></circle>
+<circle r="4" fill="#0d9488" filter="url(#glow)"><animateMotion dur="4.0s" begin="-1.5s" repeatCount="indefinite"><mpath xlink:href="#ret"/></animateMotion></circle>
+<g><rect x="528.9" y="350.0" width="330.2" height="20" rx="10.0" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/><text x="694.0" y="364.0" font-size="11" fill="#0d9488" text-anchor="middle">response returns over the same encrypted connection</text></g>
+<circle r="4" fill="#16a34a" filter="url(#glow)"><animateMotion dur="9.0s" begin="-0.0s" repeatCount="indefinite"><mpath xlink:href="#m0"/></animateMotion></circle>
+<circle r="4" fill="#16a34a" filter="url(#glow)"><animateMotion dur="9.0s" begin="-1.5s" repeatCount="indefinite"><mpath xlink:href="#m1"/></animateMotion></circle>
+<circle r="4" fill="#d97706" filter="url(#glow)"><animateMotion dur="9.0s" begin="-3.0s" repeatCount="indefinite"><mpath xlink:href="#m2"/></animateMotion></circle>
+<circle r="4" fill="#16a34a" filter="url(#glow)"><animateMotion dur="9.0s" begin="-4.5s" repeatCount="indefinite"><mpath xlink:href="#m3"/></animateMotion></circle>
+<circle r="4" fill="#16a34a" filter="url(#glow)"><animateMotion dur="9.0s" begin="-6.0s" repeatCount="indefinite"><mpath xlink:href="#m4"/></animateMotion></circle>
+<circle r="4" fill="#16a34a" filter="url(#glow)"><animateMotion dur="9.0s" begin="-7.5s" repeatCount="indefinite"><mpath xlink:href="#m5"/></animateMotion></circle>
+</g>
 </svg>

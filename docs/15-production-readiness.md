@@ -1,8 +1,8 @@
-# 15 · Production Readiness — Scorecard, Gaps, Roadmap
+# 15 · Production Readiness: Scorecard, Gaps, Roadmap
 
 [← Troubleshooting](14-troubleshooting.md) · [Index](README.md) · [ADRs →](adr/README.md)
 
-> **TL;DR** — Strong on perimeter security, patching, automation and cost control; honest gaps in
+> **TL;DR**: Strong on perimeter security, patching, automation and cost control; honest gaps in
 > **offsite backups**, **edge protection (CDN/WAF)**, **external uptime monitoring** and
 > **single-node availability**. Every gap has a $0 path on the roadmap.
 
@@ -10,25 +10,25 @@
 
 | Area | Status | Notes |
 |---|---|---|
-| Infrastructure as code (API-only) | ✅ | Idempotent scripts; no console clicks |
-| Cost control | ✅ | Free-only account, paid limits 0, budget tripwire |
-| Network exposure | ✅ | 3 ports; verified by external scan |
-| SSH | ✅ | Key-only, non-standard port, no public root, fail2ban |
-| Dashboard auth | ✅ | Single admin, registration off, TOTP 2FA, brute-force bans |
-| TLS | ✅ | Let's Encrypt per host, auto-renew, expiry alert |
-| Patching | ✅ | Unattended OS + Docker, auto-reboot, same-day Coolify security upgrades |
-| Vulnerability intelligence | ✅ | GitHub advisories + CISA KEV, filtered |
-| Intrusion response | ✅ | Indicator checks + lockdown (commodity threats) |
-| Alerting | ✅ | Email with cooldowns, daily report |
-| Secrets handling | ✅ | Root-only files, git-ignored `keys/`, placeholders in docs |
-| Migration / DR procedure | ✅ | Automated, dry-run tested |
-| Backups (offsite) | ⚠️ | Manual procedure only |
-| External uptime monitoring | ⚠️ | Internal checks only — a dead VM can't email |
-| Edge protection (CDN/WAF/DDoS) | ❌ | Impossible with DuckDNS |
-| High availability | ❌ | Single VM by design (free tier) |
-| Centralised logs / SIEM | ⚠️ | Local journald + audit log |
-| Image/dependency scanning | ⚠️ | Not yet |
-| CIS benchmark compliance | ⚠️ | Partially (sysctl, SSH); not audited |
+| Infrastructure as code (API-only) | Done | Idempotent scripts; no console clicks |
+| Cost control | Done | Free-only account, paid limits 0, budget tripwire |
+| Network exposure | Done | 3 ports; verified by external scan |
+| SSH | Done | Key-only, non-standard port, no public root, fail2ban |
+| Dashboard auth | Done | Single admin, registration off, TOTP 2FA, brute-force bans |
+| TLS | Done | Let's Encrypt per host, auto-renew, expiry alert |
+| Patching | Done | Unattended OS + Docker, auto-reboot, same-day Coolify security upgrades |
+| Vulnerability intelligence | Done | GitHub advisories + CISA KEV, filtered |
+| Intrusion response | Done | Indicator checks + lockdown (commodity threats) |
+| Alerting | Done | Email with cooldowns, daily report |
+| Secrets handling | Done | Root-only files, git-ignored `keys/`, placeholders in docs |
+| Migration / DR procedure | Done | Automated, dry-run tested |
+| Backups (offsite) | Partial | Manual procedure only |
+| External uptime monitoring | Partial | Internal checks only, a dead VM can't email |
+| Edge protection (CDN/WAF/DDoS) | Gap | Impossible with DuckDNS |
+| High availability | Gap | Single VM by design (free tier) |
+| Centralised logs / SIEM | Partial | Local journald + audit log |
+| Image/dependency scanning | Partial | Not yet |
+| CIS benchmark compliance | Partial | Partially (sysctl, SSH); not audited |
 
 ## 2. Roadmap ($0 options)
 
@@ -77,7 +77,7 @@ flowchart LR
 Production grade for a **single-operator, zero-budget** platform means: minimal attack surface,
 authenticated and audited control plane, timely patching without human latency, alerting on every
 failure mode the host can observe, documented recovery, and a tested path to bigger hardware. It
-does **not** mean multi-region HA or a managed WAF — those are explicit, documented trade-offs of the
+does **not** mean multi-region HA or a managed WAF, those are explicit, documented trade-offs of the
 $0 constraint.
 
 [ADR index →](adr/README.md)
