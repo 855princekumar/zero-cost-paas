@@ -29,10 +29,15 @@ If you find a security issue in the scripts or the documented setup, please repo
 | Dependency security fixes | Dependabot security updates open pull requests automatically (enabled) | When an advisory affects a dependency |
 | Dependency freshness | Dependabot version updates for GitHub Actions and `scripts/requirements.txt` (`dependabot.yml`) | Weekly |
 | Script quality | shellcheck, Python syntax, cloud-init YAML, SVG validity, relative links (`ci.yml`) | Every push |
-| Least-privilege CI | Workflows run with `contents: read` only | Always |
+| Least-privilege CI | Workflows run with `contents: read` (branch guard adds `issues: write` only) | Always |
+| Branch deletion | `main` is the default branch, which GitHub refuses to delete | Always |
+| Force-push prevention (local) | `.githooks/pre-push` rejects deleting or rewriting `main`; enable with `git config core.hooksPath .githooks` | Every push from a clone |
+| Force-push detection (remote) | `branch-guard.yml` fails and opens an alert issue with restore commands if `main` is force-pushed | Every push to `main` |
+| Dependency PR review | Dependabot PRs are merged only after every check passes on an up-to-date branch | Each PR |
 
-GitHub's hosted code-scanning and secret-scanning dashboards require GitHub Advanced Security on
-private repositories. The CI jobs above provide the same coverage without it. If the repository is
+Branch protection rules and rulesets require GitHub Pro for private repositories; the local hook,
+default-branch status and branch guard above are the free substitute. GitHub's hosted code-scanning
+and secret-scanning dashboards require GitHub Advanced Security on private repositories. The CI jobs above provide the same coverage without it. If the repository is
 made public, both dashboards become free: enable them under **Settings > Code security**, and set
 `upload: always` in `codeql.yml`.
 

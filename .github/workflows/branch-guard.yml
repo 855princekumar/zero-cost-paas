@@ -1,0 +1,42 @@
+name: Branch guard
+
+# Branch protection rules need GitHub Pro (or a public repo) for private repositories.
+# This is the free substitute: it cannot block a force push, but it detects one on main
+# immediately, fails loudly and opens an issue (GitHub notifies you), with the SHAs needed to restore.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  guard:
+    name: Detect history rewrite on main
+    runs-on: ubuntu-latest
+    if: github.event.forced == true
+    steps:
+      - name: Open an alert issue
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { before, after, pusher } = context.payload;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `ALERT: force push rewrote main (${before.slice(0, 7)} -> ${after.slice(0, 7)})`,
+              body: [
+                `A force push by **${pusher.name}** rewrote the history of \`main\`.`,
+                '',
+                `- previous tip: \`${before}\``,
+                `- new tip: \`${after}\``,
+                '',
+                'If this was not intended, restore the previous tip:',
+                '```bash',
+                `git fetch origin ${before} && git push --force-with-lease origin ${before}:main`,
+                '```',
+              ].join('\n'),
+            });
+            core.setFailed('main was force-pushed');

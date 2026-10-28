@@ -1,0 +1,17 @@
+#!/bin/sh
+# Local branch protection for main (free substitute for GitHub branch protection on private repos).
+# Blocks pushes that delete main or rewrite its history. Enable once per clone:
+#   git config core.hooksPath .githooks
+zero=0000000000000000000000000000000000000000
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$remote_ref" = "refs/heads/main" ] || continue
+  if [ "$local_sha" = "$zero" ]; then
+    echo "pre-push: refusing to delete main" >&2
+    exit 1
+  fi
+  if [ "$remote_sha" != "$zero" ] && ! git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null; then
+    echo "pre-push: refusing to rewrite main's history (non-fast-forward). Pull/rebase first." >&2
+    exit 1
+  fi
+done
+exit 0
