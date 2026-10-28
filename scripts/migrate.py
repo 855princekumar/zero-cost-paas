@@ -93,7 +93,7 @@ def launch_target():
                    if i.lifecycle_state not in ("TERMINATED", "TERMINATING"))
         is_arm = args.shape == P.ARM_SHAPE
         boot = P.TOTAL_FREE_GB - used if is_arm else P.MICRO_BOOT_GB
-        keys = "\n".join(sorted({open(args.user_pub).read().strip(), open(args.key + ".pub").read().strip()}))
+        keys = "\n".join(sorted({P.read_file(args.user_pub).strip(), P.read_file(args.key + ".pub").strip()}))
         tries = [(s, fd) for s in P.ARM_TRY_SIZES for fd in P.FAULT_DOMAINS] if is_arm else [(None, None)]
         log(f"launching {args.target} ({args.shape}, {boot} GB boot)")
         n = 0
@@ -131,6 +131,7 @@ def wait_first_boot(dst):
                 log("target first boot done")
                 return
         except Exception:
+            # target not reachable yet (still booting / SSH not up): retry below
             pass
         time.sleep(30)
     raise RuntimeError("target first boot did not finish within 60 min")
@@ -277,7 +278,7 @@ echo redeploy-done
 def cutover(dst, inst):
     if run("test -f /root/migrate.cutover && echo yes || echo no", dst) == "yes":
         return
-    env = open(os.path.join(args.oci_dir, "duckdns.env"), "rb").read()
+    env = P.read_file(os.path.join(args.oci_dir, "duckdns.env"), "rb")
     run("install -d -m 700 /etc/duckdns && cat > /etc/duckdns/env && chmod 600 /etc/duckdns/env", dst, input=env)
     # harden.sh installs the DuckDNS timer once /etc/duckdns/env exists
     run("/usr/local/sbin/harden >/dev/null && systemctl start duckdns.service", dst)
@@ -288,7 +289,7 @@ def cutover(dst, inst):
     run("cat > /etc/msmtprc && chmod 600 /etc/msmtprc", dst, input=run("cat /etc/msmtprc", SRC).encode())
     run("install -d -m 700 /root/vps-setup", dst)
     for name in ["monitoring.sh", "security.sh", "security-watch.py"]:
-        run(f"cat > /root/vps-setup/{name}", dst, input=open(os.path.join(HERE, name), "rb").read())
+        run(f"cat > /root/vps-setup/{name}", dst, input=P.read_file(os.path.join(HERE, name), "rb"))
     env = f"ALERT_EMAIL={ALERT_EMAIL} VPS_DOMAIN={DOMAIN}"
     run(f"{env} bash /root/vps-setup/monitoring.sh && {env} bash /root/vps-setup/security.sh", dst, timeout=900)
 
@@ -309,9 +310,9 @@ def hand_off_finalize(dst):
     run(f"install -d -m 700 {MIGRATOR_DIR}", dst)
     for name, mode in [("api_key.pem", "600"), ("config", "600")]:
         run(f"cat > {MIGRATOR_DIR}/{name} && chmod {mode} {MIGRATOR_DIR}/{name}", dst,
-            input=open(os.path.join(args.oci_dir, name), "rb").read())
+            input=P.read_file(os.path.join(args.oci_dir, name), "rb"))
     for name in ["provision.py", "finalize.py", "cloud-init.yaml"]:
-        run(f"cat > {MIGRATOR_DIR}/{name}", dst, input=open(os.path.join(HERE, name), "rb").read())
+        run(f"cat > {MIGRATOR_DIR}/{name}", dst, input=P.read_file(os.path.join(HERE, name), "rb"))
     run(f"""set -e
 sed -i 's|^key_file=.*|key_file={MIGRATOR_DIR}/api_key.pem|' {MIGRATOR_DIR}/config
 [ -x {MIGRATOR_DIR}/venv/bin/python ] || (python3 -m venv {MIGRATOR_DIR}/venv && {MIGRATOR_DIR}/venv/bin/pip install -q oci)
