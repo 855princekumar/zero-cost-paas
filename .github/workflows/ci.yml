@@ -33,7 +33,9 @@ jobs:
       - name: python syntax
         run: python -m py_compile scripts/*.py
       - name: cloud-init YAML
-        run: python -c "import yaml,sys; yaml.safe_load(open('scripts/cloud-init.yaml'))"
+        run: |
+          pip install -q pyyaml
+          python -c "import yaml; d = yaml.safe_load(open('scripts/cloud-init.yaml')); assert 'runcmd' in d"
       - name: SVG well-formed
         run: python -c "import glob,xml.dom.minidom as m; [m.parse(f) for f in glob.glob('assets/*.svg')]"
 
