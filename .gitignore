@@ -1,0 +1,29 @@
+# ---- secrets: never commit ----
+keys/
+*.pem
+*.key
+*.ppk
+id_rsa*
+id_ed25519*
+oci_vm*
+.oci/
+*.env
+!scripts/config.example.env
+msmtprc
+*token*.txt
+*password*.txt
+*credentials*
+coolify-admin.txt
+
+# ---- local state ----
+*.log
+*.pid
+ARM_READY.txt
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

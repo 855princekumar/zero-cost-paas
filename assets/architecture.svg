@@ -1,0 +1,265 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="960" viewBox="0 0 1400 960" role="img" aria-labelledby="t d">
+  <title id="t">Zero-Cost PaaS — end-to-end architecture</title>
+  <desc id="d">Users resolve the wildcard DuckDNS domain and reach the VM on port 443 through the OCI Security List. Traefik terminates TLS with Let's Encrypt certificates and routes to app containers managed by Coolify. The developer provisions everything through the OCI API and administers over SSH on port 22022. systemd timers keep DNS updated, check health, watch security feeds and email alerts through Gmail SMTP.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#cbd5e1"/>
+    </marker>
+    <marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#14b8a6"/>
+    </marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#818cf8"/>
+    </marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#f87171"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="960" fill="url(#bg)"/>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="30" y="40" font-size="24" font-weight="700" fill="#f8fafc">Architecture — Zero-Cost PaaS on Oracle Cloud Always Free</text>
+    <text x="30" y="62" font-size="13" fill="#94a3b8">Everything provisioned headlessly through the OCI API · one VM · Coolify as the PaaS layer</text>
+
+    <!-- ===== External services ===== -->
+    <g font-size="13">
+      <g transform="translate(360,76)">
+        <rect width="200" height="74" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="14" y="26" font-weight="700" fill="#fde68a">DuckDNS (free DNS)</text>
+        <text x="14" y="46" fill="#cbd5e1">&lt;BASE_DOMAIN&gt; + wildcard</text>
+        <text x="14" y="63" fill="#94a3b8">*.&lt;BASE_DOMAIN&gt; → VM IP</text>
+      </g>
+      <g transform="translate(590,76)">
+        <rect width="200" height="74" rx="12" fill="#1e293b" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="14" y="26" font-weight="700" fill="#bbf7d0">Let's Encrypt</text>
+        <text x="14" y="46" fill="#cbd5e1">ACME HTTP-01, per host</text>
+        <text x="14" y="63" fill="#94a3b8">90-day certs, auto-renew</text>
+      </g>
+      <g transform="translate(820,76)">
+        <rect width="240" height="74" rx="12" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
+        <text x="14" y="26" font-weight="700" fill="#c7d2fe">Trusted security feeds</text>
+        <text x="14" y="46" fill="#cbd5e1">GitHub releases + advisories</text>
+        <text x="14" y="63" fill="#94a3b8">CISA KEV (actively exploited)</text>
+      </g>
+      <g transform="translate(1090,76)">
+        <rect width="240" height="74" rx="12" fill="#1e293b" stroke="#f87171" stroke-width="1.5"/>
+        <text x="14" y="26" font-weight="700" fill="#fecaca">Gmail SMTP :587 (TLS)</text>
+        <text x="14" y="46" fill="#cbd5e1">App Password, msmtp</text>
+        <text x="14" y="63" fill="#94a3b8">alerts → &lt;ALERT_EMAIL&gt;</text>
+      </g>
+    </g>
+
+    <!-- ===== Actors (left) ===== -->
+    <g font-size="13">
+      <g transform="translate(30,200)">
+        <rect width="260" height="130" rx="12" fill="#111827" stroke="#64748b" stroke-width="1.5"/>
+        <rect x="16" y="16" width="44" height="30" rx="4" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+        <path d="M10 50 H66" stroke="#e2e8f0" stroke-width="3"/>
+        <text x="76" y="30" font-weight="700" fill="#f1f5f9" font-size="14">Developer laptop</text>
+        <text x="76" y="48" fill="#94a3b8">Python OCI SDK</text>
+        <text x="16" y="78" fill="#cbd5e1">• OCI API key (signs requests)</text>
+        <text x="16" y="96" fill="#cbd5e1">• SSH key (ed25519)</text>
+        <text x="16" y="114" fill="#cbd5e1">• keys/ git-ignored</text>
+      </g>
+      <g transform="translate(30,370)">
+        <rect width="260" height="100" rx="12" fill="#111827" stroke="#64748b" stroke-width="1.5"/>
+        <circle cx="34" cy="34" r="16" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+        <path d="M26 34 h16 M34 26 v16" stroke="#e2e8f0" stroke-width="2"/>
+        <text x="62" y="32" font-weight="700" fill="#f1f5f9" font-size="14">Git repository</text>
+        <text x="62" y="50" fill="#94a3b8">GitHub / public repo</text>
+        <text x="16" y="80" fill="#cbd5e1">push → webhook → build + deploy</text>
+      </g>
+      <g transform="translate(30,510)">
+        <rect width="260" height="110" rx="12" fill="#111827" stroke="#64748b" stroke-width="1.5"/>
+        <circle cx="34" cy="34" r="16" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+        <ellipse cx="34" cy="34" rx="7" ry="16" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
+        <path d="M18 34 H50" stroke="#e2e8f0" stroke-width="1.5"/>
+        <text x="62" y="32" font-weight="700" fill="#f1f5f9" font-size="14">Internet users</text>
+        <text x="62" y="50" fill="#94a3b8">browsers, API clients</text>
+        <text x="16" y="80" fill="#cbd5e1">https://&lt;APP_NAME&gt;.&lt;BASE_DOMAIN&gt;</text>
+        <text x="16" y="98" fill="#cbd5e1">https://&lt;BASE_DOMAIN&gt; (dashboard)</text>
+      </g>
+      <g transform="translate(30,660)">
+        <rect width="260" height="200" rx="12" fill="#0f172a" stroke="#334155" stroke-dasharray="5 4"/>
+        <text x="16" y="26" font-weight="700" fill="#e2e8f0" font-size="14">Legend</text>
+        <path d="M16 50 H70" stroke="#14b8a6" stroke-width="2.5" marker-end="url(#at)"/><text x="80" y="54" fill="#cbd5e1">user HTTPS traffic</text>
+        <path d="M16 78 H70" stroke="#cbd5e1" stroke-width="2" marker-end="url(#a)"/><text x="80" y="82" fill="#cbd5e1">admin / provisioning</text>
+        <path d="M16 106 H70" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aa)"/><text x="80" y="110" fill="#cbd5e1">DNS / ACME</text>
+        <path d="M16 134 H70" stroke="#818cf8" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ai)"/><text x="80" y="138" fill="#cbd5e1">security feeds (out)</text>
+        <path d="M16 162 H70" stroke="#f87171" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar)"/><text x="80" y="166" fill="#cbd5e1">email alerts (out)</text>
+        <text x="16" y="190" fill="#64748b" font-size="12">Values in &lt;…&gt; are placeholders</text>
+      </g>
+    </g>
+
+    <!-- ===== Oracle region ===== -->
+    <rect x="330" y="180" width="1040" height="760" rx="18" fill="#140d0b" fill-opacity="0.35" stroke="#C74634" stroke-width="2"/>
+    <text x="350" y="206" font-size="15" font-weight="700" fill="#fca5a5">Oracle Cloud — home region (Always Free)</text>
+    <text x="680" y="206" font-size="12" fill="#94a3b8">free-only tenancy · paid shapes limit 0 · $1 budget alert</text>
+
+    <g transform="translate(350,222)" font-size="12">
+      <rect width="270" height="54" rx="10" fill="#1f1311" stroke="#C74634"/>
+      <text x="12" y="22" font-weight="700" fill="#fecaca" font-size="13">OCI API (control plane)</text>
+      <text x="12" y="40" fill="#cbd5e1">Identity · Compute · VCN · Budgets · Limits</text>
+    </g>
+
+    <!-- VCN -->
+    <rect x="350" y="290" width="1000" height="640" rx="14" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="8 5"/>
+    <text x="640" y="312" font-size="13" font-weight="600" fill="#cbd5e1">VCN 10.0.0.0/16 · internet gateway · route 0.0.0.0/0</text>
+
+    <!-- Security list gate -->
+    <rect x="372" y="330" width="96" height="580" rx="10" fill="#1f1311" stroke="#C74634" stroke-width="1.5"/>
+    <g font-size="12" fill="#fecaca" text-anchor="middle">
+      <text x="420" y="356" font-weight="700" font-size="13">Security</text>
+      <text x="420" y="372" font-weight="700" font-size="13">List</text>
+      <text x="420" y="404" fill="#e2e8f0">ingress</text>
+      <text x="420" y="426" fill="#86efac" font-weight="700">22022</text>
+      <text x="420" y="446" fill="#86efac" font-weight="700">80</text>
+      <text x="420" y="466" fill="#86efac" font-weight="700">443</text>
+      <text x="420" y="496" fill="#94a3b8">ICMP 3/4</text>
+      <text x="420" y="514" fill="#94a3b8">VCN-internal</text>
+      <text x="420" y="550" fill="#fca5a5">everything</text>
+      <text x="420" y="566" fill="#fca5a5">else: drop</text>
+      <text x="420" y="600" fill="#94a3b8">22, 8000,</text>
+      <text x="420" y="616" fill="#94a3b8">8080, 6001,</text>
+      <text x="420" y="632" fill="#94a3b8">6002, 5432</text>
+      <text x="420" y="648" fill="#94a3b8">closed</text>
+    </g>
+
+    <!-- Subnet -->
+    <rect x="484" y="326" width="852" height="590" rx="12" fill="#0b1220" fill-opacity="0.5" stroke="#334155"/>
+    <text x="500" y="346" font-size="12" fill="#94a3b8">public subnet 10.0.0.0/24</text>
+
+    <!-- VM -->
+    <rect x="500" y="356" width="822" height="546" rx="12" fill="#111827" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="516" y="378" font-size="14" font-weight="700" fill="#f1f5f9">VM · Ubuntu 24.04 LTS</text>
+    <text x="700" y="378" font-size="12" fill="#94a3b8">A1 Ampere (ARM, target) · E2.1.Micro (AMD, stand-in) · boot volume ≤ 200 GB · 4 GB swap</text>
+
+    <!-- host firewall strip -->
+    <rect x="514" y="390" width="794" height="34" rx="8" fill="#2a1414" stroke="#ef4444"/>
+    <text x="528" y="412" font-size="12" fill="#fecaca"><tspan font-weight="700">Host firewall</tspan>  iptables INPUT (Oracle REJECT, open-ports 80/443/22022) · DOCKER-USER guard (8000/6001/6002/8080 + mining egress) · fail2ban</text>
+
+    <!-- sshd -->
+    <g transform="translate(514,438)">
+      <rect width="190" height="52" rx="8" fill="#1e293b" stroke="#cbd5e1"/>
+      <text x="12" y="22" font-size="13" font-weight="700" fill="#f1f5f9">sshd :22022</text>
+      <text x="12" y="40" font-size="12" fill="#94a3b8">key-only · no root · 3 tries</text>
+    </g>
+    <g transform="translate(716,438)">
+      <rect width="344" height="52" rx="8" fill="#1e293b" stroke="#475569"/>
+      <text x="12" y="22" font-size="13" font-weight="700" fill="#f1f5f9">Kernel &amp; OS</text>
+      <text x="12" y="40" font-size="12" fill="#94a3b8">sysctl hardening · unattended-upgrades · msmtp</text>
+    </g>
+
+    <!-- Docker engine -->
+    <rect x="514" y="502" width="546" height="388" rx="10" fill="#0c1a2b" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="528" y="522" font-size="13" font-weight="700" fill="#bae6fd">Docker Engine · address pool 172.20.0.0/14</text>
+
+    <g transform="translate(528,536)">
+      <rect width="180" height="92" rx="10" fill="#0f2a2a" stroke="#14b8a6" stroke-width="1.5"/>
+      <text x="12" y="24" font-size="14" font-weight="700" fill="#99f6e4">Traefik</text>
+      <text x="12" y="42" font-size="12" fill="#cbd5e1">coolify-proxy :80 :443</text>
+      <text x="12" y="60" font-size="12" fill="#cbd5e1">SNI routing · HTTP→HTTPS</text>
+      <text x="12" y="78" font-size="12" fill="#cbd5e1">ACME resolver</text>
+    </g>
+
+    <g transform="translate(724,536)">
+      <rect width="322" height="92" rx="10" fill="#132033" stroke="#38bdf8"/>
+      <text x="12" y="22" font-size="13" font-weight="700" fill="#e0f2fe">Your apps (Coolify-managed)</text>
+      <g font-size="12">
+        <rect x="12" y="34" width="92" height="46" rx="6" fill="#1e293b" stroke="#64748b"/>
+        <text x="22" y="54" fill="#f1f5f9">static site</text><text x="22" y="70" fill="#94a3b8">nginx</text>
+        <rect x="114" y="34" width="92" height="46" rx="6" fill="#1e293b" stroke="#64748b"/>
+        <text x="124" y="54" fill="#f1f5f9">web app</text><text x="124" y="70" fill="#94a3b8">node / py</text>
+        <rect x="216" y="34" width="94" height="46" rx="6" fill="#1e293b" stroke="#64748b"/>
+        <text x="226" y="54" fill="#f1f5f9">database</text><text x="226" y="70" fill="#94a3b8">postgres…</text>
+      </g>
+    </g>
+
+    <g transform="translate(528,646)">
+      <rect width="518" height="230" rx="10" fill="#17142e" stroke="#6366f1" stroke-width="1.5"/>
+      <text x="14" y="24" font-size="14" font-weight="700" fill="#c7d2fe">Coolify control plane</text>
+      <text x="200" y="24" font-size="12" fill="#94a3b8">dashboard via https://&lt;BASE_DOMAIN&gt; only</text>
+      <g font-size="12">
+        <rect x="14" y="40" width="160" height="70" rx="8" fill="#1e1b4b" stroke="#818cf8"/>
+        <text x="26" y="62" font-weight="700" fill="#e0e7ff">coolify (Laravel)</text>
+        <text x="26" y="80" fill="#cbd5e1">UI + API + queue</text>
+        <text x="26" y="98" fill="#94a3b8">2FA · signup off</text>
+        <rect x="184" y="40" width="150" height="70" rx="8" fill="#1e1b4b" stroke="#818cf8"/>
+        <text x="196" y="62" font-weight="700" fill="#e0e7ff">coolify-db</text>
+        <text x="196" y="80" fill="#cbd5e1">PostgreSQL</text>
+        <text x="196" y="98" fill="#94a3b8">state, encrypted keys</text>
+        <rect x="344" y="40" width="160" height="70" rx="8" fill="#1e1b4b" stroke="#818cf8"/>
+        <text x="356" y="62" font-weight="700" fill="#e0e7ff">coolify-redis</text>
+        <text x="356" y="80" fill="#cbd5e1">cache, queues</text>
+        <rect x="14" y="122" width="160" height="62" rx="8" fill="#1e1b4b" stroke="#818cf8"/>
+        <text x="26" y="144" font-weight="700" fill="#e0e7ff">realtime</text>
+        <text x="26" y="162" fill="#cbd5e1">websockets 6001/6002</text>
+        <rect x="184" y="122" width="150" height="62" rx="8" fill="#1e1b4b" stroke="#818cf8"/>
+        <text x="196" y="144" font-weight="700" fill="#e0e7ff">sentinel</text>
+        <text x="196" y="162" fill="#cbd5e1">metrics</text>
+        <rect x="344" y="122" width="160" height="62" rx="8" fill="#1e1b4b" stroke="#818cf8"/>
+        <text x="356" y="144" font-weight="700" fill="#e0e7ff">host SSH (root)</text>
+        <text x="356" y="162" fill="#cbd5e1">host.docker.internal:22</text>
+        <text x="14" y="210" fill="#94a3b8">/data/coolify (config, certs acme.json, ssh keys, logs) · .env holds APP_KEY</text>
+      </g>
+    </g>
+
+    <!-- systemd column -->
+    <g transform="translate(1074,502)">
+      <rect width="234" height="388" rx="10" fill="#1c1917" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="14" y="24" font-size="14" font-weight="700" fill="#fde68a">systemd automation</text>
+      <g font-size="12">
+        <g transform="translate(12,38)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">duckdns.timer</text><text x="10" y="30" fill="#a8a29e">5 min · keep A record</text></g>
+        <g transform="translate(12,80)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">health-check.timer</text><text x="10" y="30" fill="#a8a29e">5 min · RAM/disk/HTTPS/cert</text></g>
+        <g transform="translate(12,122)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">security-watch host</text><text x="10" y="30" fill="#a8a29e">5 min · intrusion guardrails</text></g>
+        <g transform="translate(12,164)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">security-watch feeds</text><text x="10" y="30" fill="#a8a29e">6 h · advisories → auto-upgrade</text></g>
+        <g transform="translate(12,206)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">health-report.timer</text><text x="10" y="30" fill="#a8a29e">daily 09:00 summary</text></g>
+        <g transform="translate(12,248)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">unattended-upgrades</text><text x="10" y="30" fill="#a8a29e">daily · reboot 04:00 if needed</text></g>
+        <g transform="translate(12,290)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">port + egress guards</text><text x="10" y="30" fill="#a8a29e">re-applied with docker</text></g>
+        <g transform="translate(12,332)"><rect width="210" height="36" rx="6" fill="#292524"/><text x="10" y="15" fill="#fef3c7" font-weight="700">oci-migrator</text><text x="10" y="30" fill="#a8a29e">until ARM capacity → move</text></g>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===== Flows ===== -->
+  <g fill="none" stroke-width="2.5" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12">
+    <!-- users HTTPS -->
+    <path d="M290 590 H372" stroke="#14b8a6" marker-end="url(#at)"/>
+    <path d="M468 590 H528" stroke="#14b8a6" marker-end="url(#at)"/>
+    <path d="M708 582 H724" stroke="#14b8a6" stroke-width="2" marker-end="url(#at)"/>
+    <text x="300" y="582" fill="#5eead4" stroke="none">:443 / :80</text>
+    <!-- DNS lookup -->
+    <path d="M290 540 H314 V112 H360" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aa)"/>
+    <text x="318" y="176" fill="#fcd34d" stroke="none" transform="rotate(-90 318 176)" text-anchor="end">DNS lookup</text>
+    <!-- ACME -->
+    <path d="M618 536 V496 H700 V150" stroke="#22c55e" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aa)"/>
+    <text x="706" y="250" fill="#86efac" stroke="none">ACME HTTP-01</text>
+    <!-- duckdns updater -->
+    <path d="M1096 502 V166 H500 V150" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aa)"/>
+    <text x="900" y="162" fill="#fcd34d" stroke="none">update IP every 5 min</text>
+    <!-- feeds -->
+    <path d="M1190 502 V182 H960 V150" stroke="#818cf8" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ai)"/>
+    <text x="1196" y="300" fill="#a5b4fc" stroke="none">feeds 6h</text>
+    <!-- email -->
+    <path d="M1290 502 V150" stroke="#f87171" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar)"/>
+    <text x="1296" y="250" fill="#fca5a5" stroke="none" transform="rotate(90 1296 250)">alerts</text>
+    <!-- developer to OCI API -->
+    <path d="M290 248 H350" stroke="#cbd5e1" stroke-width="2" marker-end="url(#a)"/>
+    <text x="294" y="240" fill="#e2e8f0" stroke="none">SDK</text>
+    <!-- developer SSH -->
+    <path d="M290 300 H344 V462 H372" stroke="#cbd5e1" stroke-width="2" marker-end="url(#a)"/>
+    <path d="M468 462 H514" stroke="#cbd5e1" stroke-width="2" marker-end="url(#a)"/>
+    <text x="474" y="456" fill="#e2e8f0" stroke="none">ssh</text>
+    <!-- git -->
+    <path d="M290 430 H330 V760 H372" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#a)"/>
+    <path d="M468 760 H542" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#a)"/>
+    <text x="474" y="752" fill="#e2e8f0" stroke="none">webhook</text>
+  </g>
+</svg>

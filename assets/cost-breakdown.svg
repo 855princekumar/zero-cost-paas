@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="t d">
+  <title id="t">Cost breakdown — $0.00 per month</title>
+  <desc id="d">Every component of the stack is free: Oracle Cloud Always Free compute, storage and egress, DuckDNS, Let's Encrypt, Coolify open source and Gmail SMTP. A bar chart compares approximate monthly prices of typical paid alternatives with this stack at zero dollars.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#0f1a17"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14532d"/>
+      <stop offset="1" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="paid" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7f1d1d"/>
+      <stop offset="1" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="40" y="48" font-size="26" font-weight="700" fill="#f8fafc">What it costs</text>
+    <text x="40" y="72" font-size="14" fill="#94a3b8">Free-only Oracle tenancy: paid shapes have a limit of 0, so nothing billable can even be created.</text>
+
+    <!-- hero -->
+    <g transform="translate(40,96)">
+      <rect width="520" height="150" rx="18" fill="url(#hero)" stroke="#22c55e" stroke-width="2"/>
+      <text x="30" y="88" font-size="72" font-weight="800" fill="#f0fdf4">$0.00</text>
+      <text x="290" y="70" font-size="22" font-weight="700" fill="#bbf7d0">per month</text>
+      <text x="290" y="96" font-size="14" fill="#a7f3d0">forever, within the</text>
+      <text x="290" y="116" font-size="14" fill="#a7f3d0">Always Free limits</text>
+      <text x="30" y="132" font-size="12" fill="#86efac">+ $1 budget alert as a tripwire</text>
+    </g>
+
+    <!-- free components -->
+    <g font-size="13">
+      <text x="40" y="282" font-size="15" font-weight="700" fill="#e2e8f0">Oracle Cloud Always Free (home region)</text>
+      <g transform="translate(40,294)">
+        <rect width="250" height="66" rx="10" fill="#1f1311" stroke="#C74634"/>
+        <text x="14" y="26" font-weight="700" fill="#fecaca">Ampere A1 (ARM)</text>
+        <text x="14" y="46" fill="#cbd5e1">up to the account limit</text>
+        <text x="14" y="60" fill="#94a3b8" font-size="12">std 4 OCPU / 24 GB</text>
+      </g>
+      <g transform="translate(310,294)">
+        <rect width="250" height="66" rx="10" fill="#1f1311" stroke="#C74634"/>
+        <text x="14" y="26" font-weight="700" fill="#fecaca">2× E2.1.Micro (AMD)</text>
+        <text x="14" y="46" fill="#cbd5e1">1/8 OCPU · 1 GB RAM each</text>
+      </g>
+      <g transform="translate(40,370)">
+        <rect width="250" height="66" rx="10" fill="#1f1311" stroke="#C74634"/>
+        <text x="14" y="26" font-weight="700" fill="#fecaca">200 GB block storage</text>
+        <text x="14" y="46" fill="#cbd5e1">boot + block volumes</text>
+      </g>
+      <g transform="translate(310,370)">
+        <rect width="250" height="66" rx="10" fill="#1f1311" stroke="#C74634"/>
+        <text x="14" y="26" font-weight="700" fill="#fecaca">10 TB egress / month</text>
+        <text x="14" y="46" fill="#cbd5e1">2 VCNs · public IPv4</text>
+      </g>
+
+      <text x="40" y="472" font-size="15" font-weight="700" fill="#e2e8f0">Everything else</text>
+      <g transform="translate(40,484)">
+        <rect width="250" height="56" rx="10" fill="#1c1a12" stroke="#f59e0b"/>
+        <text x="14" y="24" font-weight="700" fill="#fde68a">DuckDNS</text>
+        <text x="14" y="42" fill="#cbd5e1">domain + wildcard · $0</text>
+      </g>
+      <g transform="translate(310,484)">
+        <rect width="250" height="56" rx="10" fill="#0f2320" stroke="#22c55e"/>
+        <text x="14" y="24" font-weight="700" fill="#bbf7d0">Let's Encrypt</text>
+        <text x="14" y="42" fill="#cbd5e1">TLS certificates · $0</text>
+      </g>
+      <g transform="translate(40,550)">
+        <rect width="250" height="56" rx="10" fill="#15152b" stroke="#6366f1"/>
+        <text x="14" y="24" font-weight="700" fill="#c7d2fe">Coolify (open source)</text>
+        <text x="14" y="42" fill="#cbd5e1">self-hosted PaaS · $0</text>
+      </g>
+      <g transform="translate(310,550)">
+        <rect width="250" height="56" rx="10" fill="#1f1414" stroke="#f87171"/>
+        <text x="14" y="24" font-weight="700" fill="#fecaca">Gmail SMTP</text>
+        <text x="14" y="42" fill="#cbd5e1">alert emails · $0</text>
+      </g>
+      <g transform="translate(40,616)">
+        <rect width="520" height="56" rx="10" fill="#111827" stroke="#64748b"/>
+        <text x="14" y="24" font-weight="700" fill="#e2e8f0">Ubuntu · Docker · Traefik · fail2ban · msmtp</text>
+        <text x="14" y="42" fill="#cbd5e1">open-source tooling · $0</text>
+      </g>
+    </g>
+
+    <!-- comparison chart -->
+    <g transform="translate(620,96)">
+      <rect width="540" height="600" rx="18" fill="#0f172a" stroke="#334155"/>
+      <text x="28" y="40" font-size="17" font-weight="700" fill="#f1f5f9">Typical monthly price for similar capability</text>
+      <text x="28" y="62" font-size="12" fill="#f59e0b">approximate list prices, for orientation only — check vendors for current pricing</text>
+
+      <!-- axis: 0..60 USD over 300px, bars start x=200 -->
+      <g font-size="12" fill="#64748b">
+        <path d="M200 90 V520" stroke="#334155"/>
+        <path d="M275 90 V520" stroke="#1e293b" stroke-dasharray="3 4"/>
+        <path d="M350 90 V520" stroke="#1e293b" stroke-dasharray="3 4"/>
+        <path d="M425 90 V520" stroke="#1e293b" stroke-dasharray="3 4"/>
+        <path d="M500 90 V520" stroke="#1e293b" stroke-dasharray="3 4"/>
+        <text x="200" y="540" text-anchor="middle">$0</text>
+        <text x="275" y="540" text-anchor="middle">$15</text>
+        <text x="350" y="540" text-anchor="middle">$30</text>
+        <text x="425" y="540" text-anchor="middle">$45</text>
+        <text x="500" y="540" text-anchor="middle">$60</text>
+      </g>
+
+      <g font-size="13">
+        <text x="28" y="122" fill="#e2e8f0">Vercel Pro</text>
+        <text x="28" y="138" fill="#64748b" font-size="11">per member</text>
+        <rect x="200" y="108" width="100" height="30" rx="6" fill="url(#paid)"/>
+        <text x="308" y="128" fill="#fecaca">~$20</text>
+
+        <text x="28" y="182" fill="#e2e8f0">Netlify Pro</text>
+        <text x="28" y="198" fill="#64748b" font-size="11">per member</text>
+        <rect x="200" y="168" width="95" height="30" rx="6" fill="url(#paid)"/>
+        <text x="303" y="188" fill="#fecaca">~$19</text>
+
+        <text x="28" y="242" fill="#e2e8f0">Managed PaaS</text>
+        <text x="28" y="258" fill="#64748b" font-size="11">app + small DB</text>
+        <rect x="200" y="228" width="125" height="30" rx="6" fill="url(#paid)"/>
+        <text x="333" y="248" fill="#fecaca">~$25+</text>
+
+        <text x="28" y="302" fill="#e2e8f0">VPS 2 vCPU / 12 GB</text>
+        <text x="28" y="318" fill="#64748b" font-size="11">typical cloud</text>
+        <rect x="200" y="288" width="200" height="30" rx="6" fill="url(#paid)"/>
+        <rect x="400" y="288" width="100" height="30" rx="6" fill="#ef4444" fill-opacity="0.35"/>
+        <text x="408" y="308" fill="#fecaca">~$40–60</text>
+
+        <text x="28" y="362" fill="#e2e8f0">Domain + TLS</text>
+        <text x="28" y="378" fill="#64748b" font-size="11">registrar, amortized</text>
+        <rect x="200" y="348" width="5" height="30" rx="2" fill="url(#paid)"/>
+        <text x="213" y="368" fill="#fecaca">~$1</text>
+
+        <text x="28" y="422" fill="#e2e8f0">Monitoring/alerts</text>
+        <text x="28" y="438" fill="#64748b" font-size="11">SaaS starter tier</text>
+        <rect x="200" y="408" width="50" height="30" rx="6" fill="url(#paid)"/>
+        <text x="258" y="428" fill="#fecaca">~$10</text>
+
+        <rect x="16" y="460" width="508" height="52" rx="10" fill="#052e16" stroke="#22c55e"/>
+        <text x="28" y="484" fill="#bbf7d0" font-weight="700" font-size="14">This stack</text>
+        <text x="28" y="500" fill="#86efac" font-size="11">all of the above, self-hosted</text>
+        <circle cx="204" cy="486" r="9" fill="#22c55e"/>
+        <text x="222" y="492" fill="#f0fdf4" font-weight="800" font-size="18">$0</text>
+      </g>
+
+      <text x="28" y="572" font-size="12" fill="#94a3b8">Trade-offs you accept instead of money: you operate it yourself,</text>
+      <text x="28" y="590" font-size="12" fill="#94a3b8">ARM capacity can be scarce, one region / one VM (no HA).</text>
+    </g>
+  </g>
+</svg>

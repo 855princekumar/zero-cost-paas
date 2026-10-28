@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz gitleaks
+          ./gitleaks detect --source . --redact --verbose
+
+  lint:
+    name: Lint scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck (errors)
+        run: shellcheck --severity=error scripts/*.sh
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: python syntax
+        run: python -m py_compile scripts/*.py
+      - name: cloud-init YAML
+        run: python -c "import yaml,sys; yaml.safe_load(open('scripts/cloud-init.yaml'))"
+      - name: SVG well-formed
+        run: python -c "import glob,xml.dom.minidom as m; [m.parse(f) for f in glob.glob('assets/*.svg')]"
+
+  docs:
+    name: Docs links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: relative links resolve
+        run: |
+          python - <<'EOF'
+          import glob, os, re, sys
+          bad = []
+          for md in glob.glob("**/*.md", recursive=True):
+              for link in re.findall(r"\]\(([^)#\s]+)", open(md, encoding="utf-8").read()):
+                  if "://" in link or link.startswith("mailto:"):
+                      continue
+                  target = os.path.normpath(os.path.join(os.path.dirname(md), link))
+                  if not os.path.exists(target):
+                      bad.append(f"{md}: {link}")
+          print("\n".join(bad) or "all relative links OK")
+          sys.exit(1 if bad else 0)
+          EOF
