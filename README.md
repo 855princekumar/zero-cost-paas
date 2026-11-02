@@ -120,8 +120,8 @@ Why the Oracle setup costs **$0** end to end: every layer uses a free service. I
 | PaaS | **Coolify** (open source) | Git-push deploys, previews, databases, one-click services | Used |
 | OS & tools | **Ubuntu, Docker, Traefik, fail2ban, msmtp** | The whole runtime, open source | Used |
 | Email | **Gmail SMTP** with an App Password | Alert and report email on port 587 | Used |
-| Code | **GitHub Free** | Private repo, Actions CI, Dependabot alerts and updates | Used |
-| Security | **CodeQL + gitleaks in GitHub Actions** | Code and secret scanning on every push | Used |
+| Code | **GitHub Free** (public repo) | Actions CI, Dependabot alerts and updates, branch rulesets | Used |
+| Security | **GitHub secret scanning + push protection, CodeQL, gitleaks** | Secret and code scanning on every push, results in the Security tab | Used |
 | Threat intel | **GitHub Security Advisories, CISA KEV** | Vulnerability feeds read by `security-watch.py` | Used |
 | Edge | **Cloudflare Free** (needs your own domain) | DNS, proxy, DDoS protection, WAF rules, Universal SSL | Option |
 | Edge | **Cloudflare Tunnel** (needs your own domain) | Publish a server with **no public IP and no open ports**; works behind CGNAT | Option (ideal for home servers) |

@@ -1,8 +1,8 @@
 name: Branch guard
 
-# Branch protection rules need GitHub Pro (or a public repo) for private repositories.
-# This is the free substitute: it cannot block a force push, but it detects one on main
-# immediately, fails loudly and opens an issue (GitHub notifies you), with the SHAs needed to restore.
+# Second line of defense. The "protect-main-history" ruleset already blocks force pushes to main;
+# if that ruleset is ever disabled (or on a private fork without rulesets), this detects a force
+# push immediately, fails loudly and opens an issue with the SHAs needed to restore.
 
 on:
   push:

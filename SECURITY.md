@@ -23,23 +23,25 @@ If you find a security issue in the scripts or the documented setup, please repo
 
 | Control | How | When |
 |---|---|---|
-| Secret scanning | gitleaks over the full git history (`ci.yml`) | Every push and pull request |
-| Code scanning | CodeQL `security-and-quality` queries for Python and GitHub Actions (`codeql.yml`); the build fails on any finding | Every push, pull request and weekly |
+| Secret scanning | GitHub secret scanning (enabled) plus gitleaks over the full git history (`ci.yml`) | Continuously, and every push and pull request |
+| Secret push protection | GitHub push protection rejects pushes that contain recognised secrets (enabled) | Every push |
+| Code scanning | CodeQL `security-and-quality` queries for Python and GitHub Actions (`codeql.yml`); results in the **Security** tab, and the build fails on any finding | Every push, pull request and weekly |
+| Private vulnerability reporting | **Security > Report a vulnerability** (enabled) | Any time |
+| Branch protection | Ruleset `protect-main-history`: `main` cannot be deleted or force-pushed (no bypass) | Always |
+| Required checks | Ruleset `require-checks`: pull requests into `main` must pass gitleaks, lint, docs links and both CodeQL jobs (admins may push directly) | Every pull request |
 | Dependency alerts | Dependabot alerts (enabled) | Continuously |
 | Dependency security fixes | Dependabot security updates open pull requests automatically (enabled) | When an advisory affects a dependency |
 | Dependency freshness | Dependabot version updates for GitHub Actions and `scripts/requirements.txt` (`dependabot.yml`) | Weekly |
 | Script quality | shellcheck, Python syntax, cloud-init YAML, SVG validity, relative links (`ci.yml`) | Every push |
 | Least-privilege CI | Workflows run with `contents: read` (branch guard adds `issues: write` only) | Always |
-| Branch deletion | `main` is the default branch, which GitHub refuses to delete | Always |
-| Force-push prevention (local) | `.githooks/pre-push` rejects deleting or rewriting `main`; enable with `git config core.hooksPath .githooks` | Every push from a clone |
-| Force-push detection (remote) | `branch-guard.yml` fails and opens an alert issue with restore commands if `main` is force-pushed | Every push to `main` |
+| Force-push prevention (local) | `.githooks/pre-push` rejects deleting or rewriting `main` before anything leaves your machine; enable with `git config core.hooksPath .githooks` | Every push from a clone |
+| Force-push detection (remote) | `branch-guard.yml` fails and opens an alert issue with restore commands if `main` is ever force-pushed (second line of defense behind the ruleset) | Every push to `main` |
 | Dependency PR review | Dependabot PRs are merged only after every check passes on an up-to-date branch | Each PR |
 
-Branch protection rules and rulesets require GitHub Pro for private repositories; the local hook,
-default-branch status and branch guard above are the free substitute. GitHub's hosted code-scanning
-and secret-scanning dashboards require GitHub Advanced Security on private repositories. The CI jobs above provide the same coverage without it. If the repository is
-made public, both dashboards become free: enable them under **Settings > Code security**, and set
-`upload: always` in `codeql.yml`.
+**Running a private fork?** Rulesets need GitHub Pro, and the hosted secret-scanning and
+code-scanning dashboards need GitHub Advanced Security on private repositories. Without them, the
+local pre-push hook, the branch guard workflow and the gitleaks and CodeQL CI jobs still provide the
+same coverage for free; set `upload: never` in `codeql.yml`.
 
 ## Upstream vulnerabilities
 
