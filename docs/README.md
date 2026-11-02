@@ -29,6 +29,7 @@
 | 15 | [Production readiness](15-production-readiness.md) | Scorecard, gaps, roadmap, SLO suggestions |
 | 16 | [New machine & from-scratch setup](16-new-machine-setup.md) | Clone on a new device (enable git hooks), restore access safely, rebuild everything, hand over |
 | 17 | [Same stack on Google Cloud or AWS](17-other-clouds-gcp-aws.md) | Free-tier comparison, headless gcloud / aws CLI setup, what carries over, cost caveats |
+| 18 | [Hosting options compared](18-hosting-options-compared.md) | Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost and home bare metal: cost, 3-year TCO, IPv4/DNS, scoring, SWOT, verdict |
 
 **Architecture Decision Records:** [adr/README.md](adr/README.md): 18 ADRs explaining *why* each choice was made.
 
@@ -57,6 +58,7 @@ flowchart LR
 |---|---|
 | **Replicate the setup** | 16 (Path C checklist) → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 13 |
 | **Work on this repo from a new computer** | 16 (Path A, then Path B if you operate the VM) |
+| **Choose where to host it** | 18 → 17 → 12 |
 | **Build it on Google Cloud or AWS instead** | 17 → 16 (Path C steps 6 to 10) → 08 → 09 → 10 |
 | **Understand the security model** | 02 → 08 → 10 → ADRs 0010-0018 → 15 |
 | **Review it as a portfolio piece** | 01 → 02 → 11 → 14 → ADR index → 15 |

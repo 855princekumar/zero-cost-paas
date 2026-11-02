@@ -1,6 +1,6 @@
 # 17 · Same Stack on Google Cloud or AWS
 
-[← New machine setup](16-new-machine-setup.md) · [Index](README.md) · [ADRs →](adr/README.md)
+[← New machine setup](16-new-machine-setup.md) · [Index](README.md) · [Hosting options compared →](18-hosting-options-compared.md)
 
 > **TL;DR**: Everything above the VM in this project (DuckDNS, Coolify, Traefik, hardening, alerts,
 > security automation) is cloud-agnostic. Only the provisioning layer changes. But the free tiers are
@@ -278,4 +278,4 @@ All other placeholders are in [03 · Placeholders](03-placeholders.md).
 - AWS EC2 free tier usage and eligible types: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-free-tier-usage.html>
 - Oracle Cloud Always Free resources: <https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm>
 
-[ADR index →](adr/README.md)
+[Next: Hosting options compared →](18-hosting-options-compared.md)

@@ -39,7 +39,7 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | 2 | [Architecture](#architecture) | End-to-end diagram and request flow |
 | 3 | [What's inside](#whats-inside) | Every capability, grouped |
 | 4 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
-| 5 | [Documentation index](#documentation-index) | 17 chapters, case study to runbook |
+| 5 | [Documentation index](#documentation-index) | 18 chapters, case study to runbook |
 | 6 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
 | 7 | [Repository layout](#repository-layout) | Scripts and docs map |
 | 8 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
@@ -207,6 +207,7 @@ Then open `https://<BASE_DOMAIN>`, change the password, **enable 2FA**, pick **"
 | 15 | [Production readiness](docs/15-production-readiness.md) | Scorecard, gaps, roadmap |
 | 16 | [New machine & from-scratch setup](docs/16-new-machine-setup.md) | New device, restoring access, full rebuild, handover |
 | 17 | [Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md) | Free-tier comparison, gcloud / aws CLI setup, cost caveats |
+| 18 | [Hosting options compared](docs/18-hosting-options-compared.md) | Clouds vs VPS vs home bare metal: TCO, SWOT, scoring, verdict |
 
 The full index with reading paths is in [docs/README.md](docs/README.md).
 
@@ -230,7 +231,7 @@ Examples: [free-only, no Pay-As-You-Go](docs/adr/0003-stay-free-only-no-payg.md)
 ```mermaid
 flowchart TB
     root(["zero-cost-paas"])
-    root --> docs["docs/<br/>17 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
+    root --> docs["docs/<br/>18 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
     docs --> adr["docs/adr/<br/>18 decision records"]
     root --> scripts["scripts/<br/>run in this order"]
 
