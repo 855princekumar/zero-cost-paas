@@ -219,6 +219,10 @@ def feeds():
     s["last_feeds"] = time.strftime("%F %T")
     save(s)
 
+    # A kept AMD test box after the ARM move runs no Coolify: report, never install or lock down here.
+    if os.path.exists("/etc/vps-no-coolify") or not running:
+        action = None
+
     if action and action[0] == "upgrade" and vkey(latest) > vkey(running):
         if upgrade_coolify(latest, action[1]) and s.get("lockdown", {}).get("reason", "").startswith("advisory"):
             unlock()

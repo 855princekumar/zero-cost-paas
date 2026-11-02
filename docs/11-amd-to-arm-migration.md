@@ -1,6 +1,25 @@
 # 11 · Self-Migration: AMD Stand-in → Ampere A1
 
-[← Security automation](10-security-automation.md) · [Index](README.md) · [Next: Cost guardrails →](12-cost-guardrails.md)
+[← Security automation](10-security-automation.md) · [Index](README.md) · ## Keep the AMD VM, or delete it?
+
+The Always Free compute limits allow the ARM VM **and** the AMD Micro at the same time; the shared
+limit is **200 GB of block storage**. `deploy-migrator.sh` therefore offers two end states:
+
+| Mode | ARM after the move | AMD after the move | How |
+|---|---|---|---|
+| **Keep** (default, reversible) | 2 OCPU / 12 GB, **150 GB** | Kept as a test box: Coolify stopped (`/etc/vps-no-coolify`), Docker, hardening, alerts and security checks still running | `bash scripts/deploy-migrator.sh` |
+| **Delete** | 2 OCPU / 12 GB, **200 GB** | Terminated with its boot volume | `KEEP_SOURCE=0 bash scripts/deploy-migrator.sh` |
+
+In keep mode the migrator still switches DNS only after the health gate, then stops Coolify on the
+AMD so two copies never compete, shreds its API key and disables itself. Health checks skip the
+Coolify-specific checks on the test box, and `security-watch.py` never reinstalls Coolify there.
+The test box can later be added to the ARM's Coolify as a **second server** (Servers > Add, using
+its private IP), so test deployments are managed from the same dashboard.
+
+Changing your mind later: terminate the AMD VM, then grow the ARM boot volume to 200 GB and expand
+the filesystem (the same steps `finalize.py` runs, [runbook](13-operations-runbook.md)).
+
+[Next: Cost guardrails →](12-cost-guardrails.md)
 
 > **TL;DR**: The free A1 VM (2 OCPU / 12 GB) was unavailable ("Out of host capacity"), so the
 > platform went live on a 1 GB AMD Micro. [`migrate.py`](../scripts/migrate.py) runs **as a service on

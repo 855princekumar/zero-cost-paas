@@ -76,6 +76,9 @@ Docker usage:
 Free space with: sudo docker system prune -af  (or Coolify > Server > Docker cleanup)"
 else ok disk; fi
 
+# Coolify, dashboard and certificate checks only where Coolify runs (a kept AMD test box after the
+# ARM move has /etc/vps-no-coolify). Disk, memory, reboot and intrusion checks always run.
+if [ ! -f /etc/vps-no-coolify ]; then
 bad=\$(docker ps -a --filter name=coolify --format '{{.Names}}|{{.Status}}' | awk -F'|' '\$2 !~ /^Up/ || \$2 ~ /unhealthy/' || true)
 if [ -n "\$bad" ]; then
   alert containers "COOLIFY CONTAINER DOWN" "Not running/healthy:
@@ -98,6 +101,7 @@ if [ -n "\$end" ]; then
     alert cert "TLS CERTIFICATE EXPIRES IN \$days DAYS" "Certificate for $DOMAIN expires \$end.
 Traefik should renew it automatically ~30 days before expiry; check: docker logs coolify-proxy | grep -i acme"
   else ok cert; fi
+fi
 fi
 
 if [ -f /var/run/reboot-required ]; then

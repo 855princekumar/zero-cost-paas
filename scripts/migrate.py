@@ -37,6 +37,8 @@ ap.add_argument("--target", default=P.ARM_NAME)
 ap.add_argument("--shape", default=P.ARM_SHAPE)
 ap.add_argument("--oci-dir", default="/opt/oci-migrator", help="dir with config, api_key.pem, duckdns.env")
 ap.add_argument("--dry-run", action="store_true")
+ap.add_argument("--keep-source", action="store_true",
+                help="keep the AMD VM as a test box after cutover (ARM keeps 150 GB instead of 200 GB)")
 args = ap.parse_args()
 log = P.log
 
@@ -304,6 +306,14 @@ def cutover(dst, inst):
                dst)
     run("touch /root/migrate.cutover", dst)
 
+    if args.keep_source:
+        # retire Coolify on the AMD so it does not compete with the ARM copy; Docker stays for tests
+        run("touch /etc/vps-no-coolify && cd /data/coolify/source && docker compose --env-file .env "
+            "-f docker-compose.yml -f docker-compose.prod.yml down --remove-orphans; "
+            "docker rm -f coolify-proxy coolify-sentinel coolify-proxy-error-pages coolify-proxy-logrotate 2>/dev/null; true",
+            SRC, check=False, timeout=600)
+        log("source kept as a test box: Coolify stopped on it")
+
 
 # ---------------------------------------------------------------- 7. finalize hand-off
 def hand_off_finalize(dst):
@@ -313,6 +323,8 @@ def hand_off_finalize(dst):
             input=P.read_file(os.path.join(args.oci_dir, name), "rb"))
     for name in ["provision.py", "finalize.py", "cloud-init.yaml"]:
         run(f"cat > {MIGRATOR_DIR}/{name}", dst, input=P.read_file(os.path.join(HERE, name), "rb"))
+    if args.keep_source:
+        run(f"touch {MIGRATOR_DIR}/keep_source", dst)
     run(f"""set -e
 sed -i 's|^key_file=.*|key_file={MIGRATOR_DIR}/api_key.pem|' {MIGRATOR_DIR}/config
 [ -x {MIGRATOR_DIR}/venv/bin/python ] || (python3 -m venv {MIGRATOR_DIR}/venv && {MIGRATOR_DIR}/venv/bin/pip install -q oci)
@@ -351,9 +363,17 @@ def main():
     cutover(dst, inst)
     notify("Coolify now runs on the ARM VM",
            f"https://{DOMAIN} now points to {P.public_ip(inst)}. Apps are redeploying for arm64.\n"
-           "The ARM VM will now delete this AMD VM, grow its disk to 200 GB and resize to 2 OCPU / 12 GB.\n"
-           f"SSH: ssh -i keys/oci_vm -p {SSH_PORT} ubuntu@{DOMAIN}")
+           + ("This AMD VM is kept as a test box (Coolify stopped here). The ARM VM keeps 150 GB and resizes to 2 OCPU / 12 GB.\n"
+              if args.keep_source else
+              "The ARM VM will now delete this AMD VM, grow its disk to 200 GB and resize to 2 OCPU / 12 GB.\n")
+           + f"SSH: ssh -i keys/oci_vm -p {SSH_PORT} ubuntu@{DOMAIN}")
     hand_off_finalize(dst)
+    if args.source_local:
+        # job done: remove the API key and DuckDNS token from this VM and stop the service for good
+        # (otherwise systemd would restart it every 5 min; matters when the source is kept)
+        subprocess.run(f"shred -u {args.oci_dir}/api_key.pem {args.oci_dir}/duckdns.env; rm -f {args.oci_dir}/config",
+                       shell=True)
+        subprocess.Popen(["systemctl", "disable", "--now", "oci-migrator.service"])
 
 
 if __name__ == "__main__":

@@ -11,6 +11,8 @@ cd "$(dirname "$0")/.."
 HOST=${HOST:-$VPS_DOMAIN}
 SSH="ssh -i keys/oci_vm -p $SSH_PORT -o BatchMode=yes ubuntu@$HOST"
 D=/opt/oci-migrator
+# KEEP_SOURCE=1 (default): keep the AMD VM as a test box after the move; KEEP_SOURCE=0: delete it, ARM gets 200 GB
+KEEP_FLAG=$([ "${KEEP_SOURCE:-1}" = 1 ] && echo --keep-source || true)
 
 for f in keys/vps-automation.config keys/vps-automation_api_key.pem keys/duckdns-token.txt; do
   [ -s "$f" ] || { echo "missing $f"; exit 1; }
@@ -41,7 +43,7 @@ Environment=OCI_CONFIG_FILE=$D/config
 Environment=VPS_DOMAIN=$VPS_DOMAIN
 Environment=ALERT_EMAIL=$ALERT_EMAIL
 Environment=SSH_PORT=$SSH_PORT
-ExecStart=$D/venv/bin/python -u $D/migrate.py --source-local --key $D/id_migrate --user-pub $D/user_key.pub --oci-dir $D
+ExecStart=$D/venv/bin/python -u $D/migrate.py --source-local --key $D/id_migrate --user-pub $D/user_key.pub --oci-dir $D $KEEP_FLAG
 Restart=always
 RestartSec=300
 Nice=10

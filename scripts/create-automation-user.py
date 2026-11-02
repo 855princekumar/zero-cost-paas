@@ -17,6 +17,11 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 NAME = "vps-automation"
+# Tenancies on OCI Identity Domains require an email for every user. Default: a plus-address of
+# ALERT_EMAIL (still delivered to your inbox), override with AUTOMATION_USER_EMAIL.
+_alert = os.environ.get("ALERT_EMAIL", "")
+EMAIL = os.environ.get("AUTOMATION_USER_EMAIL") or (
+    _alert.replace("@", f"+{NAME}@", 1) if "@" in _alert else None)
 STATEMENTS = [f"Allow group {NAME} to manage instance-family in tenancy",
               f"Allow group {NAME} to manage volume-family in tenancy",
               f"Allow group {NAME} to use virtual-network-family in tenancy",
@@ -34,7 +39,7 @@ def find(items):
 grp = find(idc.list_groups(T).data) or idc.create_group(oci.identity.models.CreateGroupDetails(
     compartment_id=T, name=NAME, description="AMD->ARM self-migration")).data
 usr = find(idc.list_users(T).data) or idc.create_user(oci.identity.models.CreateUserDetails(
-    compartment_id=T, name=NAME, description="Used only by the migrator service on the VM")).data
+    compartment_id=T, name=NAME, email=EMAIL, description="Used only by the migrator service on the VM")).data
 if not any(m.user_id == usr.id for m in idc.list_user_group_memberships(T, group_id=grp.id).data):
     idc.add_user_to_group(oci.identity.models.AddUserToGroupDetails(user_id=usr.id, group_id=grp.id))
 if not find(idc.list_policies(T).data):

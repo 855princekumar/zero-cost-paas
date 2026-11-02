@@ -18,8 +18,9 @@ log = P.log
 MIGRATOR_DIR = os.path.dirname(os.path.abspath(__file__))
 
 me = P.instance(socket.gethostname()) or P.instance(P.ARM_NAME)
+KEEP_SOURCE = os.path.exists(os.path.join(MIGRATOR_DIR, "keep_source"))  # AMD kept as a test box
 
-src = P.instance(P.MICRO_NAME)
+src = None if KEEP_SOURCE else P.instance(P.MICRO_NAME)
 if src:
     log("terminating", P.MICRO_NAME)
     P.comp.terminate_instance(src.id, preserve_boot_volume=False)
@@ -27,7 +28,7 @@ if src:
     time.sleep(60)  # let the boot volume deletion settle before resizing ours
 
 bv = P.boot_volume(me)
-if bv.size_in_gbs < P.TOTAL_FREE_GB:
+if not KEEP_SOURCE and bv.size_in_gbs < P.TOTAL_FREE_GB:
     log("growing boot volume", bv.size_in_gbs, "->", P.TOTAL_FREE_GB)
     P.bs.update_boot_volume(bv.id, P.oci.core.models.UpdateBootVolumeDetails(size_in_gbs=P.TOTAL_FREE_GB))
     P.wait(P.bs, P.bs.get_boot_volume(bv.id), "AVAILABLE")

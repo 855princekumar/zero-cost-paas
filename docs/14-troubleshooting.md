@@ -15,6 +15,7 @@
 | `429 Too many requests for the user` | Retrying too fast | 30 s between attempts; treat 429 as transient |
 | Launch fails `LimitExceeded` while testing | Two Micros + ARM > 200 GB storage | Compute boot size from remaining allowance; delete test VMs |
 | Need serial console without the GUI | VM unreachable during boot | `capture_console_history` → `get_console_history_content` (decode **bytes**) |
+| `create_user` fails `400 IdcsConversionError: The primary email must be specified` | Tenancy uses **OCI Identity Domains**, which require an email on every user | `create-automation-user.py` sets one (a `+vps-automation` plus-address of `ALERT_EMAIL`, or `AUTOMATION_USER_EMAIL`) |
 
 ## Host networking
 
