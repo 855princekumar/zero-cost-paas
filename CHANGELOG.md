@@ -5,6 +5,8 @@
 - New chapter [16 · New machine & from-scratch setup](docs/16-new-machine-setup.md): workstation setup with git hooks, restoring access safely, recovery for every lost secret, full rebuild checklist with verifications, handover guide.
 - New chapter [17 · Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md): free-tier comparison (checked against official pages), headless `gcloud` / `aws` setup, what carries over, cost caveats; new `scripts/render-cloud-init.py`.
 - New chapter [18 · Hosting options compared](docs/18-hosting-options-compared.md): unified cost, 3-year TCO, IPv4/DNS, weighted scoring, SWOT and verdict across Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost and home bare metal.
+- New chapter [19 · Private access with Tailscale](docs/19-private-access-with-tailscale.md) (optional, not enabled on the reference deployment).
+- README: real-money hosting comparison and free building blocks on the front page.
 - Branch protection substitutes (`.githooks/pre-push`, `branch-guard.yml`), CodeQL, Dependabot.
 
 ## v1.0.0 (2026-10-28): initial production build

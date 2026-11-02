@@ -41,7 +41,7 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | 4 | [Architecture](#architecture) | End-to-end diagram and request flow |
 | 5 | [What's inside](#whats-inside) | Every capability, grouped |
 | 6 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
-| 7 | [Documentation index](#documentation-index) | 18 chapters, case study to runbook |
+| 7 | [Documentation index](#documentation-index) | 19 chapters, case study to runbook |
 | 8 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
 | 9 | [Repository layout](#repository-layout) | Scripts and docs map |
 | 10 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
@@ -125,7 +125,7 @@ Why the Oracle setup costs **$0** end to end: every layer uses a free service. I
 | Threat intel | **GitHub Security Advisories, CISA KEV** | Vulnerability feeds read by `security-watch.py` | Used |
 | Edge | **Cloudflare Free** (needs your own domain) | DNS, proxy, DDoS protection, WAF rules, Universal SSL | Option |
 | Edge | **Cloudflare Tunnel** (needs your own domain) | Publish a server with **no public IP and no open ports**; works behind CGNAT | Option (ideal for home servers) |
-| Access | **Tailscale** (personal plan) | Private VPN to close the public SSH port entirely | Option |
+| Access | **Tailscale** (Personal plan) | Private WireGuard VPN: close the public SSH port entirely, reach the Coolify UI privately | Option, guide: [docs/19](docs/19-private-access-with-tailscale.md) |
 
 ### A stable address without paying for a static IP
 
@@ -289,6 +289,7 @@ Then open `https://<BASE_DOMAIN>`, change the password, **enable 2FA**, pick **"
 | 16 | [New machine & from-scratch setup](docs/16-new-machine-setup.md) | New device, restoring access, full rebuild, handover |
 | 17 | [Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md) | Free-tier comparison, gcloud / aws CLI setup, cost caveats |
 | 18 | [Hosting options compared](docs/18-hosting-options-compared.md) | Clouds vs VPS vs home bare metal: TCO, SWOT, scoring, verdict |
+| 19 | [Private access with Tailscale](docs/19-private-access-with-tailscale.md) | Optional: close the public SSH port, private admin access |
 
 The full index with reading paths is in [docs/README.md](docs/README.md).
 
@@ -312,7 +313,7 @@ Examples: [free-only, no Pay-As-You-Go](docs/adr/0003-stay-free-only-no-payg.md)
 ```mermaid
 flowchart TB
     root(["zero-cost-paas"])
-    root --> docs["docs/<br/>18 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
+    root --> docs["docs/<br/>19 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
     docs --> adr["docs/adr/<br/>18 decision records"]
     root --> scripts["scripts/<br/>run in this order"]
 

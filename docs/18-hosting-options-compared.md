@@ -1,6 +1,6 @@
 # 18 · Hosting Options Compared: Clouds, VPS and Home Bare Metal
 
-[← Other clouds](17-other-clouds-gcp-aws.md) · [Index](README.md) · [ADRs →](adr/README.md)
+[← Other clouds](17-other-clouds-gcp-aws.md) · [Index](README.md) · [Private access with Tailscale →](19-private-access-with-tailscale.md)
 
 > **TL;DR**: For the **same production setup** (this stack: Coolify, Traefik, HTTPS, alerts and
 > security automation on one always-on Linux box with about 2 to 4 vCPU and 8 GB RAM):
@@ -279,4 +279,4 @@ from step 6.
 | N100 mini PC power draw (A) | <https://dev.to/selfhostingsh/intel-n100-mini-pc-the-self-hosters-best-friend-3mcf> |
 | Oracle Always Free resources (V) | <https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm> |
 
-[ADR index →](adr/README.md)
+[Next: Private access with Tailscale →](19-private-access-with-tailscale.md)

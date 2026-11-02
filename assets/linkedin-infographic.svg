@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350" font-family="Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+<title id="t">Zero-Cost PaaS: your own Vercel / Netlify on Oracle Cloud Always Free</title>
+<desc id="d">Infographic: $0 per month self-hosted PaaS on Oracle Cloud Always Free with Coolify, free building blocks, comparison with managed free tiers, security features, 3-year cost comparison and the repository link github.com/855princekumar/zero-cost-paas.</desc>
+<defs>
+  <filter id="sh" x="-10%" y="-10%" width="120%" height="140%">
+    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+  </filter>
+  <linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f0fdf4"/><stop offset="1" stop-color="#ecfeff"/>
+  </linearGradient>
+  <linearGradient id="topBar" x1="0" x2="1">
+    <stop offset="0" stop-color="#C74634"/><stop offset="0.5" stop-color="#4f46e5"/><stop offset="1" stop-color="#0d9488"/>
+  </linearGradient>
+  <linearGradient id="shine" x1="0" x2="1">
+    <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+    <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.75"/>
+    <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+  </linearGradient>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#4f46e5"/>
+  </marker>
+  <marker id="arrT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#0d9488"/>
+  </marker>
+  <clipPath id="frame"><rect x="1" y="1" width="1078" height="1348" rx="16"/></clipPath>
+</defs>
+<style>
+  .flow { stroke-dasharray: 8 8; animation: dash 1s linear infinite; }
+  .urlline { stroke-dasharray: 10 8; animation: dash 1.5s linear infinite; }
+  .hero { animation: pulse 4s ease-in-out infinite; }
+  .ring { animation: ring 4s ease-in-out infinite; }
+  .chip { animation: glow 6s ease-in-out infinite; }
+  .badge { animation: glow 12s ease-in-out infinite; }
+  @keyframes dash { to { stroke-dashoffset: -16; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.82; } }
+  @keyframes ring { 0%, 100% { stroke-opacity: 0.25; } 50% { stroke-opacity: 0.9; } }
+  @keyframes glow { 0%, 100% { stroke-opacity: 0.55; } 50% { stroke-opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<rect x="0.75" y="0.75" width="1078.5" height="1348.5" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<g clip-path="url(#frame)"><rect x="0" y="0" width="1080" height="8" fill="url(#topBar)"/></g>
+<text x="60" y="102" font-size="60" fill="#0f172a" font-weight="800" text-anchor="start">Zero-Cost PaaS</text>
+<text x="60" y="142" font-size="27" fill="#475569" font-weight="400" text-anchor="start">Your own Vercel / Netlify on Oracle Cloud Always Free</text>
+<rect x="627.0" y="46" width="393.0" height="44" rx="22" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" filter="url(#sh)"/>
+<text x="823.5" y="75" font-size="22" fill="#4f46e5" font-weight="600" text-anchor="middle">Open source · production grade</text>
+<rect x="40" y="166" width="1000" height="140" rx="18" fill="url(#heroBg)" stroke="#16a34a" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="46" y="172" width="988" height="128" rx="14" fill="none" stroke="#16a34a" stroke-width="2" class="ring"/>
+<g class="hero">
+<text x="78" y="274" font-size="104" fill="#16a34a" font-weight="800" text-anchor="start">$0</text>
+<text x="222" y="274" font-size="42" fill="#15803d" font-weight="700" text-anchor="start">/ month</text>
+</g>
+<line x1="520" y1="196" x2="520" y2="276" stroke="#bbf7d0" stroke-width="2"/>
+<text x="552" y="228" font-size="25" fill="#0f172a" font-weight="600" text-anchor="start">forever, within Always Free limits</text>
+<text x="552" y="266" font-size="25" fill="#475569" font-weight="400" text-anchor="start">pay only when you choose to</text>
+<rect x="40" y="322" width="1000" height="100" rx="18" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="60" y="344" width="139" height="56" rx="28" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+<text x="129.6" y="380" font-size="22" fill="#4f46e5" font-weight="700" text-anchor="middle">git push</text>
+<rect x="292" y="344" width="318" height="56" rx="28" fill="#fef2f2" stroke="#C74634" stroke-width="1.5"/>
+<text x="450.75" y="380" font-size="22" fill="#C74634" font-weight="700" text-anchor="middle">Coolify on Oracle Cloud</text>
+<rect x="702" y="344" width="318" height="56" rx="28" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5"/>
+<text x="861.1500000000001" y="380" font-size="22" fill="#0d9488" font-weight="700" text-anchor="middle">https://app.your-domain</text>
+<path id="fp0" d="M209,372 L280,372" stroke="#4f46e5" stroke-width="2.5" fill="none" class="flow" marker-end="url(#arr)"/>
+<circle r="6" fill="#4f46e5" stroke="#ffffff" stroke-width="2"><animateMotion dur="3s" begin="0s" repeatCount="indefinite"><mpath href="#fp0"/></animateMotion></circle>
+<circle r="6" fill="#4f46e5" stroke="#ffffff" stroke-width="2"><animateMotion dur="3s" begin="-1.5s" repeatCount="indefinite"><mpath href="#fp0"/></animateMotion></circle>
+<path id="fp1" d="M620,372 L690,372" stroke="#0d9488" stroke-width="2.5" fill="none" class="flow" marker-end="url(#arrT)"/>
+<circle r="6" fill="#0d9488" stroke="#ffffff" stroke-width="2"><animateMotion dur="3s" begin="0s" repeatCount="indefinite"><mpath href="#fp1"/></animateMotion></circle>
+<circle r="6" fill="#0d9488" stroke="#ffffff" stroke-width="2"><animateMotion dur="3s" begin="-1.5s" repeatCount="indefinite"><mpath href="#fp1"/></animateMotion></circle>
+<text x="40" y="470" font-size="34" fill="#0f172a" font-weight="800" text-anchor="start">Free building blocks</text>
+<rect x="40" y="490" width="490" height="54" rx="14" fill="#ffffff" stroke="#C74634" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-0.0s"/>
+<rect x="40" y="502" width="5" height="30" rx="2.5" fill="#C74634"/>
+<text x="64" y="525" font-size="22"><tspan fill="#C74634" font-weight="700">Oracle Always Free</tspan><tspan fill="#475569" dx="10">up to 24 GB ARM</tspan></text>
+<rect x="550" y="490" width="490" height="54" rx="14" fill="#ffffff" stroke="#d97706" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-0.75s"/>
+<rect x="550" y="502" width="5" height="30" rx="2.5" fill="#d97706"/>
+<text x="574" y="525" font-size="22"><tspan fill="#d97706" font-weight="700">DuckDNS</tspan><tspan fill="#475569" dx="10">wildcard DNS</tspan></text>
+<rect x="40" y="554" width="490" height="54" rx="14" fill="#ffffff" stroke="#16a34a" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-1.5s"/>
+<rect x="40" y="566" width="5" height="30" rx="2.5" fill="#16a34a"/>
+<text x="64" y="589" font-size="22"><tspan fill="#16a34a" font-weight="700">Let's Encrypt</tspan><tspan fill="#475569" dx="10">auto-HTTPS</tspan></text>
+<rect x="550" y="554" width="490" height="54" rx="14" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-2.25s"/>
+<rect x="550" y="566" width="5" height="30" rx="2.5" fill="#7c3aed"/>
+<text x="574" y="589" font-size="22"><tspan fill="#7c3aed" font-weight="700">Coolify</tspan><tspan fill="#475569" dx="10">git-push PaaS</tspan></text>
+<rect x="40" y="618" width="490" height="54" rx="14" fill="#ffffff" stroke="#e11d48" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-3.0s"/>
+<rect x="40" y="630" width="5" height="30" rx="2.5" fill="#e11d48"/>
+<text x="64" y="653" font-size="22"><tspan fill="#e11d48" font-weight="700">Gmail</tspan><tspan fill="#475569" dx="10">email alerts</tspan></text>
+<rect x="550" y="618" width="490" height="54" rx="14" fill="#ffffff" stroke="#475569" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-3.75s"/>
+<rect x="550" y="630" width="5" height="30" rx="2.5" fill="#475569"/>
+<text x="574" y="653" font-size="22"><tspan fill="#475569" font-weight="700">GitHub</tspan><tspan fill="#475569" dx="10">CI + CodeQL</tspan></text>
+<rect x="40" y="682" width="490" height="54" rx="14" fill="#ffffff" stroke="#4f46e5" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-4.5s"/>
+<rect x="40" y="694" width="5" height="30" rx="2.5" fill="#4f46e5"/>
+<text x="64" y="717" font-size="22"><tspan fill="#4f46e5" font-weight="700">Tailscale</tspan><tspan fill="#475569" dx="10">private VPN (optional)</tspan></text>
+<rect x="550" y="682" width="490" height="54" rx="14" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" filter="url(#sh)" class="chip" style="animation-delay:-5.25s"/>
+<rect x="550" y="694" width="5" height="30" rx="2.5" fill="#0284c7"/>
+<text x="574" y="717" font-size="22"><tspan fill="#0284c7" font-weight="700">Cloudflare Tunnel</tspan><tspan fill="#475569" dx="10">(optional)</tspan></text>
+<text x="40" y="784" font-size="34" fill="#0f172a" font-weight="800" text-anchor="start">Why own it</text>
+<rect x="40" y="800" width="1000" height="186" rx="18" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="41" y="801" width="998" height="40" rx="17" fill="#f1f5f9"/>
+<rect x="41" y="824" width="998" height="17" fill="#f1f5f9"/>
+<text x="84" y="828" font-size="22" fill="#e11d48" font-weight="700" text-anchor="start">Managed free tier</text>
+<text x="574" y="828" font-size="22" fill="#16a34a" font-weight="700" text-anchor="start">Your own PaaS</text>
+<line x1="540" y1="810" x2="540" y2="976" stroke="#e2e8f0" stroke-width="1.5"/>
+<g stroke="#e11d48" stroke-width="2.5" stroke-linecap="round"><line x1="58" y1="856" x2="70" y2="868"/><line x1="70" y1="856" x2="58" y2="868"/></g>
+<text x="84" y="870" font-size="22" fill="#475569" font-weight="400" text-anchor="start">Commercial use limited on some plans</text>
+<path d="M548,862 l5,6 l11,-12" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="574" y="870" font-size="22" fill="#0f172a" font-weight="600" text-anchor="start">Use it for client work</text>
+<g stroke="#e11d48" stroke-width="2.5" stroke-linecap="round"><line x1="58" y1="889" x2="70" y2="901"/><line x1="70" y1="889" x2="58" y2="901"/></g>
+<text x="84" y="903" font-size="22" fill="#475569" font-weight="400" text-anchor="start">Usage caps, overage bills</text>
+<path d="M548,895 l5,6 l11,-12" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="574" y="903" font-size="22" fill="#0f172a" font-weight="600" text-anchor="start">Fixed $0, you set the limits</text>
+<g stroke="#e11d48" stroke-width="2.5" stroke-linecap="round"><line x1="58" y1="922" x2="70" y2="934"/><line x1="70" y1="922" x2="58" y2="934"/></g>
+<text x="84" y="936" font-size="22" fill="#475569" font-weight="400" text-anchor="start">Suspensions, policy changes</text>
+<path d="M548,928 l5,6 l11,-12" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="574" y="936" font-size="22" fill="#0f172a" font-weight="600" text-anchor="start">You own data, config, backups</text>
+<g stroke="#e11d48" stroke-width="2.5" stroke-linecap="round"><line x1="58" y1="955" x2="70" y2="967"/><line x1="70" y1="955" x2="58" y2="967"/></g>
+<text x="84" y="969" font-size="22" fill="#475569" font-weight="400" text-anchor="start">Limited security controls</text>
+<path d="M548,961 l5,6 l11,-12" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="574" y="969" font-size="22" fill="#0f172a" font-weight="600" text-anchor="start">2FA, fail2ban, auto-patching</text>
+<rect x="40" y="1000" width="195" height="44" rx="22" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" class="badge" style="animation-delay:0s"/>
+<text x="137.3" y="1029" font-size="22" fill="#0284c7" font-weight="700" text-anchor="middle">3 public ports</text>
+<rect x="242" y="1000" width="64" height="44" rx="22" fill="#ffffff" stroke="#4f46e5" stroke-width="1.5" class="badge" style="animation-delay:-2s"/>
+<text x="273.39" y="1029" font-size="22" fill="#4f46e5" font-weight="700" text-anchor="middle">2FA</text>
+<rect x="312" y="1000" width="123" height="44" rx="22" fill="#ffffff" stroke="#e11d48" stroke-width="1.5" class="badge" style="animation-delay:-4s"/>
+<text x="373.78" y="1029" font-size="22" fill="#e11d48" font-weight="700" text-anchor="middle">fail2ban</text>
+<rect x="442" y="1000" width="183" height="44" rx="22" fill="#ffffff" stroke="#d97706" stroke-width="1.5" class="badge" style="animation-delay:-6s"/>
+<text x="533.67" y="1029" font-size="22" fill="#d97706" font-weight="700" text-anchor="middle">auto-patching</text>
+<rect x="632" y="1000" width="230" height="44" rx="22" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5" class="badge" style="animation-delay:-8s"/>
+<text x="747.1099999999999" y="1029" font-size="22" fill="#7c3aed" font-weight="700" text-anchor="middle">CodeQL + gitleaks</text>
+<rect x="869" y="1000" width="171" height="44" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="1.5" class="badge" style="animation-delay:-10s"/>
+<text x="954.5999999999999" y="1029" font-size="22" fill="#16a34a" font-weight="700" text-anchor="middle">email alerts</text>
+<text x="40" y="1090" font-size="34" fill="#0f172a" font-weight="800" text-anchor="start">3-year cost, same 8 GB setup</text>
+<text x="1040" y="1090" font-size="22" fill="#64748b" font-weight="400" text-anchor="end">approximate</text>
+<text x="40" y="1120" font-size="22" fill="#475569" font-weight="600" text-anchor="start">Oracle</text>
+<rect x="210" y="1105" width="680" height="18" rx="9" fill="#f1f5f9"/>
+<clipPath id="bc0"><rect x="210" y="1105" width="6" height="18" rx="9"/></clipPath>
+<rect x="210" y="1105" width="6" height="18" rx="9" fill="#16a34a"/>
+<text x="228" y="1121" font-size="22" fill="#16a34a" font-weight="700" text-anchor="start">$0</text>
+<text x="40" y="1146" font-size="22" fill="#475569" font-weight="600" text-anchor="start">Hetzner</text>
+<rect x="210" y="1131" width="680" height="18" rx="9" fill="#f1f5f9"/>
+<clipPath id="bc1"><rect x="210" y="1131" width="83" height="18" rx="9"/></clipPath>
+<rect x="210" y="1131" width="83" height="18" rx="9" fill="#0d9488"/>
+<g clip-path="url(#bc1)"><rect y="1131" width="80" height="18" fill="url(#shine)"><animate attributeName="x" from="130" to="890" dur="3s" begin="-0.6s" repeatCount="indefinite"/></rect></g>
+<text x="304.9377049180328" y="1147" font-size="22" fill="#0d9488" font-weight="700" text-anchor="start">~$372</text>
+<text x="40" y="1172" font-size="22" fill="#475569" font-weight="600" text-anchor="start">DigitalOcean</text>
+<rect x="210" y="1157" width="680" height="18" rx="9" fill="#f1f5f9"/>
+<clipPath id="bc2"><rect x="210" y="1157" width="385" height="18" rx="9"/></clipPath>
+<rect x="210" y="1157" width="385" height="18" rx="9" fill="#0284c7"/>
+<g clip-path="url(#bc2)"><rect y="1157" width="80" height="18" fill="url(#shine)"><animate attributeName="x" from="130" to="890" dur="3s" begin="-1.2s" repeatCount="indefinite"/></rect></g>
+<text x="607.2590163934426" y="1173" font-size="22" fill="#0284c7" font-weight="700" text-anchor="start">~$1,728</text>
+<text x="40" y="1198" font-size="22" fill="#475569" font-weight="600" text-anchor="start">AWS</text>
+<rect x="210" y="1183" width="680" height="18" rx="9" fill="#f1f5f9"/>
+<clipPath id="bc3"><rect x="210" y="1183" width="418" height="18" rx="9"/></clipPath>
+<rect x="210" y="1183" width="418" height="18" rx="9" fill="#d97706"/>
+<g clip-path="url(#bc3)"><rect y="1183" width="80" height="18" fill="url(#shine)"><animate attributeName="x" from="130" to="890" dur="3s" begin="-1.7999999999999998s" repeatCount="indefinite"/></rect></g>
+<text x="640.032786885246" y="1199" font-size="22" fill="#d97706" font-weight="700" text-anchor="start">~$1,875</text>
+<text x="40" y="1224" font-size="22" fill="#475569" font-weight="600" text-anchor="start">Bluehost</text>
+<rect x="210" y="1209" width="680" height="18" rx="9" fill="#f1f5f9"/>
+<clipPath id="bc4"><rect x="210" y="1209" width="680" height="18" rx="9"/></clipPath>
+<rect x="210" y="1209" width="680" height="18" rx="9" fill="#e11d48"/>
+<g clip-path="url(#bc4)"><rect y="1209" width="80" height="18" fill="url(#shine)"><animate attributeName="x" from="130" to="890" dur="3s" begin="-2.4s" repeatCount="indefinite"/></rect></g>
+<text x="902.0" y="1225" font-size="22" fill="#e11d48" font-weight="700" text-anchor="start">~$3,050</text>
+<rect x="40" y="1244" width="1000" height="88" rx="20" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" filter="url(#sh)"/>
+<text x="540" y="1284" font-size="32" fill="#4f46e5" font-weight="800" text-anchor="middle">github.com/855princekumar/zero-cost-paas</text>
+<line x1="200" y1="1294" x2="880" y2="1294" stroke="#4f46e5" stroke-width="2" class="urlline" stroke-opacity="0.6"/>
+<text x="540" y="1320" font-size="22" fill="#475569" font-weight="600" text-anchor="middle">Full guide · 19 chapters · 18 ADRs · MIT</text>
+</svg>

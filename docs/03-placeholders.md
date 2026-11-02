@@ -65,6 +65,9 @@ Placeholders for running the same stack on Google Cloud or AWS (`<GCP_PROJECT_ID
 `<GCP_BILLING_ACCOUNT_ID>`, `<AWS_REGION>`, `<AWS_ACCOUNT_ID>`) are listed in
 [17 · Same stack on Google Cloud or AWS](17-other-clouds-gcp-aws.md#placeholders-added-by-this-chapter).
 
+Tailscale placeholders (`<TAILSCALE_AUTH_KEY>`, `<TAILNET_HOST>`) are in
+[19 · Private access with Tailscale](19-private-access-with-tailscale.md#new-placeholders).
+
 ## Environment variables used by the scripts
 
 The scripts in [`scripts/`](../scripts) read these (see [`scripts/config.example.env`](../scripts/config.example.env)):
