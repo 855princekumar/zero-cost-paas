@@ -37,13 +37,14 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 |---|---|---|
 | 1 | [At a glance](#at-a-glance) | Results in one table |
 | 2 | [What it really costs](#what-it-really-costs-hosting-options-compared) | Real-money comparison: Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost, home bare metal |
-| 3 | [Architecture](#architecture) | End-to-end diagram and request flow |
-| 4 | [What's inside](#whats-inside) | Every capability, grouped |
-| 5 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
-| 6 | [Documentation index](#documentation-index) | 18 chapters, case study to runbook |
-| 7 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
-| 8 | [Repository layout](#repository-layout) | Scripts and docs map |
-| 9 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
+| 3 | [The free building blocks](#the-free-building-blocks) | Every free service used, and a stable address without paying for a static IP |
+| 4 | [Architecture](#architecture) | End-to-end diagram and request flow |
+| 5 | [What's inside](#whats-inside) | Every capability, grouped |
+| 6 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
+| 7 | [Documentation index](#documentation-index) | 18 chapters, case study to runbook |
+| 8 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
+| 9 | [Repository layout](#repository-layout) | Scripts and docs map |
+| 10 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
 
 ---
 
@@ -97,6 +98,49 @@ domain is required for Cloudflare's proxy, WAF and Tunnel.
 
 Full analysis with 3-year chart, IPv4 and DNS comparison, weighted scoring, SWOT per platform,
 home bare-metal itemization and sources: **[docs/18 · Hosting options compared](docs/18-hosting-options-compared.md)**.
+
+---
+
+## The free building blocks
+
+Why the Oracle setup costs **$0** end to end: every layer uses a free service. Items marked
+**Used** run in this deployment today; **Option** items are free upgrades you can add.
+
+| Layer | Free resource | What you get for $0 | Status |
+|---|---|---|---|
+| Compute | **Oracle Always Free: Ampere A1** | ARM VM up to 4 OCPU / 24 GB (account limits vary; this tenancy: 2 / 12) | Used (target) |
+| Compute | **Oracle Always Free: 2 × E2.1.Micro** | x86 VMs, 1/8 OCPU / 1 GB each | Used (stand-in) |
+| Storage | **Oracle block volumes** | 200 GB total across boot and block volumes | Used |
+| Network | **Oracle egress** | 10 TB outbound per month | Used |
+| Network | **Oracle public IPv4** | Included with the VM; stays the same for the VM's whole life | Used |
+| Network | **Oracle VCN, security lists, internet gateway** | Private network and cloud firewall | Used |
+| Extras | **Oracle Object Storage, Autonomous DB, Load Balancer** | Offsite backup target, managed databases, a small flexible load balancer | Option |
+| DNS | **DuckDNS** | `<name>.duckdns.org` plus **wildcard** `*.<name>.duckdns.org`, API updates | Used |
+| TLS | **Let's Encrypt** (via Traefik) | Certificate per app, auto-issued and auto-renewed | Used |
+| PaaS | **Coolify** (open source) | Git-push deploys, previews, databases, one-click services | Used |
+| OS & tools | **Ubuntu, Docker, Traefik, fail2ban, msmtp** | The whole runtime, open source | Used |
+| Email | **Gmail SMTP** with an App Password | Alert and report email on port 587 | Used |
+| Code | **GitHub Free** | Private repo, Actions CI, Dependabot alerts and updates | Used |
+| Security | **CodeQL + gitleaks in GitHub Actions** | Code and secret scanning on every push | Used |
+| Threat intel | **GitHub Security Advisories, CISA KEV** | Vulnerability feeds read by `security-watch.py` | Used |
+| Edge | **Cloudflare Free** (needs your own domain) | DNS, proxy, DDoS protection, WAF rules, Universal SSL | Option |
+| Edge | **Cloudflare Tunnel** (needs your own domain) | Publish a server with **no public IP and no open ports**; works behind CGNAT | Option (ideal for home servers) |
+| Access | **Tailscale** (personal plan) | Private VPN to close the public SSH port entirely | Option |
+
+### A stable address without paying for a static IP
+
+A static IPv4 normally costs money (≈ $3.65/month on GCP and AWS, extra on many home ISP plans).
+This setup gets the same result for $0:
+
+| Situation | Free combination | How it works |
+|---|---|---|
+| **Oracle VM** (this repo) | Oracle public IP + **DuckDNS** | The IP is included and stable for the VM's life; a 5-minute DuckDNS timer keeps `<BASE_DOMAIN>` pointed at it even after a rebuild or the ARM migration |
+| **Home server, public IP from ISP** | Dynamic IP + **DuckDNS** | DuckDNS follows the IP every time your ISP changes it |
+| **Home server behind CGNAT or without a public IP** | **Cloudflare Tunnel** + own domain (≈ $10.46/yr) | The server dials out to Cloudflare; visitors reach Cloudflare, never your IP |
+| **Any server, best protection** | Own domain + **Cloudflare Free** proxy | Hides the origin IP, adds DDoS protection and a WAF |
+
+Details: [06 · DNS & TLS](docs/06-dns-and-tls.md), [12 · Cost guardrails](docs/12-cost-guardrails.md),
+[18 · Hosting options compared](docs/18-hosting-options-compared.md).
 
 ---
 
