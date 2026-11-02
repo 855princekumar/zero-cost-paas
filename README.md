@@ -36,13 +36,14 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | | Section | What you'll find |
 |---|---|---|
 | 1 | [At a glance](#at-a-glance) | Results in one table |
-| 2 | [Architecture](#architecture) | End-to-end diagram and request flow |
-| 3 | [What's inside](#whats-inside) | Every capability, grouped |
-| 4 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
-| 5 | [Documentation index](#documentation-index) | 18 chapters, case study to runbook |
-| 6 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
-| 7 | [Repository layout](#repository-layout) | Scripts and docs map |
-| 8 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
+| 2 | [What it really costs](#what-it-really-costs-hosting-options-compared) | Real-money comparison: Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost, home bare metal |
+| 3 | [Architecture](#architecture) | End-to-end diagram and request flow |
+| 4 | [What's inside](#whats-inside) | Every capability, grouped |
+| 5 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
+| 6 | [Documentation index](#documentation-index) | 18 chapters, case study to runbook |
+| 7 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
+| 8 | [Repository layout](#repository-layout) | Scripts and docs map |
+| 9 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
 
 ---
 
@@ -60,6 +61,42 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | Decisions documented | **18 ADRs** |
 
 <p align="center"><img src="assets/cost-breakdown.svg" alt="Cost breakdown" width="90%"/></p>
+
+---
+
+## What it really costs: hosting options compared
+
+The same production setup (this stack on one always-on box with about 2 to 4 vCPU and **8 GB RAM**),
+priced in real money across the major platforms. Prices checked 2026-10-28, excluding VAT;
+**(V)** verified on the provider's page, **(A)** from independent aggregators, **(≈)** approximate,
+varies by region.
+
+| Platform | Example at this size | Per month | Year 1 | 3 years | Free period | Public IPv4 | Traffic | Hardware ownership |
+|---|---|---|---|---|---|---|---|---|
+| **Oracle Cloud Always Free** (this repo) | Ampere A1, 2 to 4 OCPU / 12 to 24 GB, 200 GB | **$0** (V) | **$0** | **$0** | No end date | Included | 10 TB | No |
+| **Contabo** | Cloud VPS 10: 4 vCPU / 8 GB / 75 GB | ≈ €4.50 to €5.50 (A) | ≈ $60 to $75 | ≈ $190 to $230 | None | Included | Unlimited at 200 Mbit/s | No |
+| **Hetzner Cloud** | CX33: 4 vCPU / 8 GB / 80 GB | €8.99 ≈ $10.30 (V) | ≈ $124 | ≈ $372 | None | Included | 20 TB (EU) | No |
+| **Home bare metal** | Intel N100 mini PC, 16 GB / 512 GB | ≈ $2 to $3 to run, plus ≈ $230 hardware (≈) | ≈ $230 to $285 | ≈ $280 to $355 | n/a | Not needed with Cloudflare Tunnel | Your home line | **Yes** |
+| **DigitalOcean** | Droplet 4 vCPU / 8 GB / 160 GB | $48 (V) | $576 | $1,728 | Trial credit | Included | 5 TB | No |
+| **AWS** | m7i-flex.large (2 vCPU / 8 GB) | $0 for 6 months on credits (V), then ≈ $55 to $70 | ≈ $330 to $420 | ≈ $1,650 to $2,100 | 6 months | ≈ $3.65/mo (V) | Billed | No |
+| **Google Cloud** | e2-standard-2 (2 vCPU / 8 GB); free e2-micro is only 1 GB | ≈ $50 to $60 (≈) | ≈ $600 to $720 | ≈ $1,800 to $2,160 | No end date for e2-micro only | ≈ $3.65/mo (V) | 1 GB/mo free, then billed | No |
+| **Azure** | B2as v2 (2 vCPU / 8 GB); free B2pts/B2ats v2 are 1 GB | ≈ $55 to $70 (≈) | ≈ $660 to $840 | ≈ $1,980 to $2,520 | 12 months (1 GB VM) | Billed | Billed | No |
+| **Bluehost managed VPS** | NVMe 8: 4 cores / 8 GB, cPanel | ≈ $69 intro to $99+ renewal (A) | ≈ $830 to $1,190 | ≈ $2,500 to $3,600 | None | Included | Generous | No |
+
+Domain: **$0** with DuckDNS (used here) or about **$10.46/year** for a `.com` at cost (A); an own
+domain is required for Cloudflare's proxy, WAF and Tunnel.
+
+| If you want... | Choose |
+|---|---|
+| Strictly **$0, permanently** | **Oracle Always Free** (this repository) |
+| Best **paid value** with good reliability | **Hetzner** (~€9/month) |
+| **Lowest paid price**, variable performance is fine | **Contabo** (~€5/month) |
+| **Full ownership** of hardware and data | **Home mini PC + Cloudflare Tunnel** |
+| **Least effort** | **DigitalOcean** |
+| Learn a **hyperscaler** | **AWS / GCP / Azure** on credits, then move |
+
+Full analysis with 3-year chart, IPv4 and DNS comparison, weighted scoring, SWOT per platform,
+home bare-metal itemization and sources: **[docs/18 · Hosting options compared](docs/18-hosting-options-compared.md)**.
 
 ---
 
