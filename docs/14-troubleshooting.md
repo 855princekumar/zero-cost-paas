@@ -12,7 +12,7 @@
 | `pip install oci-cli` fails building **PyYAML** ("Microsoft Visual C++ 14.0 required") | oci-cli pins an old PyYAML with no wheels for Python 3.14 | Use the **OCI Python SDK** (`pip install oci`) in a venv |
 | A1 limit shows **2 OCPU / 12 GB**, not 4 / 24 | Tenancy-specific Always Free limit | Design for 2/12; `ARM_MAX` is configurable |
 | `500 InternalError: Out of host capacity` | No free A1 hosts in the home region | Retry loop across fault domains and smaller shapes; AMD stand-in; self-migration |
-| `429 Too many requests for the user` | Retrying too fast | 30 s between attempts; treat 429 as transient |
+| `429 Too many requests for the user` | Retrying too fast for the API rate limit | Poll politely: one attempt every ~2 min with ±25 % jitter, and on 429 back off exponentially (5, 10, 20, 40, then 60 min) until the next clean response |
 | Launch fails `LimitExceeded` while testing | Two Micros + ARM > 200 GB storage | Compute boot size from remaining allowance; delete test VMs |
 | Need serial console without the GUI | VM unreachable during boot | `capture_console_history` → `get_console_history_content` (decode **bytes**) |
 | `create_user` fails `400 IdcsConversionError: The primary email must be specified` | Tenancy uses **OCI Identity Domains**, which require an email on every user | `create-automation-user.py` sets one (a `+vps-automation` plus-address of `ALERT_EMAIL`, or `AUTOMATION_USER_EMAIL`) |

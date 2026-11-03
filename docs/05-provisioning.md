@@ -98,7 +98,8 @@ tries = [(s, fd) for s in [(2, 12), (1, 6)] for fd in FAULT_DOMAINS]
 flowchart TD
     S([start]) --> L{"launch (size, FD)"}
     L -->|ok| R[wait RUNNING]
-    L -->|"500 Out of host capacity / 429"| W[sleep 30 s] --> N[next size/FD pair] --> L
+    L -->|"500 Out of host capacity"| W["wait ~2 min ± 25 % jitter"] --> N[next size/FD pair] --> L
+    L -->|"429 Too many requests"| B["back off 5, 10, 20, 40, 60 min"] --> N
     L -->|other error| X([raise])
     R --> G{"size < 2/12?"}
     G -->|yes| U["update_instance → 2/12 (after AMD deleted)"]

@@ -15,6 +15,7 @@ Stages (every stage is safe to re-run; the service restarts on failure):
 """
 import argparse
 import os
+import random
 import subprocess
 import sys
 import time
@@ -87,6 +88,17 @@ def notify(subject, body="", key=None, cooldown=0):
 
 
 # ---------------------------------------------------------------- 1. launch target
+# Polite capacity polling, following OCI API guidance: a modest steady rate, random jitter so
+# requests never align on a fixed beat, and exponential backoff when the API returns 429.
+BASE_INTERVAL = 120                      # s between launch attempts (~720/day; each shape+FD every ~12 min)
+JITTER = 0.25                            # +/- 25 %
+BACKOFF_START, BACKOFF_MAX = 300, 3600   # on 429: 5 min, doubling, capped at 1 h
+
+
+def pause(seconds):
+    time.sleep(seconds * random.uniform(1 - JITTER, 1 + JITTER))
+
+
 def launch_target():
     inst = P.instance(args.target)
     if not inst:
@@ -97,8 +109,8 @@ def launch_target():
         boot = P.TOTAL_FREE_GB - used if is_arm else P.MICRO_BOOT_GB
         keys = "\n".join(sorted({P.read_file(args.user_pub).strip(), P.read_file(args.key + ".pub").strip()}))
         tries = [(s, fd) for s in P.ARM_TRY_SIZES for fd in P.FAULT_DOMAINS] if is_arm else [(None, None)]
-        log(f"launching {args.target} ({args.shape}, {boot} GB boot)")
-        n = 0
+        log(f"launching {args.target} ({args.shape}, {boot} GB boot), polling every ~{BASE_INTERVAL // 60} min")
+        n, throttled = 0, 0
         while not inst:
             for size, fd in tries:
                 n += 1
@@ -110,13 +122,22 @@ def launch_target():
                            "Migration of Coolify has started. You'll get another email when the switch is done.")
                     break
                 except P.oci.exceptions.ServiceError as e:
+                    if e.status == 429:  # throttled: back off exponentially, never keep hammering
+                        throttled += 1
+                        wait = min(BACKOFF_START * 2 ** (throttled - 1), BACKOFF_MAX)
+                        log(f"attempt {n}: rate limited by OCI (429), backing off ~{wait // 60} min")
+                        pause(wait)
+                        continue
                     if not P.is_capacity_error(e):
                         raise
-                    if n % 40 == 1:
+                    throttled = 0
+                    if n % 30 == 1:  # about once an hour
                         log(f"attempt {n}: {e.message} ({size}, {fd})")
-                except Exception as e:  # transient network errors
+                except Exception as e:  # transient network errors: wait longer than usual
                     log(f"attempt {n}: {type(e).__name__}: {e}")
-                time.sleep(P.RETRY_SLEEP)
+                    pause(BASE_INTERVAL * 2)
+                    continue
+                pause(BASE_INTERVAL)
     return P.wait(P.comp, P.comp.get_instance(inst.id), "RUNNING")
 
 
