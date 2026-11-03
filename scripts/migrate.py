@@ -311,10 +311,11 @@ def cutover(dst, inst):
     # same email alerts + security automation as the source
     run("cat > /etc/msmtprc && chmod 600 /etc/msmtprc", dst, input=run("cat /etc/msmtprc", SRC).encode())
     run("install -d -m 700 /root/vps-setup", dst)
-    for name in ["monitoring.sh", "security.sh", "security-watch.py"]:
+    for name in ["monitoring.sh", "security.sh", "security-watch.py", "keepalive.py", "keepalive.sh"]:
         run(f"cat > /root/vps-setup/{name}", dst, input=P.read_file(os.path.join(HERE, name), "rb"))
     env = f"ALERT_EMAIL={ALERT_EMAIL} VPS_DOMAIN={DOMAIN}"
-    run(f"{env} bash /root/vps-setup/monitoring.sh && {env} bash /root/vps-setup/security.sh", dst, timeout=900)
+    run(f"{env} bash /root/vps-setup/monitoring.sh && {env} bash /root/vps-setup/security.sh"
+        " && bash /root/vps-setup/keepalive.sh", dst, timeout=900)
 
     out = tinker(REDEPLOY_PHP, dst)
     token = next(line[6:] for line in out.splitlines() if line.startswith("TOKEN="))

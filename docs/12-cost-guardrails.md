@@ -65,6 +65,25 @@ Oracle may **stop** (not delete) Always Free instances on free-only tenancies wh
 | `boot-notify` + `health-check` emails | You learn quickly if the VM restarts or the dashboard goes down |
 | Restart is non-destructive | Start the instance again via API (`instance_action(id, "START")`); data intact |
 
-Deliberately **not** done: synthetic CPU burners to game the policy.
+### Keepalive (optional, installed by default by the migrator)
+
+A quiet VM, such as the AMD test box after the ARM move, can fall under all three thresholds.
+[`keepalive.py`](../scripts/keepalive.py) (installed by [`keepalive.sh`](../scripts/keepalive.sh))
+keeps CPU at about **25 %**, above the 20 % line, using **only spare CPU**:
+
+| Property | How |
+|---|---|
+| Never slows real work | Threads run at `SCHED_IDLE` and the service's cgroup is `cpu.idle` (`CPUWeight=idle`), so every other process and container wins the CPU |
+| Adaptive | Every 5 s it measures what everything else uses (steal counts as busy) and only adds the difference; on a busy server it adds almost nothing |
+| Contained | Unprivileged `DynamicUser`, read-only filesystem, no network, 64 MB memory cap, hard ceiling of half the machine |
+| Toggle | `sudo keepalive off` to give all CPU to a heavy job, `sudo keepalive on` afterwards; `status` and `target <21..60>` too |
+| Forget-proof | A daily check emails you if it has been off for 4+ days, before the 7-day window ends |
+
+Measured on the AMD Micro: with two full-speed jobs running, keepalive's share fell to a few percent
+of one core. On Ampere A1 there is no CPU steal, so it simply holds the target when you are idle.
+
+Be aware: Oracle's documented way to avoid reclamation is upgrading to Pay As You Go. Oracle does not
+publish a rule against keeping a VM active, but it can change the idle criteria at any time. If a VM
+is ever stopped anyway, nothing is lost: start it again and the boot notice email confirms it.
 
 [Next: Operations runbook →](13-operations-runbook.md)

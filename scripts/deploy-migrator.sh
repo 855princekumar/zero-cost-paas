@@ -19,7 +19,7 @@ for f in keys/vps-automation.config keys/vps-automation_api_key.pem keys/duckdns
 done
 
 $SSH "sudo install -d -m 700 $D && sudo apt-get install -y -qq python3-venv >/dev/null"
-for f in provision.py migrate.py finalize.py harden.sh cloud-init.yaml monitoring.sh security.sh security-watch.py; do
+for f in provision.py migrate.py finalize.py harden.sh cloud-init.yaml monitoring.sh security.sh security-watch.py keepalive.py keepalive.sh; do
   $SSH "sudo tee $D/$f >/dev/null" < "scripts/$f"
 done
 $SSH "sudo tee $D/user_key.pub >/dev/null" < keys/oci_vm.pub

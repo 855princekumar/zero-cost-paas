@@ -6,6 +6,8 @@
 - New chapter [17 · Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md): free-tier comparison (checked against official pages), headless `gcloud` / `aws` setup, what carries over, cost caveats; new `scripts/render-cloud-init.py`.
 - New chapter [18 · Hosting options compared](docs/18-hosting-options-compared.md): unified cost, 3-year TCO, IPv4/DNS, weighted scoring, SWOT and verdict across Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost and home bare metal.
 - New chapter [19 · Private access with Tailscale](docs/19-private-access-with-tailscale.md) (optional, not enabled on the reference deployment).
+- Keepalive: optional idle-reclaim guard using only spare CPU (`SCHED_IDLE` + idle cgroup, adaptive, toggle, forget-proof reminder); installed on the ARM by the migrator.
+- Migrator: keep the AMD as a test box by default, polite OCI polling (2 min + jitter, exponential backoff on 429).
 - README: real-money hosting comparison and free building blocks on the front page.
 - Branch protection substitutes (`.githooks/pre-push`, `branch-guard.yml`), CodeQL, Dependabot.
 

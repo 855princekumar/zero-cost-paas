@@ -57,6 +57,17 @@ vm$ sudo fail2ban-client set sshd unbanip <IP>
 vm$ sudo fail2ban-client set coolify-login unbanip <IP>
 ```
 
+## Keepalive (Always Free idle guard)
+
+```bash
+vm$ sudo keepalive status          # service state, target, current whole-machine CPU
+vm$ sudo keepalive off             # heavy job coming: give it every spare cycle
+vm$ sudo keepalive on              # back to holding ~25 % when idle
+vm$ sudo keepalive target 30       # change the target (21..60 %)
+```
+
+Details and safety properties: [12 · Cost guardrails](12-cost-guardrails.md#keepalive-optional-installed-by-default-by-the-migrator).
+
 ## Lockdown
 
 ```bash
