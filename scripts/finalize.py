@@ -49,10 +49,13 @@ if (me.shape_config.ocpus, me.shape_config.memory_in_gbs) != P.ARM_MAX:
     time.sleep(600)  # reboot happens during this wait
     raise SystemExit(1)  # if no reboot came, let systemd retry
 
-log("finalized:", me.shape_config.ocpus, "OCPU /", me.shape_config.memory_in_gbs, "GB /", P.TOTAL_FREE_GB, "GB disk")
+disk_gb = P.boot_volume(me).size_in_gbs
+log("finalized:", me.shape_config.ocpus, "OCPU /", me.shape_config.memory_in_gbs, "GB /", disk_gb, "GB disk")
 subprocess.run(["/usr/local/sbin/notify", "[MIGRATION] Done: ARM VM at free-tier max"],
-               input=f"{me.shape_config.ocpus} OCPU / {me.shape_config.memory_in_gbs} GB RAM / {P.TOTAL_FREE_GB} GB disk.\n"
-                     f"The old AMD VM is deleted. Disk:\n" + subprocess.run(["df", "-h", "/"], capture_output=True, text=True).stdout,
+               input=f"{me.shape_config.ocpus} OCPU / {me.shape_config.memory_in_gbs} GB RAM / {disk_gb} GB disk.\n"
+                     + ("The AMD VM is kept as your test box (Coolify stopped there).\n" if KEEP_SOURCE
+                        else "The old AMD VM is deleted.\n")
+                     + "Disk:\n" + subprocess.run(["df", "-h", "/"], capture_output=True, text=True).stdout,
                text=True)
 subprocess.run("sed -i '/oci-migrator/d' /home/ubuntu/.ssh/authorized_keys", shell=True)
 subprocess.run(f"shred -u {MIGRATOR_DIR}/api_key.pem; rm -f {MIGRATOR_DIR}/config", shell=True)
