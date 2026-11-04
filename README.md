@@ -36,15 +36,16 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | | Section | What you'll find |
 |---|---|---|
 | 1 | [At a glance](#at-a-glance) | Results in one table |
-| 2 | [What it really costs](#what-it-really-costs-hosting-options-compared) | Real-money comparison: Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost, home bare metal |
-| 3 | [The free building blocks](#the-free-building-blocks) | Every free service used, and a stable address without paying for a static IP |
-| 4 | [Architecture](#architecture) | End-to-end diagram and request flow |
-| 5 | [What's inside](#whats-inside) | Every capability, grouped |
-| 6 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
-| 7 | [Documentation index](#documentation-index) | 20 chapters, case study to runbook |
-| 8 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
-| 9 | [Repository layout](#repository-layout) | Scripts and docs map |
-| 10 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
+| 2 | [Performance: challenge and fix](#performance-challenge-faced-and-how-it-was-optimized) | Real measurements: why Coolify was slow on the free AMD, what was tuned, what failed |
+| 3 | [What it really costs](#what-it-really-costs-hosting-options-compared) | Real-money comparison: Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost, home bare metal |
+| 4 | [The free building blocks](#the-free-building-blocks) | Every free service used, and a stable address without paying for a static IP |
+| 5 | [Architecture](#architecture) | End-to-end diagram and request flow |
+| 6 | [What's inside](#whats-inside) | Every capability, grouped |
+| 7 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
+| 8 | [Documentation index](#documentation-index) | 20 chapters, case study to runbook |
+| 9 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
+| 10 | [Repository layout](#repository-layout) | Scripts and docs map |
+| 11 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
 
 ---
 
@@ -63,6 +64,51 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | Decisions documented | **19 ADRs** |
 
 <p align="center"><img src="assets/cost-breakdown.svg" alt="Cost breakdown" width="90%"/></p>
+
+---
+
+## Performance: challenge faced and how it was optimized
+
+**The challenge.** Oracle had no free ARM capacity, so the platform went live on the Always Free
+**AMD E2.1.Micro**: 1 GB RAM and only **1/8 of a CPU core guaranteed** (it bursts above that on
+credit). Coolify asks for 2 GB and 2 cores. The dashboard worked, but every click felt slow,
+**with not a single app deployed**.
+
+**Diagnosis, measured on the VM** (not guessed):
+
+| Finding | Evidence |
+|---|---|
+| The control plane does not fit in RAM | About **700 MB of 1 GB in swap** at all times; the first click after a pause waits for the network disk |
+| CPU burst credit runs out | **61 %** of CPU time withheld by the hypervisor (steal) during a 60 s sample |
+| Background work eats the guaranteed core | Docker health checks every 4 to 5 s on 5 containers (`dockerd` + `containerd`: 5.7 h CPU in 5 days); Oracle agent plugins: 13.5 h CPU in 5 days |
+| Not the network, not the keepalive | Timed from the VM itself; keepalive on versus off was within noise |
+
+**Results** (20 dashboard loads 3 s apart plus 60 s of CPU accounting, two runs each):
+
+| | Before | After tuning | Change |
+|---|---|---|---|
+| Median page load | 0.59 to 1.01 s | **0.41 to 0.59 s** | about 1.7x faster |
+| p90 page load (the slow clicks you notice) | 2.79 to 3.61 s | **0.98 to 1.08 s** | about **3x faster** |
+| Worst page load | 3.80 to 4.81 s | 1.98 to 2.21 s | about 2x faster |
+| CPU steal | 61 % | **24 to 33 %** | about half |
+
+**What changed** (all reversible, no feature removed, one command: [`scripts/tune-small-vm.sh`](scripts/tune-small-vm.sh)):
+
+1. Coolify, Postgres and Redis health checks every **30 s** instead of 5 s (still 2 s while starting, so upgrades are not slowed).
+2. Fewer idle PHP web workers (spare 10 to 2) and queue workers (4 to 2): about 30 MB and 75 MB each.
+3. Unused host services off: modem manager, firmware updater, disk manager, multipath, NFS portmapper.
+4. Oracle agent **Run Command** plugin off: the biggest agent CPU user, and one less way to run commands as root. Monitoring stays on.
+
+**What was tried and rejected:** zram (compressed swap in RAM) made it **worse**: median 1.7 s,
+worst 6.5 s, steal up to 77 %. Compression needs CPU this VM does not have, and it takes RAM from
+the disk cache. It was reverted, and the numbers are kept here because a negative result is still a
+result.
+
+**Outcome.** The AMD Micro is now a usable **test environment**, and its limits are measured
+rather than guessed. The **Ampere A1** VM (2 OCPU / 12 GB, 12x the RAM, no CPU credit) is
+**production**. The migrator moves Coolify there automatically and resets this tuning, so
+production runs Coolify's defaults ([ADR 0019](docs/adr/0019-amd-micro-is-test-only.md)).
+Full method, commands and reasoning: [docs/20](docs/20-amd-micro-limits.md).
 
 ---
 
