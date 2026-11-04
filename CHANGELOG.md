@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- New chapter [20 · AMD Micro limits](docs/20-amd-micro-limits.md) and [ADR 0019](docs/adr/0019-amd-micro-is-test-only.md): measured Coolify dashboard speed on the 1 GB Micro (p90 3.6 s to about 1 s after tuning, steal 61 % to 24 to 33 %), the Micro is a test box and the A1 is production; new `scripts/tune-small-vm.sh`; the migrator resets the small-VM overrides on the A1.
 - New chapter [16 · New machine & from-scratch setup](docs/16-new-machine-setup.md): workstation setup with git hooks, restoring access safely, recovery for every lost secret, full rebuild checklist with verifications, handover guide.
 - New chapter [17 · Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md): free-tier comparison (checked against official pages), headless `gcloud` / `aws` setup, what carries over, cost caveats; new `scripts/render-cloud-init.py`.
 - New chapter [18 · Hosting options compared](docs/18-hosting-options-compared.md): unified cost, 3-year TCO, IPv4/DNS, weighted scoring, SWOT and verdict across Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost and home bare metal.

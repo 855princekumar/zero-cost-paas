@@ -203,6 +203,8 @@ if [ ! -f /root/migrate.restored ]; then
   docker rm -f coolify coolify-db coolify-redis coolify-realtime coolify-proxy coolify-sentinel >/dev/null 2>&1 || true
   docker volume rm coolify-db coolify-redis >/dev/null 2>&1 || true
   rm -rf /data/coolify && mkdir -p /data && cp -a $IN/data/coolify /data/coolify
+  # the source's small-VM tuning (slow health checks, fewer workers) is not wanted on the ARM
+  printf 'services:\n  coolify:\n    volumes:\n      - /data/coolify/logs:/var/www/html/storage/logs\n' > /data/coolify/source/docker-compose.custom.yml
   curl -fsSL https://cdn.coollabs.io/coolify/install.sh -o /root/coolify-install.sh
   DOCKER_ADDRESS_POOL_BASE=172.20.0.0/14 DOCKER_ADDRESS_POOL_SIZE=24 \
     bash /root/coolify-install.sh "$VER" < /dev/null > /root/coolify-install.log 2>&1 || true

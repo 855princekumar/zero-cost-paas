@@ -94,7 +94,8 @@ create paid servers).
 
 Domains: use `https://<APP_NAME>.<BASE_DOMAIN>`: **keep `https://`** so Traefik requests a
 certificate. Builds run in `coolify-helper`; on the 1 GB AMD stand-in prefer static sites or
-pre-built images, heavy builds belong on the A1.
+pre-built images, heavy builds belong on the A1. Measured dashboard speed and the tuning for the
+Micro: [chapter 20](20-amd-micro-limits.md).
 
 ## 5. End-to-end proof via API
 

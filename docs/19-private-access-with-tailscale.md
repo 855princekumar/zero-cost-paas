@@ -1,6 +1,6 @@
 # 19 · Private Access with Tailscale (optional)
 
-[← Hosting options compared](18-hosting-options-compared.md) · [Index](README.md) · [ADRs →](adr/README.md)
+[← Hosting options compared](18-hosting-options-compared.md) · [Index](README.md) · [Next: AMD Micro limits →](20-amd-micro-limits.md)
 
 > **TL;DR**: Tailscale puts your laptop and the VM on a private WireGuard network ("tailnet").
 > Once SSH works over it, you can **close the public SSH port completely**, leaving only 80 and 443

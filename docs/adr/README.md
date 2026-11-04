@@ -37,6 +37,7 @@ change a decision, add a new ADR that **supersedes** the old one instead of edit
 | [0016](0016-least-privilege-automation-identity.md) | Least-privilege automation identity | Accepted | A dedicated IAM user limited to instances/volumes/networking, key shredded after use |
 | [0017](0017-secrets-handling.md) | Secrets handling | Accepted | Secrets only in git-ignored `keys/` and root-only 600 files on the VM; none in user_data |
 | [0018](0018-unattended-upgrades-and-auto-reboot.md) | Unattended upgrades & auto-reboot | Accepted | Daily Ubuntu + Docker security patches, emailed, auto-reboot at 04:00 when required |
+| [0019](0019-amd-micro-is-test-only.md) | AMD Micro is test-only, A1 is production | Accepted | Measured: 1 GB / 1/8 OCPU is too slow for production Coolify; tuned test box, untuned A1 |
 
 ```mermaid
 flowchart LR
@@ -44,6 +45,7 @@ flowchart LR
   A0001 --> A0004[0004 A1 + Micro]
   A0002[0002 API-only] --> A0016[0016 Least privilege]
   A0004 --> A0015[0015 Self-migration]
+  A0004 --> A0019[0019 Micro is test-only]
   A0015 --> A0016
   A0005[0005 Coolify] --> A0007[0007 Let's Encrypt]
   A0006[0006 DuckDNS] --> A0007

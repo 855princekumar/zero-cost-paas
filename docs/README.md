@@ -31,8 +31,9 @@
 | 17 | [Same stack on Google Cloud or AWS](17-other-clouds-gcp-aws.md) | Free-tier comparison, headless gcloud / aws CLI setup, what carries over, cost caveats |
 | 18 | [Hosting options compared](18-hosting-options-compared.md) | Oracle, GCP, AWS, Azure, Hetzner, Contabo, DigitalOcean, Bluehost and home bare metal: cost, 3-year TCO, IPv4/DNS, scoring, SWOT, verdict |
 | 19 | [Private access with Tailscale (optional)](19-private-access-with-tailscale.md) | Close the public SSH port: tailnet setup, verification, private Coolify UI, break-glass and rollback |
+| 20 | [AMD Micro limits](20-amd-micro-limits.md) | Why Coolify is slow on the 1 GB test box: measurements, benchmark method, tuning, what was rejected, test vs production |
 
-**Architecture Decision Records:** [adr/README.md](adr/README.md): 18 ADRs explaining *why* each choice was made.
+**Architecture Decision Records:** [adr/README.md](adr/README.md): 19 ADRs explaining *why* each choice was made.
 
 ## Visual assets
 

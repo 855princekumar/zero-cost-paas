@@ -47,6 +47,8 @@
 | Restore unit log empty | `StandardOutput=file:` and `StandardError=file:` on the same path truncate each other | Use `append:` for both |
 | New app shows certificate error for ~1-2 min | ACME issuance in progress; Traefik serves its default cert | Wait; check `docker logs coolify-proxy \| grep -i acme` |
 | Healthy install but proxy missing after restore | Proxy starts asynchronously | `docker restart coolify-proxy`; Coolify also reconciles it |
+| Dashboard slow on the AMD Micro (1 to 4 s per click, even with no apps) | 1 GB RAM (about 700 MB in swap) and 1/8 OCPU burst credit (steal up to 61 %) | `sudo bash scripts/tune-small-vm.sh`; the real fix is the A1 VM. Details: [chapter 20](20-amd-micro-limits.md) |
+| Coolify stays `health: starting` for minutes after a restart on the Micro | Cold start under CPU throttling; probe hits its 2 s timeout | Wait; `docker exec coolify curl -s http://127.0.0.1:8080/api/health` shows `OK` when it is up |
 
 ## Automation & scripting
 

@@ -1,7 +1,7 @@
 # ADR-0004: Ampere A1 as the target, AMD Micro as a stand-in
 
 - **Status:** Accepted: 2026-10-28
-- **Related:** [ADR-0015](0015-self-migrating-amd-to-arm.md), [Provisioning](../05-provisioning.md), [Migration](../11-amd-to-arm-migration.md)
+- **Related:** [ADR-0015](0015-self-migrating-amd-to-arm.md), [Provisioning](../05-provisioning.md), [Migration](../11-amd-to-arm-migration.md), superseded in part by [ADR-0019](0019-amd-micro-is-test-only.md) (the Micro is kept as a test box)
 
 ## Context
 

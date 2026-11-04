@@ -41,7 +41,7 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | 4 | [Architecture](#architecture) | End-to-end diagram and request flow |
 | 5 | [What's inside](#whats-inside) | Every capability, grouped |
 | 6 | [Quick start](#quick-start) | From an empty Oracle account to deploying apps |
-| 7 | [Documentation index](#documentation-index) | 19 chapters, case study to runbook |
+| 7 | [Documentation index](#documentation-index) | 20 chapters, case study to runbook |
 | 8 | [Architecture Decision Records](#architecture-decision-records) | Why each choice was made |
 | 9 | [Repository layout](#repository-layout) | Scripts and docs map |
 | 10 | [Security & privacy](#security--privacy) | How this repo stays secret-free |
@@ -59,7 +59,8 @@ It deploys from Git with automatic HTTPS, emails you alerts, patches itself, and
 | Patch latency for Coolify security releases | **≤ 6 hours**, applied automatically. The first run upgraded 4.5.0 → 4.5.2 because of an RCE advisory. |
 | Host health and intrusion checks | **every 5 minutes**, with email alerts and automated containment |
 | Hardware upgrade path | Self-migrating **AMD Micro → Ampere A1**, with a health-gated DNS cutover and no laptop needed |
-| Decisions documented | **18 ADRs** |
+| Coolify dashboard speed | AMD Micro test box, idle: **0.4 to 0.6 s** median, about 1 s p90 after tuning (was up to 3.6 s). The A1 VM is production. See [docs/20](docs/20-amd-micro-limits.md). |
+| Decisions documented | **19 ADRs** |
 
 <p align="center"><img src="assets/cost-breakdown.svg" alt="Cost breakdown" width="90%"/></p>
 
@@ -290,6 +291,7 @@ Then open `https://<BASE_DOMAIN>`, change the password, **enable 2FA**, pick **"
 | 17 | [Same stack on Google Cloud or AWS](docs/17-other-clouds-gcp-aws.md) | Free-tier comparison, gcloud / aws CLI setup, cost caveats |
 | 18 | [Hosting options compared](docs/18-hosting-options-compared.md) | Clouds vs VPS vs home bare metal: TCO, SWOT, scoring, verdict |
 | 19 | [Private access with Tailscale](docs/19-private-access-with-tailscale.md) | Optional: close the public SSH port, private admin access |
+| 20 | [AMD Micro limits](docs/20-amd-micro-limits.md) | Why Coolify is slow on 1 GB, benchmark, tuning, test box vs production |
 
 The full index with reading paths is in [docs/README.md](docs/README.md).
 
@@ -313,8 +315,8 @@ Examples: [free-only, no Pay-As-You-Go](docs/adr/0003-stay-free-only-no-payg.md)
 ```mermaid
 flowchart TB
     root(["zero-cost-paas"])
-    root --> docs["docs/<br/>19 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
-    docs --> adr["docs/adr/<br/>18 decision records"]
+    root --> docs["docs/<br/>20 chapters + index"] & assets["assets/<br/>8 animated SVGs"] & ci[".github/workflows<br/>gitleaks, CodeQL, lint"] & meta["README, SECURITY,<br/>CHANGELOG, LICENSE"]
+    docs --> adr["docs/adr/<br/>19 decision records"]
     root --> scripts["scripts/<br/>run in this order"]
 
     subgraph p1["1 · Pre-flight"]
@@ -331,11 +333,11 @@ flowchart TB
     end
     subgraph p4["4 · Platform"]
         direction LR
-        cool["coolify-setup.sh"]
+        cool["coolify-setup.sh"] ~~~ tune["tune-small-vm.sh"]
     end
     subgraph p5["5 · Observe and defend"]
         direction LR
-        mon["monitoring.sh"] ~~~ sec["security.sh"] ~~~ sw["security-watch.py"]
+        mon["monitoring.sh"] ~~~ sec["security.sh"] ~~~ sw["security-watch.py"] ~~~ ka["keepalive.sh"]
     end
     subgraph p6["6 · Migrate AMD to ARM"]
         direction LR
@@ -354,9 +356,11 @@ flowchart TB
 | 2 | [`cloud-init.yaml`](scripts/cloud-init.yaml) | First boot: updates, Docker, swap, fail2ban, firewall helper, hardening |
 | 3 | [`harden.sh`](scripts/harden.sh) | SSH, host firewall, DOCKER-USER guard, fail2ban, sysctl, DuckDNS timer |
 | 4 | [`coolify-setup.sh`](scripts/coolify-setup.sh) | Headless Coolify install and configuration |
+| 4 | [`tune-small-vm.sh`](scripts/tune-small-vm.sh) | Test box only: makes Coolify usable on 1 GB / burstable CPU ([docs/20](docs/20-amd-micro-limits.md)) |
 | 5 | [`monitoring.sh`](scripts/monitoring.sh) | Gmail alerts, 5-minute health checks, daily report |
 | 5 | [`security.sh`](scripts/security.sh) | Auto-patching, egress guard, security-watch timers |
 | 5 | [`security-watch.py`](scripts/security-watch.py) | Vulnerability feeds and intrusion guardrails with lockdown |
+| 5 | [`keepalive.sh`](scripts/keepalive.sh), [`keepalive.py`](scripts/keepalive.py) | Idle-reclaim guard using only spare CPU, with an on/off toggle |
 | 6 | [`create-automation-user.py`](scripts/create-automation-user.py) | Least-privilege OCI identity for the migrator |
 | 6 | [`deploy-migrator.sh`](scripts/deploy-migrator.sh) | Runs the migration as a service on the VM |
 | 6 | [`migrate.py`](scripts/migrate.py), [`finalize.py`](scripts/finalize.py) | Health-gated AMD to ARM move, then cleanup and resize on the ARM VM |
