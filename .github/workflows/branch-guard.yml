@@ -19,7 +19,7 @@ jobs:
     if: github.event.forced == true
     steps:
       - name: Open an alert issue
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const { before, after, pusher } = context.payload;
