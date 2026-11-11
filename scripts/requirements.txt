@@ -1,3 +1,3 @@
 # Workstation / migrator dependencies (the VM-side scripts use only the Python stdlib)
-oci>=2.189.0
+oci>=2.190.0
 cryptography>=50.0.2
